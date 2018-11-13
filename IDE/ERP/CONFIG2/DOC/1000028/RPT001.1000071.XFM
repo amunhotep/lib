@@ -1,5 +1,5 @@
-object Report396C7002C6A8645290D17054A761C25B: TxReport
-  Left = 0
+object Report42C249A9E30ECA5D9E83DC4903AAD627: TxReport
+  Left = -135
   Top = 0
   Width = 1123
   Height = 794
@@ -3096,7 +3096,7 @@ object Report396C7002C6A8645290D17054A761C25B: TxReport
       ParentFont = False
       ResetAfterPrint = False
       WordWrap = True
-      Expression = 'qrDoc.QUANT'
+      Expression = 'FORMATNUMERIC('#39'# ### ##0.### '#39', qrDOC.QUANT)'
       Mask = '# ### ### ##0 '
       FontSize = 6
     end
@@ -3131,7 +3131,7 @@ object Report396C7002C6A8645290D17054A761C25B: TxReport
       ParentFont = False
       ResetAfterPrint = False
       WordWrap = True
-      Expression = 'FORMATNUMERIC('#39'(#0) '#39', qrDOC.TMC_ORDERQUANT) '
+      Expression = 'FORMATNUMERIC('#39'(#0.###) '#39', qrDOC.TMC_ORDERQUANT)'
       FontSize = 6
     end
     object xrExpression6: TxrExpression
@@ -3301,7 +3301,7 @@ object Report396C7002C6A8645290D17054A761C25B: TxReport
       ParentFont = False
       ResetAfterPrint = False
       WordWrap = True
-      Expression = 'FORMATNUMERIC('#39'(#0) '#39', qrDOC.TMC_ORDERQUANT) '
+      Expression = 'FORMATNUMERIC('#39'(#0.###) '#39', qrDOC.TMC_ORDERQUANT)'
       FontSize = 6
     end
     object xrExpression22: TxrExpression
@@ -3335,7 +3335,7 @@ object Report396C7002C6A8645290D17054A761C25B: TxReport
       ParentFont = False
       ResetAfterPrint = False
       WordWrap = True
-      Expression = 'qrDoc.QUANT'
+      Expression = 'FORMATNUMERIC('#39'# ### ##0.### '#39', qrDOC.QUANT)'
       Mask = '# ### ### ##0 '
       FontSize = 6
     end
