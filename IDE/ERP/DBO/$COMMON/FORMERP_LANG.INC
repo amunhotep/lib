@@ -99,6 +99,9 @@ const //============= PEAKTOP:IDE/ERP/DBO/$COMMON/FORMERP_LANG.INC =============
   msg_erp_actdocgotojrnl    = 'Перейти'            ;msg_erp_actdocgotojrnl_hint   = 'Перейти в журнал документа'; 
   msg_erp_actdocgotoday     = 'Перейти на дату'    ;msg_erp_actdocgotoday_hint    = 'Перейти в операционный день по номеру документа'; 
   msg_erp_actdoccnd         = 'Проводки'           ;msg_erp_actdoccnd_hint        = 'Открыть проводки по документу'; 
+  msg_erp_actdocins         = 'Новый'              ;msg_erp_actdocins_hint        = 'Новый документ'; 
+  msg_erp_actdoccreate      = 'Создать'            ;msg_erp_actdoccreate_hint     = 'Создать документ по текущей фирме учёта'; 
+  msg_erp_actdocadd         = 'Добавить'           ;msg_erp_actdocadd_hint        = 'Создать подчинённый документ по текущей фирме учёта'; 
   msg_erp_actobjimg         = 'Изображения'        ;msg_erp_actobjimg_hint        = 'Изображения текущего элемента'; 
   msg_erp_actdocchildlist   = 'История'            ;msg_erp_actdocchildlist_hint  = 'Показать всю историю по документу'; 
   msg_erp_actcomentins      = 'Добавить'           ;msg_erp_actcomentins_hint     = 'Добавить комментарий к документу'; 

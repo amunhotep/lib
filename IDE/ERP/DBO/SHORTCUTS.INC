@@ -46,4 +46,8 @@ const //================== PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC ===================
   SHORTCUT_DOC_MARKDELETE       = 'Alt+M';
   SHORTCUT_DOC_UNMARKDELETE     = 'Alt+U';
   SHORTCUT_DOC_GOTOJRNL         = 'Alt+Enter';
-  SHORTCUT_DOC_DOCLIST          = 'Ctrl+Alt+H';   
+  SHORTCUT_DOC_DOCLIST          = 'Ctrl+Alt+H';
+  SHORTCUT_DOC_INSERT           = 'Ctrl+Alt+N';
+  SHORTCUT_DOC_CREATE           = 'Ctrl+N';
+  SHORTCUT_DOC_ADD              = 'Alt+N';
+     
