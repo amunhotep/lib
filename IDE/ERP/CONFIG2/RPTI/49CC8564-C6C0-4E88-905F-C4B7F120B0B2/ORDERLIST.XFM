@@ -1,4 +1,4 @@
-object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
+object Report649DA26A986EDC8A6EE2E74DACEA0DAB: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -68,7 +68,7 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
     Left = 23
     Top = 83
     Width = 749
-    Height = 16
+    Height = 28
     Frame.Color = clBlack
     Frame.Top = False
     Frame.Bottom = False
@@ -80,21 +80,21 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
     ForceNewColumn = False
     ForceNewPage = False
     Size.Values = (
-      42.333333333333330000
+      74.083333333333330000
       1981.729166666667000000)
     BandType = rbDetail
     object xrExpression1: TxrExpression
       Left = 0
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = True
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         0.000000000000000000
         0.000000000000000000
         105.833333333333300000)
@@ -115,14 +115,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 40
       Top = 0
       Width = 168
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         105.833333333333300000
         0.000000000000000000
         444.500000000000000000)
@@ -149,17 +149,17 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 240
       Top = 0
       Width = 32
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         635.000000000000000000
         0.000000000000000000
-        84.666666666666680000)
+        84.666666666666670000)
       Transparent = True
       Alignment = taRightJustify
       AlignToBand = False
@@ -178,17 +178,17 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 208
       Top = 0
       Width = 32
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         550.333333333333300000
         0.000000000000000000
-        84.666666666666680000)
+        84.666666666666670000)
       Transparent = True
       Alignment = taCenter
       AlignToBand = False
@@ -206,17 +206,17 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 272
       Top = 0
       Width = 32
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
-        719.666666666666800000
+        74.083333333333330000
+        719.666666666666700000
         0.000000000000000000
-        84.666666666666680000)
+        84.666666666666670000)
       Transparent = True
       Alignment = taRightJustify
       AlignToBand = False
@@ -235,15 +235,15 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 304
       Top = 0
       Width = 56
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
-        804.333333333333200000
+        74.083333333333330000
+        804.333333333333300000
         0.000000000000000000
         148.166666666666700000)
       Transparent = True
@@ -264,14 +264,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 360
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         952.500000000000000000
         0.000000000000000000
         105.833333333333300000)
@@ -292,14 +292,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 400
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1058.333333333333000000
         0.000000000000000000
         105.833333333333300000)
@@ -320,14 +320,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 440
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1164.166666666667000000
         0.000000000000000000
         105.833333333333300000)
@@ -348,14 +348,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 480
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1270.000000000000000000
         0.000000000000000000
         105.833333333333300000)
@@ -376,14 +376,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 520
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1375.833333333333000000
         0.000000000000000000
         105.833333333333300000)
@@ -404,14 +404,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 560
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1481.666666666667000000
         0.000000000000000000
         105.833333333333300000)
@@ -432,14 +432,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 600
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1587.500000000000000000
         0.000000000000000000
         105.833333333333300000)
@@ -460,14 +460,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 640
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1693.333333333333000000
         0.000000000000000000
         105.833333333333300000)
@@ -488,14 +488,14 @@ object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
       Left = 680
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333340000
+        74.083333333333330000
         1799.166666666667000000
         0.000000000000000000
         105.833333333333300000)
