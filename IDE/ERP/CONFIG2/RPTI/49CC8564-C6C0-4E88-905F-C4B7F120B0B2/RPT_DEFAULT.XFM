@@ -1,4 +1,4 @@
-object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
+object Report0AB7B5D2D3191DE3848C71B8990EB017: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -68,7 +68,7 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
     Left = 38
     Top = 83
     Width = 718
-    Height = 16
+    Height = 28
     Frame.Color = clBlack
     Frame.Top = False
     Frame.Bottom = False
@@ -80,21 +80,21 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
     ForceNewColumn = False
     ForceNewPage = False
     Size.Values = (
-      42.333333333333330000
+      74.083333333333330000
       1899.708333333333000000)
     BandType = rbDetail
     object xrExpression1: TxrExpression
       Left = 0
       Top = 0
       Width = 40
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = True
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         0.000000000000000000
         0.000000000000000000
         105.833333333333300000)
@@ -115,14 +115,14 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
       Left = 40
       Top = 0
       Width = 520
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         105.833333333333300000
         0.000000000000000000
         1375.833333333333000000)
@@ -131,26 +131,32 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
       AlignToBand = False
       AutoSize = False
       AutoStretch = False
+      Font.Charset = RUSSIAN_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -8
+      Font.Name = 'Verdana'
+      Font.Style = []
       Color = clWhite
       Indent = 0
       Layout = tlTop
+      ParentFont = False
       ResetAfterPrint = False
       WordWrap = True
       Expression = 'NAME2'
-      FontSize = 7
+      FontSize = 6
     end
     object xrExpression3: TxrExpression
       Left = 592
       Top = 0
       Width = 32
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         1566.333333333333000000
         0.000000000000000000
         84.666666666666670000)
@@ -172,14 +178,14 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
       Left = 560
       Top = 0
       Width = 32
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         1481.666666666667000000
         0.000000000000000000
         84.666666666666670000)
@@ -200,14 +206,14 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
       Left = 624
       Top = 0
       Width = 32
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         1651.000000000000000000
         0.000000000000000000
         84.666666666666670000)
@@ -221,7 +227,7 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
       Layout = tlTop
       ResetAfterPrint = False
       WordWrap = True
-      Expression = 'ORDERQUANT'
+      Expression = 'FORMATNUMERIC('#39'# ### ### ##0.###'#39', ORDERQUANT)'
       Mask = '#0 '
       FontSize = 7
     end
@@ -229,14 +235,14 @@ object Report56938AE676AEA3970CB89DCDC77039E1: TxReport
       Left = 656
       Top = 0
       Width = 56
-      Height = 16
+      Height = 28
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        42.333333333333330000
+        74.083333333333330000
         1735.666666666667000000
         0.000000000000000000
         148.166666666666700000)

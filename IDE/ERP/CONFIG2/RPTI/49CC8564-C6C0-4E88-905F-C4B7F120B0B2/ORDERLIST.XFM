@@ -1,4 +1,4 @@
-object Report203C9B9426853E3E46AB7BCB4610D4D8: TxReport
+object Report67DDB910AD2E549B1705AB0D646E56B5: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -80,7 +80,7 @@ object Report203C9B9426853E3E46AB7BCB4610D4D8: TxReport
     ForceNewColumn = False
     ForceNewPage = False
     Size.Values = (
-      42.333333333333340000
+      42.333333333333330000
       1981.729166666667000000)
     BandType = rbDetail
     object xrExpression1: TxrExpression
@@ -227,7 +227,7 @@ object Report203C9B9426853E3E46AB7BCB4610D4D8: TxReport
       Layout = tlTop
       ResetAfterPrint = False
       WordWrap = True
-      Expression = 'ORDERQUANT'
+      Expression = 'FORMATNUMERIC('#39'# ### ### ##0.###'#39', ORDERQUANT)'
       Mask = '#0 '
       FontSize = 7
     end
@@ -1044,7 +1044,7 @@ object Report203C9B9426853E3E46AB7BCB4610D4D8: TxReport
     ForceNewColumn = False
     ForceNewPage = False
     Size.Values = (
-      42.333333333333340000
+      42.333333333333330000
       1981.729166666667000000)
     Expression = 'REPORT_ID'
     Master = Owner
