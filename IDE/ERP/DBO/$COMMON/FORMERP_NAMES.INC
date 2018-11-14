@@ -103,6 +103,7 @@ const //============ PEAKTOP:IDE/ERP/DBO/$COMMON/FORMERP_NAMES.INC =============
   obj_name_erp_actnavup          = 'actNavUp';
   obj_name_erp_actprintgrid      = 'actPrintGrid';
   obj_name_erp_actprintitem      = 'actPrintItem';
+  obj_name_erp_actprintdefault   = 'actPrintDefault';
   obj_name_erp_actexport         = 'actExport';
   obj_name_erp_actexportoocalc   = 'actExportOpenOfficeCalc';
   obj_name_erp_actexportoowrite  = 'actExportOpenOfficeWrite';

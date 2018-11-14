@@ -82,6 +82,7 @@ var
   procedure TERPFormDocEditor_actCSAmount_OnExecute(Sender :TObject);       forward;
   procedure TERPFormDocEditor_actSearchTMC_SetFocus(aOwner :TComponent);    forward;
   procedure TERPFormDocEditor_actDocShowNotNull_OnExecute(Sender :TObject); forward;
+  procedure TERPFormDocEditor_actDocShowAll_OnExecute(Sender :TObject);     forward;
   //============================================================================
   function Doc_User_HasRights(const aUserId:string; const aRoleList:array of string):Boolean ;
   var
@@ -1091,6 +1092,8 @@ var
     TERPFormGrid_CloseDataSets(aOwner);
     TForm(aOwner).HelpKeyWord := lkDocIds[0];
     TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY] := lkDocIds[0];
+    TCustomAction( aOwner.FindComponent('actDocShowAll') ).Checked := True;
+    TERPFormDocEditor_actDocShowAll_OnExecute( TCustomAction( aOwner.FindComponent('actDocShowAll') ) );
     TERPFormDocEditor_RefreshView(aOwner);    
   end;
   //============================================================================
@@ -1666,6 +1669,12 @@ var
     lkUserHasRight:Boolean;
     lkStr         :string;
     lkTypesList   :string;
+    lkMainMenu    :TMainMenu;
+    lkMIMenuMain  :TMenuItem;
+    lkMIView      :TMenuItem;
+    lkMIObj       :TMenuItem;
+    lkMIItem      :TMenuItem;
+    lkMIPrint     :TMenuItem;
     lkToolBar     :TxcGradientPanelVista;
     lkToolBarEx   :TxcGradientPanelVista;
     lkToolBarTMC  :TxcGradientPanelVista;
@@ -1718,17 +1727,30 @@ var
     lkUserHasRight := Doc_User_HasRights(GetGlobalVariable(ERP_GLOBALVARIABLE_USER_CURRENT), ['1000000','1000004']);
     lkTypesList := '2';
     GetField(FBDataBase, 'PROC$J$TYPELISTROOT('''+aJ_ID+''')', 'TYPELIST', '', lkTypesList);
-    Result := TAmunhotepForm(TERPForm_Create('', ERP_ObjectIcon(ERP_OBJECTTYPE_DOC), ERP_ObjectBitmap(ERP_OBJECTTYPE_DOC), false, @TERPFormDocEditor_OnClose));
+    Result := TAmunhotepForm( TERPForm_Create('', ERP_ObjectIcon(ERP_OBJECTTYPE_DOC), ERP_ObjectBitmap(ERP_OBJECTTYPE_DOC), false, @TERPFormDocEditor_OnClose) );
     with Result do
       begin
       HelpKeyWord := aJ_ID;
       WindowState := wsMaximized;
       end;
+    with TxcGradientPanelVista(Result.FindComponent(obj_name_erp_topbar)) do
+      begin
+      StyleManager          := nil;
+      Colors.HotTrack       := ERP_ObjectColorLight(ERP_OBJECTTYPE_DOC);
+      Colors.HotTrackBorder := ERP_ObjectColor(ERP_OBJECTTYPE_DOC);
+      end;  
     with TERPForm_Settings(Result) do
       begin
       Values[ERP_SETTINGS_BASETYPE] := IntToStr(ERP_OBJECTTYPE_DOC);
       Values[ERP_DATASET_DBKEY    ] := aJ_ID;
       end;
+    lkMainMenu    := TMainMenu(Result.FindComponent(obj_name_erp_mainmenu));
+    lkMIMenuMain  := CreateTMenuItem(lkMainMenu.Items,obj_name_erp_mimainmenu      ,msg_erp_tsdocfields   ,'','', -1, ERP_MENUITEM_FORM_INDEX_BEGIN);
+    lkMIObj       := CreateTMenuItem(lkMIMenuMain    ,obj_name_erp_mimainobj       ,msg_erp_tsdocfields   ,'','',ERP_ObjectImageIndex(ERP_OBJECTTYPE_DOC), 0);
+    lkMIView      := CreateTMenuItem(lkMIMenuMain    ,obj_name_erp_mimainview      ,msg_erp_mimainview    ,'','',150, 0);
+    lkMIPrint     := CreateTMenuItem(lkMIMenuMain    ,obj_name_erp_mimainobjprint_h,msg_erp_mimainobjprint,'','',104, 0);
+    lkMIItem      := CreateTMenuItem(lkMIMenuMain    ,obj_name_erp_mimainitem      ,msg_erp_tsdocdata     ,'','',103, 0);
+
     lkToolBar    := CreateTxcGradientPanelVistaToolBar(Result,Result,obj_name_erp_toolbar     ,'',alTop, 1,40,22, 200,xbsRaized);
     lkToolBarEx  := CreateTxcGradientPanelVistaToolBar(Result,Result,obj_name_erp_toolbar+'Ex','',alTop, 1,lkToolBar.Top+lkToolBar.Height+1,22, 200,xbsRaized);
     lkPnl        := CreateTxcGradientPanel(Result,Result,obj_name_erp_paneltop,'',alTop,1,lkToolBarEx.Top+lkToolBarEx.Height+1,92,590,xbsNone,gdRightToLeft);
@@ -2770,7 +2792,7 @@ var
       begin
       AllowedOperations     := [alopUpdateEh, alopDeleteEh];
       Options               := [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgAlwaysShowSelection];
-      OptionsEh             := OptionsEh + [dghFixed3D, dghFrozen3D, dghFooter3D, dghAutoSortMarking, dghMultiSortMarking,  
+      OptionsEh             := OptionsEh + [dghFixed3D, dghFrozen3D, dghFooter3D, 
                                             dghRowHighlight, dghColumnResize, dghColumnMove, dghExtendVertLines];
       SortLocal             := true;
       OnGetCellParams       := @TERPFormDocEditor_dbgData_OnGetCellParams;
@@ -2926,41 +2948,47 @@ var
       
     DocComentsIntf_Create(Result, lkTSComments, lkDSJrnl); 
 
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actviewrefresh ,msg_erp_actviewrefresh   ,msg_erp_actviewrefresh_hint    ,SHORTCUT_DATA_REFRESH,0,170,@TERPFormDocEditor_actRefresh_OnExecute       ,nil                                    ,lkToolBar   , 72,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit      ,msg_erp_actcommit        ,msg_erp_actcommit_hint         ,SHORTCUT_DOC_COMMIT  ,0,298,@TERPFormDocEditor_actCommit_OnExecute        ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBar   , 72,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actuncommit    ,msg_erp_actuncommit      ,msg_erp_actuncommit_hint       ,SHORTCUT_DOC_UNCOMMIT,0,297,@TERPFormDocEditor_actUnCommit_OnExecute      ,@TERPFormDocEditor_actUnCommit_OnUpdate,lkToolBar   , 72,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actprintitem   ,msg_erp_actprintitem     ,msg_erp_actprintitem_hint      ,SHORTCUT_PRINT       ,0,105,@TERPFormDocEditor_actPrint_OnExecute         ,nil                                    ,lkToolBar   , 60,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actexport      ,msg_erp_actexport        ,msg_erp_actexport_hint         ,''                   ,0,  2,@TERPFormDocEditor_actExport_OnExecute        ,nil                                    ,lkToolBar   , 72,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocgotojrnl ,msg_erp_actdocgotojrnl   ,msg_erp_actdocgotojrnl_hint    ,''                   ,0,519,@TERPFormDocEditor_actDocGotoJrnl_OnExecute   ,nil                                    ,lkToolBar   , 72,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocchildlist,msg_erp_actdocchildlist  ,msg_erp_actdocchildlist_hint   ,SHORTCUT_DOC_DOCLIST ,0,466,@TERPFormDocEditor_actDocChildList_OnExecute  ,nil                                    ,lkToolBar   , 72,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccnd      ,msg_erp_actdoccnd        ,msg_erp_actdoccnd_hint         ,''                   ,0, 46,@TERPFormDocEditor_actDocCnd_OnExecute        ,nil                                    ,lkToolBar   , 80,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actobjimg      ,msg_erp_actobjimg        ,msg_erp_actobjimg_hint         ,''                   ,0,283,@TERPFormDocEditor_actObjImg_OnExecute        ,nil                                    ,lkToolBar   , 96,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocins      ,msg_erp_actdocins        ,msg_erp_actdocins_hint         ,SHORTCUT_DOC_INSERT  ,0,307,@TERPFormDocEditor_actDocIns_OnExecute        ,nil                                    ,lkToolBar   , 60,nil);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccreate   ,msg_erp_actdoccreate     ,msg_erp_actdoccreate_hint      ,SHORTCUT_DOC_CREATE  ,0,377,@TERPFormDocEditor_actDocCreate_OnExecute     ,nil                                    ,lkToolBar   , 60,nil);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actviewrefresh ,msg_erp_actviewrefresh   ,msg_erp_actviewrefresh_hint    ,SHORTCUT_DATA_REFRESH,0,170,@TERPFormDocEditor_actRefresh_OnExecute       ,nil                                    ,lkToolBar   , 72,lkMIObj);
+    CreateTMenuItem(lkMIObj,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit      ,msg_erp_actcommit        ,msg_erp_actcommit_hint         ,SHORTCUT_DOC_COMMIT  ,0,298,@TERPFormDocEditor_actCommit_OnExecute        ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBar   , 72,lkMIObj);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actuncommit    ,msg_erp_actuncommit      ,msg_erp_actuncommit_hint       ,SHORTCUT_DOC_UNCOMMIT,0,297,@TERPFormDocEditor_actUnCommit_OnExecute      ,@TERPFormDocEditor_actUnCommit_OnUpdate,lkToolBar   , 72,lkMIObj);
+    CreateTMenuItem(lkMIObj,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actprintitem   ,msg_erp_actprintitem     ,msg_erp_actprintitem_hint      ,SHORTCUT_PRINT       ,0,105,@TERPFormDocEditor_actPrint_OnExecute         ,nil                                    ,lkToolBar   , 60,lkMIPrint);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actexport      ,msg_erp_actexport        ,msg_erp_actexport_hint         ,''                   ,0,  2,@TERPFormDocEditor_actExport_OnExecute        ,nil                                    ,lkToolBar   , 72,lkMIPrint);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocgotojrnl ,msg_erp_actdocgotojrnl   ,msg_erp_actdocgotojrnl_hint    ,SHORTCUT_DOC_GOTOJRNL,0,519,@TERPFormDocEditor_actDocGotoJrnl_OnExecute   ,nil                                    ,lkToolBar   , 72,lkMIObj);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocchildlist,msg_erp_actdocchildlist  ,msg_erp_actdocchildlist_hint   ,SHORTCUT_DOC_DOCLIST ,0,466,@TERPFormDocEditor_actDocChildList_OnExecute  ,nil                                    ,lkToolBar   , 72,lkMIObj);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccnd      ,msg_erp_actdoccnd        ,msg_erp_actdoccnd_hint         ,''                   ,0, 46,@TERPFormDocEditor_actDocCnd_OnExecute        ,nil                                    ,lkToolBar   , 80,lkMIObj);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actobjimg      ,msg_erp_actobjimg        ,msg_erp_actobjimg_hint         ,''                   ,0,283,@TERPFormDocEditor_actObjImg_OnExecute        ,nil                                    ,lkToolBar   , 96,lkMIObj);
+    CreateTMenuItem(lkMIObj,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocins      ,msg_erp_actdocins        ,msg_erp_actdocins_hint         ,SHORTCUT_DOC_INSERT  ,0,307,@TERPFormDocEditor_actDocIns_OnExecute        ,nil                                    ,lkToolBar   , 96,lkMIObj);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccreate   ,msg_erp_actdoccreate     ,msg_erp_actdoccreate_hint      ,SHORTCUT_DOC_CREATE  ,0,377,@TERPFormDocEditor_actDocCreate_OnExecute     ,nil                                    ,lkToolBar   , 64,lkMIObj);
 
-    lkAct := TERPForm_CreateAction2(Result,'actCSIns'                  ,msg_doc_actcsins         ,msg_doc_actcsins_hint          ,''                   ,0,528,@TERPFormDocEditor_actCSIns_OnExecute         ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,132,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSUpd'                  ,msg_doc_actcsupd         ,msg_doc_actcsupd_hint          ,''                   ,0,524,@TERPFormDocEditor_actCSUpd_OnExecute         ,nil                                    ,lkToolBarEx ,136,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSAddrIns'              ,msg_doc_actcsaddrins     ,msg_doc_actcsaddrins_hint      ,''                   ,0,181,@TERPFormDocEditor_actCSAddrIns_OnExecute     ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,108,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSAddrUpd'              ,msg_doc_actcsaddrupd     ,msg_doc_actcsaddrupd_hint      ,''                   ,0,175,@TERPFormDocEditor_actCSAddrUpd_OnExecute     ,nil                                    ,lkToolBarEx ,108,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSAmount'               ,msg_doc_actCSAmount      ,msg_doc_actCSAmount_hint       ,''                   ,0,345,@TERPFormDocEditor_actCSAmount_OnExecute      ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx , 88,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSAmountAdd'            ,msg_doc_actCSAmountAdd   ,msg_doc_actCSAmountAdd_hint    ,''                   ,0,344,@TERPFormDocEditor_actCSAmountAdd_OnExecute   ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,108,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSAmountClear'          ,msg_doc_actCSAmountClear ,msg_doc_actCSAmountClear_hint  ,''                   ,0,345,@TERPFormDocEditor_actCSAmountClear_OnExecute ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,108,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actCSDebet'                ,msg_doc_actcsdebet       ,msg_doc_actcsdebet_hint        ,''                   ,0,347,@TERPFormDocEditor_actCSDebet_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx , 60,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actTMCIns'                 ,msg_doc_acttmcins        ,msg_doc_acttmcins_hint         ,SHORTCUT_DATA_CREATE ,0,181,@TERPFormDocEditor_actTMCIns_OnExecute        ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarTMC, 88,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actTMCEdt'                 ,msg_doc_acttmcedt        ,msg_doc_acttmcedt_hint         ,SHORTCUT_DATA_EDIT   ,0,390,@TERPFormDocEditor_actTMCEdt_OnExecute        ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarTMC,104,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actDocClone'               ,msg_doc_actdocclone      ,msg_doc_actdocclone_hint       ,SHORTCUT_DATA_COPY   ,0, 68,@TERPFormDocEditor_actDocClone_OnExecute      ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc, 88,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actDocClear'               ,msg_doc_actdocclear      ,msg_doc_actdocclear_hint       ,''                   ,0, 67,@TERPFormDocEditor_actDocClear_OnExecute      ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc, 68,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actDocShowAll'             ,msg_doc_actdocshowall    ,msg_doc_actdocshowall_hint     ,'Ctrl+A'             ,0,311,@TERPFormDocEditor_actDocShowAll_OnExecute    ,nil                                    ,lkToolBarDoc, 48,nil);
+    lkAct := TERPForm_CreateAction2(Result,'actCSIns'                  ,msg_doc_actcsins         ,msg_doc_actcsins_hint          ,''                   ,0,528,@TERPFormDocEditor_actCSIns_OnExecute         ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,132,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSUpd'                  ,msg_doc_actcsupd         ,msg_doc_actcsupd_hint          ,''                   ,0,524,@TERPFormDocEditor_actCSUpd_OnExecute         ,nil                                    ,lkToolBarEx ,136,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSAddrIns'              ,msg_doc_actcsaddrins     ,msg_doc_actcsaddrins_hint      ,''                   ,0,181,@TERPFormDocEditor_actCSAddrIns_OnExecute     ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,108,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSAddrUpd'              ,msg_doc_actcsaddrupd     ,msg_doc_actcsaddrupd_hint      ,''                   ,0,175,@TERPFormDocEditor_actCSAddrUpd_OnExecute     ,nil                                    ,lkToolBarEx ,108,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSAmount'               ,msg_doc_actCSAmount      ,msg_doc_actCSAmount_hint       ,''                   ,0,345,@TERPFormDocEditor_actCSAmount_OnExecute      ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx , 88,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSAmountAdd'            ,msg_doc_actCSAmountAdd   ,msg_doc_actCSAmountAdd_hint    ,''                   ,0,344,@TERPFormDocEditor_actCSAmountAdd_OnExecute   ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,108,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSAmountClear'          ,msg_doc_actCSAmountClear ,msg_doc_actCSAmountClear_hint  ,''                   ,0,345,@TERPFormDocEditor_actCSAmountClear_OnExecute ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,108,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actCSDebet'                ,msg_doc_actcsdebet       ,msg_doc_actcsdebet_hint        ,''                   ,0,347,@TERPFormDocEditor_actCSDebet_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx , 60,lkMIItem);
+    CreateTMenuItem(lkMIItem,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,'actTMCIns'                 ,msg_doc_acttmcins        ,msg_doc_acttmcins_hint         ,SHORTCUT_DATA_CREATE ,0,181,@TERPFormDocEditor_actTMCIns_OnExecute        ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarTMC, 88,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actTMCEdt'                 ,msg_doc_acttmcedt        ,msg_doc_acttmcedt_hint         ,SHORTCUT_DATA_EDIT   ,0,390,@TERPFormDocEditor_actTMCEdt_OnExecute        ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarTMC,104,lkMIItem);
+    CreateTMenuItem(lkMIItem,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,'actDocClone'               ,msg_doc_actdocclone      ,msg_doc_actdocclone_hint       ,SHORTCUT_DATA_COPY   ,0, 68,@TERPFormDocEditor_actDocClone_OnExecute      ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc, 88,lkMIItem);
+    CreateTMenuItem(lkMIItem,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,'actDocClear'               ,msg_doc_actdocclear      ,msg_doc_actdocclear_hint       ,''                   ,0, 67,@TERPFormDocEditor_actDocClear_OnExecute      ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc, 68,lkMIItem);
+    lkAct := TERPForm_CreateAction2(Result,'actDocShowAll'             ,msg_doc_actdocshowall    ,msg_doc_actdocshowall_hint     ,'Ctrl+A'             ,0,311,@TERPFormDocEditor_actDocShowAll_OnExecute    ,nil                                    ,lkToolBarDoc, 48,lkMIView);
     lkAct.GroupIndex := 11;
     lkAct.Checked    := True;
     lkAct.AutoCheck  := True;
-    lkAct := TERPForm_CreateAction2(Result,'actDocShowNotNull'         ,msg_doc_actdocshownotnull,msg_doc_actdocshownotnull_hint ,SHORTCUT_DATA_GROUP  ,0,458,@TERPFormDocEditor_actDocShowNotNull_OnExecute,nil                                        ,lkToolBarDoc,120,nil);
+    lkAct := TERPForm_CreateAction2(Result,'actDocShowNotNull'         ,msg_doc_actdocshownotnull,msg_doc_actdocshownotnull_hint ,SHORTCUT_DATA_GROUP  ,0,458,@TERPFormDocEditor_actDocShowNotNull_OnExecute,nil                                        ,lkToolBarDoc,120,lkMIView);
     lkAct.GroupIndex := 11;
     lkAct.AutoCheck  := True;
-    lkAct := TERPForm_CreateAction2(Result,'actDocQuantFirm'           ,msg_doc_actdocquantfirm  ,msg_doc_actdocquantfirm_hint   ,'Ctrl+Q'             ,0,598,@TERPFormDocEditor_actDocQuant_OnExecute      ,nil                                        ,lkToolBarDoc, 96,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actDocQuant'               ,msg_doc_actdocquant      ,msg_doc_actdocquant_hint       ,'Alt+Ctrl+Q'         ,0, 45,@TERPFormDocEditor_actDocQuant_OnExecute      ,nil                                        ,lkToolBarDoc, 96,nil);
-    lkAct := TERPForm_CreateAction2(Result,'actDocShowQuant'           ,msg_doc_actdocshowquant  ,msg_doc_actdocshowquant_hint   ,'Ctrl+W'             ,0, 63,@TERPFormDocEditor_actDocShowQuant_OnExecute  ,@TERPFormDocEditor_actDocShowQuant_OnUpdate,lkToolBarDoc, 80,nil);
-
+    CreateTMenuItem(lkMIView,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,'actDocQuantFirm'           ,msg_doc_actdocquantfirm  ,msg_doc_actdocquantfirm_hint   ,'Ctrl+Q'             ,0,598,@TERPFormDocEditor_actDocQuant_OnExecute      ,nil                                        ,lkToolBarDoc, 96,lkMIView);
+    lkAct := TERPForm_CreateAction2(Result,'actDocQuant'               ,msg_doc_actdocquant      ,msg_doc_actdocquant_hint       ,'Alt+Ctrl+Q'         ,0, 45,@TERPFormDocEditor_actDocQuant_OnExecute      ,nil                                        ,lkToolBarDoc, 96,lkMIView);
+    lkAct := TERPForm_CreateAction2(Result,'actDocShowQuant'           ,msg_doc_actdocshowquant  ,msg_doc_actdocshowquant_hint   ,'Ctrl+W'             ,0, 63,@TERPFormDocEditor_actDocShowQuant_OnExecute  ,@TERPFormDocEditor_actDocShowQuant_OnUpdate,lkToolBarDoc, 80,lkMIView);
     TERPFormDocEditor_RefreshView(Result);    // refresh doc
   end;
   //============================================================================
