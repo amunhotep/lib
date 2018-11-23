@@ -426,7 +426,7 @@ const
       lkWorkSheet.Range[lkRangeName].WrapText            := True;
 
       lkRangeName := MSExcel_IntToColIndex(7)+IntToStr(lkTopRow)+':'+MSExcel_IntToColIndex(7)+IntToStr(lkTopRow);
-      lkWorkSheet.Range[lkRangeName].Value               := FormatFloat('# ### ##0', lkQrDoc.FieldByName('QUANT').AsFloat);
+      lkWorkSheet.Range[lkRangeName].Value               := FormatFloat('# ### ##0.###', lkQrDoc.FieldByName('QUANT').AsFloat);
       lkWorkSheet.Range[lkRangeName].Font.Name           := 'Verdana';
       lkWorkSheet.Range[lkRangeName].Font.Size           := 7;
       lkWorkSheet.Range[lkRangeName].Font.Color          := clBlack;

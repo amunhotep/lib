@@ -1,4 +1,4 @@
-object Report4C0851261ECD17B9EBC6EE10DE7B293C: TxReport
+object Report44210958C9759D97AC8C5645A89C85E4: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -1461,8 +1461,8 @@ object Report4C0851261ECD17B9EBC6EE10DE7B293C: TxReport
       Layout = tlTop
       Lines.Strings = (
         
-          #1058#1054#1042#1040#1056#1053#1048#1049' '#1063#1045#1050' '#8470'{qrJRNL.DOCNUMBERSTR} '#1074#1110#1076' {FORMATDATETIME('#39'dd.mm.y' +
-          'yyy'#39',qrJrnl.DATE_COMMIT)}'#1088'.')
+          #1058#1054#1042#1040#1056#1053#1048#1049' '#1063#1045#1050' '#1074#1110#1076' {FORMATDATETIME('#39'dd.mm.yyyy'#39',qrJrnl.DATE_COMMIT' +
+          ')}'#1088'.')
       ParentFont = False
       WordWrap = True
       FontSize = 12
