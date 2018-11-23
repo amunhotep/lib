@@ -1,15 +1,24 @@
 {$DEFINE PEAKTOP:IDE/ERP/CONFIG2/RPTI/49CC8564-C6C0-4E88-905F-C4B7F120B0B2/DEFAULT.PS}
-{$IFNDEF PEAKTOP:IDE/ERP/DBO/RPTI/FORMRPTI.INC}         {$I PEAKTOP:IDE/ERP/DBO/RPTI/FORMRPTI.INC}         {$ENDIF}
-{$IFNDEF PEAKTOP:IDE/ERP/DBO/INPUT/DATEPERIOD/INTF.INC} {$I PEAKTOP:IDE/ERP/DBO/INPUT/DATEPERIOD/INTF.INC} {$ENDIF}
-{$IFNDEF PEAKTOP:IDE/ERP/DBO/INPUT/REF/INTF.INC}        {$I PEAKTOP:IDE/ERP/DBO/INPUT/REF/INTF.INC}        {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/RPTI/FORMRPTI.INC}            {$I PEAKTOP:IDE/ERP/DBO/RPTI/FORMRPTI.INC}            {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/INPUT/DATEPERIOD/INTF.INC}    {$I PEAKTOP:IDE/ERP/DBO/INPUT/DATEPERIOD/INTF.INC}    {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/INPUT/REF/INTF.INC}           {$I PEAKTOP:IDE/ERP/DBO/INPUT/REF/INTF.INC}           {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/INPUT/CHECKBOX/INTF.INC}      {$I PEAKTOP:IDE/ERP/DBO/INPUT/CHECKBOX/INTF.INC}      {$ENDIF}
 const
   objname_datefrom   = 'dtpDateFrom';
   objname_dateto     = 'dtpDateTo';
   objname_sort       = 'rgSort';
+  objname_firms      = 'gbFirms';
+  objname_places     = 'gbPlaces';
+  objname_checkquant = 'cbxCheckQuant';
+  objname_checkzero  = 'cbxCheckZero';
   msg_sort           = 'Сортировать прайс';
   msg_sort_ctgr      = 'По категории';
   msg_sort_brand     = 'По марке продажи';
   msg_sort_group     = 'По группе';
+  msg_input_firms    = 'Выберите фирмы учета';
+  msg_input_places   = 'Выберите места хранения';
+  msg_input_quant    = 'Показывать остатки суммарно';
+  msg_input_zero     = 'Не показывать нулевые';
   //============================================================================
   procedure TERPFormRpti_actRefEdt_OnExecute(Sender :TObject);
   begin
@@ -85,6 +94,11 @@ const
     with aQr do
       begin
       ParamByName('PQ_TMC_GROUP_ID').AsString := '1';
+      ParamByName('PQ_QUANT'       ).AsString := InputIntf_CheckBox_Checked(aOwner, objname_checkquant);
+      ParamByName('PQ_DATE_FROM'   ).AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_datefrom))+' 00:00:00';
+      ParamByName('PQ_FIRM_IDS'    ).AsString := InputIntf_Ref_GetIds(aOwner.FindComponent(objname_firms));
+      ParamByName('PQ_PLACE_IDS'   ).AsString := InputIntf_Ref_GetIds(aOwner.FindComponent(objname_places));
+      ParamByName('PQ_ZERO'        ).AsString := InputIntf_CheckBox_Checked(aOwner, objname_checkzero);
       end;  
   end;
   //============================================================================
@@ -100,10 +114,22 @@ const
     TxcPageControlEx_ActivateDefaultPage(lkPC);
   end;
   //============================================================================
+  procedure TERPFormRpti_cbxCheckQuant_OnClick(Sender :TObject);
+  begin
+    with TxcCheckBox(Sender) do
+      begin
+      TWinControl( Owner.FindComponent('gbDatePeriod'   ) ).Visible := Checked;
+      TWinControl( Owner.FindComponent(objname_firms    ) ).Visible := Checked;
+      TWinControl( Owner.FindComponent(objname_places   ) ).Visible := Checked;
+      TWinControl( Owner.FindComponent(objname_checkzero) ).Visible := Checked;
+      end;
+  end;
+  //============================================================================
   procedure TERPFormRpti_OnTerms(aOwner:TComponent;aParent:TWinControl);
   var
     lkLastTop :Integer;
     lkRG      :TxcRadioGroup;
+    lkCBX     :TxcCheckBox;
   begin
     lkLastTop := 4;
     lkRG      := TxcRadioGroup.Create(aOwner);
@@ -113,7 +139,7 @@ const
       Parent       := aParent;
       Left         := 4;
       Top          := lkLastTop;
-      Height       := 200;
+      Height       := 160;
       Width        := 360;
       StyleManager := Amunhotep.MainForm.StyleManager;
       Caption      := msg_sort;
@@ -128,7 +154,34 @@ const
         end;
       ItemIndex := 3;  
       end;
-    lkLastTop := lkRG.Height + 4;  
+    lkLastTop := lkRG.Height + 20;  
+
+    lkLastTop := lkLastTop + 4;
+    lkCBX := InputIntf_CheckBox_Create  (aOwner,aParent,objname_checkquant,msg_input_quant,4,lkLastTop, 20,360);
+    with lkCBX do
+      begin
+      lkLastTop := lkLastTop + Height;
+      Checked   := False;
+      OnClick   := @TERPFormRpti_cbxCheckQuant_OnClick;
+      end;
+    lkLastTop := lkLastTop + 24;
+    lkLastTop := lkLastTop + InputIntf_DatePeriod_Create(aOwner, aParent, 'gbDatePeriod', 'Сформировать на дату',4, lkLastTop, 44, 360,objname_datefrom,objname_dateto,StartOfTheMonth(Now),EndOfTheMonth(Now)).Height;
+    lkLastTop := lkLastTop + 4;
+    with InputIntf_CheckBox_Create  (aOwner,aParent,objname_checkzero,msg_input_zero,4,lkLastTop, 20,360) do
+      begin
+      lkLastTop := lkLastTop + Height;
+      Checked   := true;
+      end;
+
+    lkLastTop := 4;
+    lkLastTop := lkLastTop + InputIntf_Ref_Create(aOwner,aParent,objname_firms   ,msg_input_firms   ,368,lkLastTop,240,360,'TABL$R_FIRMS' ,TERPForm_Settings(aOwner).Values[ERP_SETTINGS_TABLENAME]).Height;
+    lkLastTop := lkLastTop + 4;
+    lkLastTop := lkLastTop + InputIntf_Ref_Create(aOwner,aParent,objname_places  ,msg_input_places  ,368,lkLastTop,180,360,'TABL$R_PLACES',TERPForm_Settings(aOwner).Values[ERP_SETTINGS_TABLENAME]).Height;
+    lkLastTop := lkLastTop + 4;
+
+    TDateTimePicker(aOwner.FindComponent(objname_dateto  )).Visible := false;
+    TDateTimePicker(aOwner.FindComponent(objname_datefrom)).Date    := Now + 1;
+    TERPFormRpti_cbxCheckQuant_OnClick(lkCBX);
   end;
   //============================================================================
   function TERPFormRpti_OnColumnsCreate(aOwner:TComponent; aDBG:TDBGridEh):Boolean;
