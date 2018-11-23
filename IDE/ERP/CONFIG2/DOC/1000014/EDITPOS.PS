@@ -600,9 +600,8 @@ var
       begin
       if(State = dsBrowse)then
         Edit;
-      FieldByName('CS_NAME'    ).AsString := lkStr; 
       FieldByName('CS_ADDR_ID' ).AsString := '0'; 
-      FieldByName('CS_ID_PAY'  ).AsString := FieldByName('CS_ID').AsString; 
+      FieldByName('CS_ID_PAY'  ).AsString := TDBLookupComboBoxEh(Sender).Value; 
       FieldByName('WRK_ID'     ).AsString := '0'; 
       FieldByName('TMC_GRID_ID').AsString := '0'; 
       Post;
@@ -656,8 +655,8 @@ var
     if( (lkID='') or (lkID='NULL') )then exit;
     lkWrkID  := '0';
     lkGridID := '0';
-    GetField(FBDataBase, 'VIEW$R_CS_ADDR', 'COALESCE(WRK_ID  ,0)', 'ID = '''+lkID+''' ', lkWrkID );
-    GetField(FBDataBase, 'VIEW$R_CS_ADDR', 'COALESCE(TMC_GRID,0)', 'ID = '''+lkID+''' ', lkGridID);
+    GetField(FBDataBase, 'VIEW$R_CS_ADDR', 'COALESCE(WRK_ID     ,0)', 'ID = '''+lkID+''' ', lkWrkID );
+    GetField(FBDataBase, 'VIEW$R_CS_ADDR', 'COALESCE(TMC_GRID_ID,0)', 'ID = '''+lkID+''' ', lkGridID);
     with lkDBE.DataSource.DataSet do
       begin
       if(State = dsBrowse)then
