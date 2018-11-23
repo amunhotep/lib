@@ -1,4 +1,4 @@
-object Report84C55AE0657CD2C787948D094661E375: TxReport
+object Report4C0851261ECD17B9EBC6EE10DE7B293C: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -417,7 +417,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
     object xrLabel3: TxrLabel
       Left = 60
       Top = 62
-      Width = 424
+      Width = 400
       Height = 28
       Frame.Color = clBlack
       Frame.Top = True
@@ -428,7 +428,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
         74.083333333333330000
         158.750000000000000000
         164.041666666666700000
-        1121.833333333333000000)
+        1058.333333333333000000)
       Transparent = False
       Alignment = taCenter
       AlignToBand = False
@@ -438,17 +438,17 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Color = 16773360
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
-      Font.Height = -9
+      Font.Height = -11
       Font.Name = 'Times New Roman'
       Font.Style = [fsBold]
       Indent = 0
       Layout = tlTop
       ParentFont = False
       WordWrap = True
-      FontSize = 7
+      FontSize = 8
     end
     object xrLabel5: TxrLabel
-      Left = 484
+      Left = 460
       Top = 62
       Width = 24
       Height = 28
@@ -459,7 +459,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         74.083333333333330000
-        1280.583333333333000000
+        1217.083333333333000000
         164.041666666666700000
         63.500000000000000000)
       Transparent = False
@@ -481,9 +481,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 7
     end
     object xrLabel7: TxrLabel
-      Left = 508
+      Left = 484
       Top = 62
-      Width = 112
+      Width = 128
       Height = 14
       Frame.Color = clBlack
       Frame.Top = True
@@ -492,9 +492,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         37.041666666666670000
-        1344.083333333333000000
+        1280.583333333333000000
         164.041666666666700000
-        296.333333333333300000)
+        338.666666666666700000)
       Transparent = False
       Alignment = taCenter
       AlignToBand = False
@@ -514,9 +514,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 7
     end
     object xrLabel10: TxrLabel
-      Left = 508
+      Left = 484
       Top = 76
-      Width = 64
+      Width = 72
       Height = 14
       Frame.Color = clBlack
       Frame.Top = False
@@ -525,9 +525,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         37.041666666666670000
-        1344.083333333333000000
+        1280.583333333333000000
         201.083333333333300000
-        169.333333333333300000)
+        190.500000000000000000)
       Transparent = False
       Alignment = taCenter
       AlignToBand = False
@@ -547,9 +547,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 7
     end
     object xrLabel12: TxrLabel
-      Left = 572
+      Left = 556
       Top = 76
-      Width = 48
+      Width = 56
       Height = 14
       Frame.Color = clBlack
       Frame.Top = False
@@ -558,9 +558,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         37.041666666666670000
-        1513.416666666667000000
+        1471.083333333333000000
         201.083333333333300000
-        127.000000000000000000)
+        148.166666666666700000)
       Transparent = False
       Alignment = taCenter
       AlignToBand = False
@@ -580,7 +580,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 7
     end
     object xrLabel6: TxrLabel
-      Left = 620
+      Left = 612
       Top = 62
       Width = 48
       Height = 28
@@ -591,7 +591,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         74.083333333333330000
-        1640.416666666667000000
+        1619.250000000000000000
         164.041666666666700000
         127.000000000000000000)
       Transparent = False
@@ -603,19 +603,19 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Color = 16773360
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
-      Font.Height = -9
+      Font.Height = -11
       Font.Name = 'Times New Roman'
       Font.Style = [fsBold]
       Indent = 0
       Layout = tlTop
       ParentFont = False
       WordWrap = True
-      FontSize = 7
+      FontSize = 8
     end
     object xrLabel8: TxrLabel
-      Left = 668
+      Left = 660
       Top = 62
-      Width = 64
+      Width = 72
       Height = 28
       Frame.Color = clBlack
       Frame.Top = True
@@ -624,9 +624,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         74.083333333333330000
-        1767.416666666667000000
+        1746.250000000000000000
         164.041666666666700000
-        169.333333333333300000)
+        190.500000000000000000)
       Transparent = False
       Alignment = taCenter
       AlignToBand = False
@@ -636,14 +636,14 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Color = 16773360
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
-      Font.Height = -9
+      Font.Height = -11
       Font.Name = 'Times New Roman'
       Font.Style = [fsBold]
       Indent = 0
       Layout = tlTop
       ParentFont = False
       WordWrap = True
-      FontSize = 7
+      FontSize = 8
     end
   end
   object SummaryBand1: TxrBand
@@ -704,7 +704,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
     object xrLabel11: TxrLabel
       Left = 0
       Top = 0
-      Width = 508
+      Width = 484
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -715,7 +715,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
         47.625000000000000000
         0.000000000000000000
         0.000000000000000000
-        1344.083333333333000000)
+        1280.583333333333000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -735,9 +735,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 10
     end
     object xrExpression1: TxrExpression
-      Left = 508
+      Left = 484
       Top = 0
-      Width = 64
+      Width = 72
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -746,9 +746,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1344.083333333333000000
+        1280.583333333333000000
         0.000000000000000000
-        169.333333333333300000)
+        190.500000000000000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -770,9 +770,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrExpression2: TxrExpression
-      Left = 620
+      Left = 612
       Top = 0
-      Width = 112
+      Width = 120
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -781,9 +781,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1640.416666666667000000
+        1619.250000000000000000
         0.000000000000000000
-        296.333333333333400000)
+        317.500000000000000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -840,9 +840,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrExpression14: TxrExpression
-      Left = 572
+      Left = 556
       Top = 0
-      Width = 48
+      Width = 56
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -851,9 +851,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1513.416666666667000000
+        1471.083333333333000000
         0.000000000000000000
-        127.000000000000000000)
+        148.166666666666700000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -877,7 +877,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
     object xrLabel2: TxrLabel
       Left = 0
       Top = 18
-      Width = 508
+      Width = 484
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -888,7 +888,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
         47.625000000000000000
         0.000000000000000000
         47.625000000000000000
-        1344.083333333333000000)
+        1280.583333333333000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -908,9 +908,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 10
     end
     object xrExpression9: TxrExpression
-      Left = 620
+      Left = 612
       Top = 18
-      Width = 112
+      Width = 120
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -919,9 +919,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1640.416666666667000000
+        1619.250000000000000000
         47.625000000000000000
-        296.333333333333400000)
+        317.500000000000000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -943,9 +943,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrLabel4: TxrLabel
-      Left = 508
+      Left = 484
       Top = 18
-      Width = 112
+      Width = 128
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -954,9 +954,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1344.083333333333000000
+        1280.583333333333000000
         47.625000000000000000
-        296.333333333333400000)
+        338.666666666666700000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -978,7 +978,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
     object xrLabel13: TxrLabel
       Left = 0
       Top = 36
-      Width = 508
+      Width = 484
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -989,7 +989,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
         47.625000000000000000
         0.000000000000000000
         95.250000000000000000
-        1344.083333333333000000)
+        1280.583333333333000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -1009,9 +1009,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 10
     end
     object xrLabel14: TxrLabel
-      Left = 508
+      Left = 484
       Top = 36
-      Width = 112
+      Width = 128
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -1020,9 +1020,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1344.083333333333000000
+        1280.583333333333000000
         95.250000000000000000
-        296.333333333333400000)
+        338.666666666666700000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -1042,9 +1042,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrExpression4: TxrExpression
-      Left = 620
+      Left = 612
       Top = 36
-      Width = 112
+      Width = 120
       Height = 18
       Frame.Color = clBlack
       Frame.Top = False
@@ -1053,9 +1053,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         47.625000000000000000
-        1640.416666666667000000
+        1619.250000000000000000
         95.250000000000000000
-        296.333333333333400000)
+        317.500000000000000000)
       Transparent = False
       Alignment = taRightJustify
       AlignToBand = False
@@ -1105,7 +1105,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
     object xrExpression7: TxrExpression
       Left = 60
       Top = 0
-      Width = 424
+      Width = 400
       Height = 24
       Frame.Color = clBlack
       Frame.Top = False
@@ -1116,7 +1116,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
         63.500000000000000000
         158.750000000000000000
         0.000000000000000000
-        1121.833333333333000000)
+        1058.333333333333000000)
       Transparent = True
       Alignment = taLeftJustify
       AlignToBand = False
@@ -1137,7 +1137,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 7
     end
     object xrExpression12: TxrExpression
-      Left = 484
+      Left = 460
       Top = 0
       Width = 24
       Height = 24
@@ -1148,7 +1148,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         63.500000000000000000
-        1280.583333333333000000
+        1217.083333333333000000
         0.000000000000000000
         63.500000000000000000)
       Transparent = True
@@ -1171,7 +1171,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 6
     end
     object xrExpression13: TxrExpression
-      Left = 620
+      Left = 612
       Top = 0
       Width = 48
       Height = 24
@@ -1182,7 +1182,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         63.500000000000000000
-        1640.416666666667000000
+        1619.250000000000000000
         0.000000000000000000
         127.000000000000000000)
       Transparent = True
@@ -1206,9 +1206,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 7
     end
     object xrExpression15: TxrExpression
-      Left = 668
+      Left = 660
       Top = 0
-      Width = 64
+      Width = 72
       Height = 24
       Frame.Color = clBlack
       Frame.Top = False
@@ -1217,9 +1217,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         63.500000000000000000
-        1767.416666666667000000
+        1746.250000000000000000
         0.000000000000000000
-        169.333333333333300000)
+        190.500000000000000000)
       Transparent = True
       Alignment = taRightJustify
       AlignToBand = False
@@ -1241,7 +1241,7 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrExpression17: TxrExpression
-      Left = 508
+      Left = 484
       Top = 0
       Width = 32
       Height = 24
@@ -1252,9 +1252,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = False
       Size.Values = (
         63.500000000000000000
-        1344.083333333333000000
+        1280.583333333333000000
         0.000000000000000000
-        84.666666666666680000)
+        84.666666666666670000)
       Transparent = True
       Alignment = taRightJustify
       AlignToBand = False
@@ -1343,9 +1343,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrExpression11: TxrExpression
-      Left = 572
+      Left = 556
       Top = 0
-      Width = 48
+      Width = 56
       Height = 24
       Frame.Color = clBlack
       Frame.Top = False
@@ -1354,9 +1354,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         63.500000000000000000
-        1513.416666666667000000
+        1471.083333333333000000
         0.000000000000000000
-        127.000000000000000000)
+        148.166666666666700000)
       Transparent = True
       Alignment = taRightJustify
       AlignToBand = False
@@ -1377,9 +1377,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       FontSize = 8
     end
     object xrExpression3: TxrExpression
-      Left = 540
+      Left = 516
       Top = 0
-      Width = 32
+      Width = 40
       Height = 24
       Frame.Color = clBlack
       Frame.Top = False
@@ -1388,9 +1388,9 @@ object Report84C55AE0657CD2C787948D094661E375: TxReport
       Frame.Right = True
       Size.Values = (
         63.500000000000000000
-        1428.750000000000000000
+        1365.250000000000000000
         0.000000000000000000
-        84.666666666666680000)
+        105.833333333333300000)
       Transparent = True
       Alignment = taRightJustify
       AlignToBand = False
