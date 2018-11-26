@@ -57,10 +57,9 @@ const
     if not TStdLibGit_GetGitPath(lkGit) then exit;
     if not TStdLibGit_GetUpdateURL(lkUpdateURL)then exit;
     ChDir(Amunhotep.SourcePath);
-
-    lkPath := ' pull';// "'+Amunhotep.SourcePath+'" ';
+    lkPath := ' pull';
     lkMemo.Text := lkMemo.Text +
-      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': Обновление библиотеки кода.'+#13#10+
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': обновление библиотеки кода.'+#13#10+
       #$20#$20#$20#$20+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
