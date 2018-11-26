@@ -20,7 +20,7 @@ const
     lkSL := TStringList.Create;
     lkSL.Text := Result;
     for i:=0 to lkSL.Count-1 do
-      lkSL[i] := #$20#$20#$20#$20#$20#$20#$20#$20+lkSL[i];
+      lkSL[i] := #$20#$20#$20#$20+lkSL[i];
     Result := lkSL.Text;
     lkSL.Free;  
   end;
@@ -59,8 +59,7 @@ const
     ChDir(Amunhotep.SourcePath);
     lkPath := ' pull';
     lkMemo.Text := lkMemo.Text +
-      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': обновление библиотеки кода.'+#13#10+
-      #$20#$20#$20#$20+lkGit+lkPath+#13#10+
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
