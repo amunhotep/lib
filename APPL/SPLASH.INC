@@ -25,14 +25,14 @@ const //==================== PEAKTOP:APPL/SPLASH.INC ===========================
       begin                    
       AlphaBlendValue := 232;
       AlphaBlend      := true;
-      Name        := amunhotep_splash_name;
-      ControlStyle:= ControlStyle + [csOpaque]; 
-      Color       := $00FF8000;
-      Position    := poScreenCenter;
-      Height      := 361;
-      Width       := 482;
-      BorderStyle := bsNone;
-      Visible     := false;
+      Name            := amunhotep_splash_name;
+      ControlStyle    := ControlStyle + [csOpaque]; 
+      Color           := $00FF8000;
+      Position        := poScreenCenter;
+      Height          := 361;
+      Width           := 482;
+      BorderStyle     := bsNone;
+      Visible         := false;
       end;
     lkImg     := CreateTImage(Result,Result,amunhotep_splash_image_name,alClient,0,0,360,480);
     lkGauge := TxcGauge.Create(Result);
