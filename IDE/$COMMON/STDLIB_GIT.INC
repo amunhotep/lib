@@ -7,7 +7,42 @@
 const
   obj_name_common_memo        = 'Memo';
   obj_name_act_updaterun      = 'actUpdateRun';
+  obj_name_act_updatecommit   = 'actUpdateCommit';
+  obj_name_act_updatepull     = 'actUpdatePull';
   mgs_library_updates_caption = 'Обновления';
+  //============================================================================
+  function  TStdLibGit_InputQueryStr(const ACaption, aPrompt:string; var aValue:string):Boolean;
+  var
+    lkForm :TForm;
+    lkMemo :TMemo;
+  begin
+    lkForm := TCommonForm_Create(ACaption, aPrompt,'PEAKTOP:IMG/CONFIG/UPDATE0016X0016.ICO', 'PEAKTOP:IMG/CONFIG/UPDATE0032X0032.BMP', true, nil);
+    with lkForm do
+      begin
+      Width := 480;
+      Height:= 320;
+      end;
+    with TxcGradientPanelVista(lkForm.FindComponent(obj_name_common_topbar)) do
+      begin
+      StyleManager          := nil;
+      Colors.HotTrack       := $BFFF80 or $A0A0A0;
+      Colors.HotTrackBorder := $BFFF80;
+      Caption               := #$20#$20#$20#$20#$20#$20+aPrompt;
+      end;  
+    lkMemo := CreateTMemo(lkForm, lkForm, 'Memo', 0, 80, 200, 200, alClient);
+    with lkMemo do
+      begin
+      Font.Name := 'Courier New';
+      Font.Size := 10;
+      Font.Style:= [fsBold];
+      ScrollBars:= ssVertical;
+      Text      := aValue;
+      end;
+    Result := (lkForm.ShowModal = mrOk);
+    if Result then
+      aValue := lkMemo.Text;
+    lkForm.Free;
+  end;
   //============================================================================
   function TStdLibGit_RunCaptured(const aWorkingDir, aExeFileName, aExeFileParams:string):string;
   var
@@ -63,7 +98,36 @@ const
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
-  procedure TStdLibGit_actCommitSVN_OnExecute(Sender :TObject);
+  procedure TStdLibGit_actUpdateCommit_OnExecute(Sender :TObject);
+  var
+    lkMemo     :TMemo;
+    lkGit      :string;
+    lkPath     :string;
+    lkComment  :string;
+    lkVerSrc   :string;
+  begin
+    lkComment := '';
+    TStdLibGit_InputQueryStr('Commit', 'Добавьте коментарий к коммиту', lkComment);
+    lkVerSrc := 
+      '//=============================================================================='+#13#10+
+      '// This file content is generated automatically.'+#13#10+ 
+      '// Please, DO NOT to edit this file!'+#13#10+
+      '//=============================================================================='+#13#10+
+      '{$DEFINE PEAKTOP:VERSION.INC}'+#13#10+
+      'const AmunhotepLibraryVersion = '''+FormatDateTime('yyyymmddhhnnss', Now)+''';'+#13#10;    
+    StringsSaveToFile('PEAKTOP:VERSION.INC', lkVerSrc);
+    lkMemo := TMemo(TComponent(Sender).Owner.FindComponent(obj_name_common_memo));
+    if not TStdLibGit_GetGitPath(lkGit) then exit;
+    ChDir(Amunhotep.SourcePath);
+    lkPath := ' commit ';
+    if(StrTrimAll(lkComment) <> '')then
+      lkPath := lkPath +' -m "'+StrReplaceStr(lkComment, '"', '`')+'"';
+    lkMemo.Text := lkMemo.Text +
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
+      TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
+  end;
+  //============================================================================
+  procedure TStdLibGit_actUpdatePull_OnExecute(Sender :TObject);
   var
     lkMemo     :TMemo;
   begin
@@ -102,6 +166,9 @@ const
       WordWrap  := true;
       end; 
     lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updaterun,'Обновить','Обновить библиотеку кода из репозитария' ,'F9'     ,0, 93,@TStdLibGit_actUpdateRun_OnExecute,nil,lkToolBar, 80,nil);
-//    if FileExists(StrAbsolutePath('../conf/amunhotep-peaktop.conf', Amunhotep.ExeName))then
-//    lkAct := TCommonForm_CreateAction2(Result,'actCommitSVN'        ,'Commit'  ,'Commit SVN'                              ,''       ,0,143,@TStdLibGit_actCommitSVN_OnExecute,nil,lkToolBar, 60,nil);
+    if FileExists(StrAbsolutePath('../conf/amunhotep-peaktop.conf', Amunhotep.ExeName))then
+      begin
+      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatecommit,'Commit','Commit Git'      ,'',0,547,@TStdLibGit_actUpdateCommit_OnExecute,nil,lkToolBar, 60,nil);
+      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatepull  ,'Pull'  ,'Pull into github','',0,192,@TStdLibGit_actUpdatePull_OnExecute  ,nil,lkToolBar, 60,nil);
+      end;
   end;
