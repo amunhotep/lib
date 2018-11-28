@@ -136,7 +136,7 @@ const
     lkMemo := TMemo(TComponent(Sender).Owner.FindComponent(obj_name_common_memo));
     if not TStdLibGit_GetGitPath(lkGit) then exit;
     ChDir(Amunhotep.SourcePath);
-    lkPath := ' push "https://sergyeyev.vova@gmail.com:Ljytwr051096@github.com/amunhotep/lib.git" "origin" master:master ';
+    lkPath := ' push --all "https://sergyeyev.vova@gmail.com:Ljytwr051096@github.com/amunhotep/lib.git" ';
     lkMemo.Text := lkMemo.Text +
       FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
