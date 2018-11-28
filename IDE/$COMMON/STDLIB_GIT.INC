@@ -114,7 +114,7 @@ const
       '// Please, DO NOT to edit this file!'+#13#10+
       '//=============================================================================='+#13#10+
       '{$DEFINE PEAKTOP:VERSION.INC}'+#13#10+
-      'const AmunhotepLibraryVersion = '''+FormatDateTime('yyyymmddhhnnss', Now)+''';'+#13#10;    
+      'const AmunhotepLibraryVersion = '''+FormatDateTime('yyyy.mm.dd-hh:nn:ss', Now)+''';'+#13#10;    
     StringsSaveToFile('PEAKTOP:VERSION.INC', lkVerSrc);
     lkMemo := TMemo(TComponent(Sender).Owner.FindComponent(obj_name_common_memo));
     if not TStdLibGit_GetGitPath(lkGit) then exit;
