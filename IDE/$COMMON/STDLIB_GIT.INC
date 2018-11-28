@@ -8,7 +8,7 @@ const
   obj_name_common_memo        = 'Memo';
   obj_name_act_updaterun      = 'actUpdateRun';
   obj_name_act_updatecommit   = 'actUpdateCommit';
-  obj_name_act_updatepull     = 'actUpdatePull';
+  obj_name_act_updatepush     = 'actUpdatePush';
   mgs_library_updates_caption = 'Обновления';
   //============================================================================
   function  TStdLibGit_InputQueryStr(const ACaption, aPrompt:string; var aValue:string):Boolean;
@@ -127,15 +127,19 @@ const
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
-  procedure TStdLibGit_actUpdatePull_OnExecute(Sender :TObject);
+  procedure TStdLibGit_actUpdatePush_OnExecute(Sender :TObject);
   var
     lkMemo     :TMemo;
+    lkGit      :string;
+    lkPath     :string;
   begin
-    {
     lkMemo := TMemo(TComponent(Sender).Owner.FindComponent(obj_name_common_memo));
-    lkMemo.Text := lkMemo.Text +AmunhotepStandardLibrary_CommitSVN+#13#10+#13#10;
-    TStdLibGit_actUpdateRun_OnExecute(Sender);
-    }
+    if not TStdLibGit_GetGitPath(lkGit) then exit;
+    ChDir(Amunhotep.SourcePath);
+    lkPath := ' push "https://amunhotep:ljytwr051096@github.com/amunhotep/lib.git" --progress "origin" master:master ';
+    lkMemo.Text := lkMemo.Text +
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
+      TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
   function TStdLibGit_Create(const aModalForm:Boolean):TForm;
@@ -168,7 +172,7 @@ const
     lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updaterun,'Обновить','Обновить библиотеку кода из репозитария' ,'F9'     ,0, 93,@TStdLibGit_actUpdateRun_OnExecute,nil,lkToolBar, 80,nil);
     if FileExists(StrAbsolutePath('../conf/amunhotep-peaktop.conf', Amunhotep.ExeName))then
       begin
-      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatecommit,'Commit','Commit Git'      ,'',0,547,@TStdLibGit_actUpdateCommit_OnExecute,nil,lkToolBar, 60,nil);
-      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatepull  ,'Pull'  ,'Pull into github','',0,192,@TStdLibGit_actUpdatePull_OnExecute  ,nil,lkToolBar, 60,nil);
+      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatecommit,'Commit','Commit Git'                     ,'',0,547,@TStdLibGit_actUpdateCommit_OnExecute,nil,lkToolBar, 60,nil);
+      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatepush  ,'Push'  ,'Push into "https://github.com/"','',0,192,@TStdLibGit_actUpdatePush_OnExecute  ,nil,lkToolBar, 60,nil);
       end;
   end;
