@@ -1,0 +1,89 @@
+﻿{"MESSAGES":[
+   { 
+      "NAME"    :"MSG_CAPTION"
+     ,"CAPTION" :[
+        {
+           "TEXT"    :"Настройки документов"
+          ,"LANGUAGE":"1000054"
+        }
+       ,{
+           "TEXT"    :"Settings of Documents"
+          ,"LANGUAGE":"1000056"
+        }
+       ,{
+           "TEXT"    :"Paramètres de documents"
+          ,"LANGUAGE":"1000204"
+        }
+       ,{
+           "TEXT"    :"Einstellungen von Dokumenten"
+          ,"LANGUAGE":"1000123"
+        }
+       ,{
+           "TEXT"    :"Налаштування документів"
+          ,"LANGUAGE":"1000071"
+        }
+       ,{
+           "TEXT"    :"Налады дакументаў"
+          ,"LANGUAGE":"1000008"
+        }
+      ]
+   }
+  ,{ 
+      "NAME"    :"MSG_TSSETTINGS_CAPTION"
+     ,"CAPTION" :[
+        {
+           "TEXT"    :"Настройки"
+          ,"LANGUAGE":"1000054"
+        }
+       ,{
+           "TEXT"    :"Settings"
+          ,"LANGUAGE":"1000056"
+        }
+       ,{
+           "TEXT"    :"Paramètres"
+          ,"LANGUAGE":"1000204"
+        }
+       ,{
+           "TEXT"    :"Einstellungen"
+          ,"LANGUAGE":"1000123"
+        }
+       ,{
+           "TEXT"    :"Налаштування"
+          ,"LANGUAGE":"1000071"
+        }
+       ,{
+           "TEXT"    :"Налады"
+          ,"LANGUAGE":"1000008"
+        }
+      ]
+   }
+  ,{ 
+      "NAME"    :"MSG_TSSENUMS_CAPTION"
+     ,"CAPTION" :[
+        {
+           "TEXT"    :"Нумераторы"
+          ,"LANGUAGE":"1000054"
+        }
+       ,{
+           "TEXT"    :"Numerators"
+          ,"LANGUAGE":"1000056"
+        }
+       ,{
+           "TEXT"    :"Numerateurs"
+          ,"LANGUAGE":"1000204"
+        }
+       ,{
+           "TEXT"    :"Zähler"
+          ,"LANGUAGE":"1000123"
+        }
+       ,{
+           "TEXT"    :"Нумератори"
+          ,"LANGUAGE":"1000071"
+        }
+       ,{
+           "TEXT"    :"Налады"
+          ,"LANGUAGE":"1000008"
+        }
+      ]
+   }
+]}
