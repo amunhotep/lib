@@ -119,13 +119,12 @@ const
   //============================================================================
   function ERP_DocEnum_Create():TAmunhotepForm;
   var
-    lkFileName    :string;
-    lkStrAccss    :string;
-    lkTr          :TxFBTransaction;
-    lkDTS         :TxFBDataSet;
-    lkDS          :TDataSource;
-    lkFBTree      :TxFBTreeView;
-    lkSplt        :TSplitter;
+    lkStrAccss     :string;
+    lkTr           :TxFBTransaction;
+    lkDTS          :TxFBDataSet;
+    lkDS           :TDataSource;
+    lkFBTree       :TxFBTreeView;
+    lkSplt         :TSplitter;
     lkPC           :TxcPageControlEx;
     lkPanelTopBar  :TxcGradientPanelVista;
     lkPanelDemoDoc :TxcStdPanel;
@@ -177,7 +176,7 @@ const
         FieldStateId  := 'ID';
         FieldName     := 'NAME2';
         RootParentId  := '0';
-        Where         := 'ROOT_ID = 4';
+        Where         := '(ROOT_ID = 4)';
         OrderBy       := 'NAME2';
         end;
       ShowOnlyRoots    := false;
@@ -202,7 +201,7 @@ const
       Color  := Amunhotep.MainForm.StyleManager.Colors.Foreground;
       end;
     lkPC := CreateTxcPageControlEx(Result, Result, obj_name_erp_pagecontrol, 0, 48, 200,200,alClient);
-    with CreateTxcTabSheet(lkPC,'tsSett',msg_tssett_caption, 40,ERP_ObjectColor(ERP_OBJECTTYPE_OPER)) do
+    with CreateTxcTabSheet(lkPC,'tsSett',msg_tssett_caption, 53,ERP_ObjectColor(ERP_OBJECTTYPE_OPER)) do
       begin
       end;
     with CreateTxcTabSheet(lkPC,'tsEnum',msg_tsenum_caption,379,ERP_ObjectColor(ERP_OBJECTTYPE_DOC)) do
