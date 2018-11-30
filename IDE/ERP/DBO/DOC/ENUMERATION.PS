@@ -1,4 +1,5 @@
 {$DEFINE PEAKTOP:IDE/ERP/DBO/DOC/ENUMERATION.PS}
+{$IFNDEF PEAKTOP:APPL/LOCAL/FILE.INC}                         {$I PEAKTOP:APPL/LOCAL/FILE.INC}             {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TIMAGELIST.INC}                          {$I PEAKTOP:OBJ/TIMAGELIST.INC}              {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TCOLUMNEH.INC}                           {$I PEAKTOP:OBJ/TCOLUMNEH.INC}               {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TDBGRIDEH.INC}                           {$I PEAKTOP:OBJ/TDBGRIDEH.INC}               {$ENDIF}
@@ -24,11 +25,6 @@ const
                           #$20+'Sample of the Document string in the Journal'+#13#10+
                           #$20+'Ўзор адлюстравання радкі дакумента ў Часопісе'+#13#10+
                           #$20+'Зразок відображення рядка документу в Журналі'+#13#10;
-  msg_tssett_caption    = 'Настройки';
-  msg_tsenum_caption    = 'Нумераторы'; 
-  msg_display_caption   = 'Настройки визуального отображения документов в Журналах';                       
-  msg_enum_caption      = 'Настройки нумераторов документов';                       
-                            
   //============================================================================
   procedure ERP_DocEnum_CloseDataSets(aOwner :TComponent);
   begin
@@ -119,6 +115,7 @@ const
   //============================================================================
   function ERP_DocEnum_Create():TAmunhotepForm;
   var
+    lkLocal        :TStringList;
     lkStrAccss     :string;
     lkTr           :TxFBTransaction;
     lkDTS          :TxFBDataSet;
@@ -135,12 +132,16 @@ const
     lkCol          :TColumnEh;
   begin
     GetField(FBDataBase, 'PROC$_USERS_ACCS('''+ERP_GLOBALVARIABLE_USER_CURRENT+''')', 'ROLES_LIST', '', lkStrAccss);
-    Result := TAmunhotepForm(TERPForm_Create('Свойства документов',  ERP_FILENAME_ICO_DOC, ERP_FILENAME_BMP_DOC, false, @ERP_DocEnum_OnClose));
+    Result := TAmunhotepForm(TERPForm_Create('', ERP_FILENAME_ICO_DOC, ERP_FILENAME_BMP_DOC, false, @ERP_DocEnum_OnClose));
+    lkLocal := TERPForm_Local(Result); 
+    AmunhotepLocalStringsLoad(lkLocal, '1000054', ChangeFileExt(ScriptName, '.JSON') );           
     with Result do
       begin
+      Caption := AmunhotepLocalString(lkLocal, 'MSG_CAPTION', 'Свойства документов');
       end; 
     with TxcGradientPanelVista(Result.FindComponent(obj_name_erp_topbar)) do
       begin
+      Caption               := #$20#$20#$20#$20#$20#$20+AmunhotepLocalString(lkLocal, 'MSG_CAPTION', 'Свойства документов');
       StyleManager          := nil;
       Colors.HotTrack       := ERP_ObjectColorLight(ERP_OBJECTTYPE_DOC);
       Colors.HotTrackBorder := ERP_ObjectColor(ERP_OBJECTTYPE_DOC);
@@ -201,15 +202,16 @@ const
       Color  := Amunhotep.MainForm.StyleManager.Colors.Foreground;
       end;
     lkPC := CreateTxcPageControlEx(Result, Result, obj_name_erp_pagecontrol, 0, 48, 200,200,alClient);
-    with CreateTxcTabSheet(lkPC,'tsSett',msg_tssett_caption, 53,ERP_ObjectColor(ERP_OBJECTTYPE_OPER)) do
+    with CreateTxcTabSheet(lkPC,'tsSett',AmunhotepLocalString(lkLocal, 'MSG_TSSETTINGS_CAPTION', 'Настройки'), 53,ERP_ObjectColor(ERP_OBJECTTYPE_OPER)) do
       begin
       end;
-    with CreateTxcTabSheet(lkPC,'tsEnum',msg_tsenum_caption,379,ERP_ObjectColor(ERP_OBJECTTYPE_DOC)) do
+    with CreateTxcTabSheet(lkPC,'tsEnum',AmunhotepLocalString(lkLocal, 'MSG_TSENUMS_CAPTION', 'Нумераторы'),379,ERP_ObjectColor(ERP_OBJECTTYPE_DOC)) do
       begin
       end;
     TxcPageControlEx_ActivateDefaultPage(lkPC);  
     
-    lkPanelTopBar := CreateTxcGradientPanelVista(lkPC.Pages[0], lkPC.Pages[0], obj_name_erp_topbar,#$20#$20+msg_display_caption,alTop, 0,0,20,800,xbsRaized);
+    lkPanelTopBar := CreateTxcGradientPanelVista(lkPC.Pages[0], lkPC.Pages[0], obj_name_erp_topbar,#$20#$20+
+      AmunhotepLocalString(lkLocal, 'MSG_HDR_DISPLAY_CAPTION', 'Настройки визуального отображения документов в Журналах'),alTop, 0,0,20,800,xbsRaized);
     with lkPanelTopBar do
       begin
       Font.Size             := 10;
@@ -217,17 +219,14 @@ const
       Colors.HotTrack       := ERP_ObjectColorLight(ERP_OBJECTTYPE_DOC);
       Colors.HotTrackBorder := ERP_ObjectColor(ERP_OBJECTTYPE_DOC);
       end;  
-    lkPanelDemoDoc := CreateTxcStdPanel(lkDTS,lkPC.Pages[0],obj_name_erp_paneltop,'',alTop,1,lkPanelTopBar.Top+lkPanelTopBar.Height+1,72,800,xbsNone);
+    lkPanelDemoDoc := CreateTxcStdPanel(lkDTS,lkPC.Pages[0],obj_name_erp_paneltop,'',alTop,1,lkPanelTopBar.Top+lkPanelTopBar.Height+1,32,800,xbsNone);
     with lkPanelDemoDoc do
       begin
-      Font.Size  := 10;
+      Font.Size  := 12;
       Font.Style := [fsBold];
       end;
-    lkLBL     := CreateTLabel(lkPanelDemoDoc,lkPanelDemoDoc, msg_document_demo_str, 0, 0, lkPanelDemoDoc.Height, lkPanelDemoDoc.Width, alClient, taLeftJustify);
-    with lkLBL do
-      begin
-      Layout      := taTop;
-      end;
+    lkLBL := CreateTLabel(lkPanelDemoDoc,lkPanelDemoDoc, #$20#$20+AmunhotepLocalString(lkLocal, 'MSG_DOCUMENT_DEMOSTR', 'Пример изображения строки документа в Журнале'), 
+                  0, 0, lkPanelDemoDoc.Height, lkPanelDemoDoc.Width, alClient, taLeftJustify);
     lkToolBar := CreateTxcGradientPanelVistaToolBar(lkPC.Pages[0],lkPC.Pages[0],obj_name_erp_toolbar,'',alTop, 0,lkPanelDemoDoc.Top+lkPanelDemoDoc.Height+1,TERPForm_DefaultToolButtonWidth+2, 200,xbsRaized);
       lkTBB := CreateTxcToolBarButton(lkDTS, lkToolBar,'tbbColorFrg','Изменить цвет шрифта', 'Изменить цвет шрифта',4,lkLBL.Top+lkLBL.Height+1,20,140, alLeft, 123, nil);
       with lkTBB do
@@ -244,7 +243,8 @@ const
         OnClick     := @ERP_DocEnum_tbbColorBgr_OnClick;
         end;
     
-    lkPanelTopBar := CreateTxcGradientPanelVista(lkPC.Pages[1], lkPC.Pages[1], obj_name_erp_topbar,#$20#$20+msg_enum_caption,alTop, 0,0,20,800,xbsRaized);
+    lkPanelTopBar := CreateTxcGradientPanelVista(lkPC.Pages[1], lkPC.Pages[1], obj_name_erp_topbar,
+                        #$20#$20+AmunhotepLocalString(lkLocal, 'MSG_HDR_ENUM_CAPTION', 'Настройки нумераторов документов'),alTop, 0,0,20,800,xbsRaized);
     with lkPanelTopBar do
       begin
       Font.Size             := 10;

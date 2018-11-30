@@ -5,4 +5,5 @@ const
   AmunhotepLocalizeParamName    = 'NAME';
   AmunhotepLocalizeParamCaption = 'CAPTION';
   AmunhotepLocalizeParamLang    = 'LANG';
-  AmunhotepLocalizeParamValue   = 'TXT';  
+  AmunhotepLocalizeParamValue   = 'TXT';
+  AmunhotepLocalizeParamDefault = '1000054';  

@@ -15,7 +15,7 @@
      ,{"LANG":"1000071","TXT":"Налаштування"}
      ,{"LANG":"1000008","TXT":"Налады"}
    ]}
-  ,{"NAME":"MSG_TSSENUMS_CAPTION","CAPTION":[
+  ,{"NAME":"MSG_TSENUMS_CAPTION","CAPTION":[
       {"LANG":"1000054","TXT":"Нумераторы"}
      ,{"LANG":"1000056","TXT":"Numerators"}
      ,{"LANG":"1000204","TXT":"Numerateurs"}

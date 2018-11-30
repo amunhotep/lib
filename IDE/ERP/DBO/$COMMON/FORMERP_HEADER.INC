@@ -33,6 +33,18 @@
       end;
   end;
   //============================================================================
+  function TERPForm_Local(aOwner:TComponent):TStringList;
+  begin
+    with TxsStringsHolder(aOwner.FindComponent(obj_name_erp_data_settings)) do
+      begin
+      while(Items.Count < 2)do
+        Items.Add;
+      Result := TStringList(Items[1].Strings);
+      Result.Duplicates := dupIgnore;
+      Result.Sorted     := True;
+      end;
+  end;
+  //============================================================================
   function TERPForm_SQL(aOwner:TComponent):TStrings;
   begin
     with TxsStringsHolder(aOwner.FindComponent(obj_name_erp_data_settings)) do
