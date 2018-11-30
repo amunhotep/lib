@@ -1,17 +1,20 @@
 {$DEFINE PEAKTOP:IDE/$COMMON/STDLIB_GIT.INC}
+{$IFNDEF PEAKTOP:APPL/LOCAL/FILE.INC}                   {$I PEAKTOP:APPL/LOCAL/FILE.INC}               {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TMEMO.INC}                         {$I PEAKTOP:OBJ/TMEMO.INC}                     {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TLABEL.INC}                        {$I PEAKTOP:OBJ/TLABEL.INC}                    {$ENDIF}
 {$IFNDEF PEAKTOP:APPL/CONSOLE/CAPTURED_WINDOWS.INC}     {$I PEAKTOP:APPL/CONSOLE/CAPTURED_WINDOWS.INC} {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}            {$I PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}        {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC}             {$I PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC}         {$ENDIF}
   //================== PEAKTOP:IDE/$COMMON/STDLIB_GIT.INC ======================
 const
   obj_name_common_memo        = 'Memo';
   obj_name_act_updaterun      = 'actUpdateRun';
   obj_name_act_updatecommit   = 'actUpdateCommit';
   obj_name_act_updatepush     = 'actUpdatePush';
-  mgs_library_updates_caption = 'Обновления';
+var
+  TStdLibGit_Local :TStringList;  
   //============================================================================
-  function  TStdLibGit_InputQueryStr(const ACaption, aPrompt:string; var aValue:string):Boolean;
+  function TStdLibGit_InputQueryStr(const ACaption, aPrompt:string; var aValue:string):Boolean;
   var
     lkForm :TForm;
     lkMemo :TMemo;
@@ -142,14 +145,26 @@ const
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
+  procedure TStdLibGit_OnClose(Sender :TObject; var Action :TcloseAction);
+  begin
+    Action := caFree;
+    if(TStdLibGit_Local <> nil)then
+      TStdLibGit_Local.Free;
+  end;
+  //============================================================================
   function TStdLibGit_Create(const aModalForm:Boolean):TForm;
   var
     lkMemo   :TMemo;
     lkToolBar:TxcGradientPanelVista;
     lkAct    :TCustomAction;
   begin
-    Result := TCommonForm_Create(mgs_library_updates_caption, mgs_library_updates_caption,'PEAKTOP:IMG/CONFIG/UPDATE0016X0016.ICO',
-      'PEAKTOP:IMG/CONFIG/UPDATE0032X0032.BMP', aModalForm, @TCommonForm_OnClose);
+    TStdLibGit_Local := TStringList.Create;  
+    TStdLibGit_Local.Duplicates := dupIgnore;
+    TStdLibGit_Local.Sorted     := True;
+    AmunhotepLocalStringsLoad(TStdLibGit_Local, '1000054', 'PEAKTOP:IDE/$COMMON/STDLIB_GIT.JSON' );  
+    
+    Result := TCommonForm_Create(AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'), 
+      AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'),'PEAKTOP:IMG/CONFIG/UPDATE0016X0016.ICO', 'PEAKTOP:IMG/CONFIG/UPDATE0032X0032.BMP', aModalForm, @TCommonForm_OnClose);
     with TxcGradientPanelVista(Result.FindComponent(obj_name_common_topbar)) do
       begin
       StyleManager          := nil;
@@ -161,18 +176,22 @@ const
     with lkMemo do
       begin
       Color     := Amunhotep.MainForm.StyleManager.Colors.Border;
-      Font.Color:= Amunhotep.MainForm.StyleManager.Colors.Window;
       Text      := '';
       Font.Size := 8;
       Font.Name := 'Fixedsys';
       Font.Style:= [];
+      Font.Color:= TxcGradientPanelVista(Result.FindComponent(obj_name_common_topbar)).Colors.HotTrackBorder;
       ScrollBars:= ssBoth;
       WordWrap  := true;
+      ReadOnly  := True;
       end; 
-    lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updaterun,'Обновить','Обновить библиотеку кода из репозитария' ,'F9'     ,0, 93,@TStdLibGit_actUpdateRun_OnExecute,nil,lkToolBar, 80,nil);
+    lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updaterun, AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTUPDATE_CAPTION', 'Обновить'),
+      AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTUPDATE_HINT', 'Обновить библиотеку кода из репозитария'),SHORTCUT_DATA_REFRESH,0,192,@TStdLibGit_actUpdateRun_OnExecute,nil,lkToolBar,96,nil);
     if FileExists(StrAbsolutePath('../conf/amunhotep-peaktop.conf', Amunhotep.ExeName))then
       begin
-      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatecommit,'Commit','Commit Git'                     ,'',0,547,@TStdLibGit_actUpdateCommit_OnExecute,nil,lkToolBar, 60,nil);
-      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatepush  ,'Push'  ,'Push into "https://github.com/"','',0,192,@TStdLibGit_actUpdatePush_OnExecute  ,nil,lkToolBar, 60,nil);
+      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatecommit,AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTCOMMIT_CAPTION', 'Commit'),
+      AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTCOMMIT_HINT', 'Commit Changes of Source Code'),SHORTCUT_DOC_COMMIT,0,547,@TStdLibGit_actUpdateCommit_OnExecute,nil,lkToolBar, 96,nil);
+      lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatepush  ,AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTPUSH_CAPTION', 'Push'),
+      AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTPUSH_HINT', 'Push Source Code into Repository'),SHORTCUT_DATA_POST,0,436,@TStdLibGit_actUpdatePush_OnExecute  ,nil,lkToolBar, 96,nil);
       end;
   end;
