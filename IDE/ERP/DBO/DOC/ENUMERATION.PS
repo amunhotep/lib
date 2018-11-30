@@ -289,6 +289,7 @@ const
       lkCol.ReadOnly := not( (Pos('~1000000~', lkStrAccss) > 0) or (GetGlobalVariable(ERP_GLOBALVARIABLE_USER_CURRENT) = 'PEAKTOP') );
     lkDBG.FrozenCols := 2;   
     //ERP_DBGridEh_StdActions_Create(lkDBG, [erpGrid,erpGridNavigation, erpGridExport], lkToolBar, nil);
+    {
     lkLBL := CreateTLabel(lkDBG.Parent,lkDBG.Parent,'', 0, lkDBG.Top+lkDBG.Height+1, 120, 800, alBottom, taLeftJustify);
     with lkLBL do
       begin
@@ -298,9 +299,9 @@ const
       Font.Color  := Amunhotep.MainForm.StyleManager.Colors.Border;
       Font.Size   := 8;
       Font.Style  := [fsBold];
-      Caption     := StringsLoadFromFile(StrAbsolutePath('./ENUMERATION_HELP.TXT', ScriptName));
+      Caption     := AmunhotepLocalString(lkLocal, 'MSG_ENUM_HELP_WARNING', 'Свойства документов');
       end;
-
+    }
     ERP_DocEnum_FBTreeView_OnClick(lkFBTree);
   end;
 
