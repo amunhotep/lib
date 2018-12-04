@@ -1,4 +1,5 @@
 {$DEFINE PEAKTOP:IDE/$COMMON/STDLIB_GIT.INC}
+{$IFNDEF PEAKTOP:APPL/LOCAL/VARIABLE.INC}               {$I PEAKTOP:APPL/LOCAL/VARIABLE.INC}           {$ENDIF}
 {$IFNDEF PEAKTOP:APPL/LOCAL/FILE.INC}                   {$I PEAKTOP:APPL/LOCAL/FILE.INC}               {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TMEMO.INC}                         {$I PEAKTOP:OBJ/TMEMO.INC}                     {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TLABEL.INC}                        {$I PEAKTOP:OBJ/TLABEL.INC}                    {$ENDIF}
@@ -158,9 +159,12 @@ var
     lkToolBar:TxcGradientPanelVista;
     lkAct    :TCustomAction;
   begin
-    TStdLibGit_Local := TStringList.Create;  
-    TStdLibGit_Local.Duplicates := dupIgnore;
-    TStdLibGit_Local.Sorted     := True;
+    if(TStdLibGit_Local = nil)then
+      begin
+      TStdLibGit_Local            := TStringList.Create;  
+      TStdLibGit_Local.Duplicates := dupIgnore;
+      TStdLibGit_Local.Sorted     := True;
+      end;
     AmunhotepLocalStringsLoad(TStdLibGit_Local, '1000054', 'PEAKTOP:IDE/$COMMON/STDLIB_GIT.JSON' );  
     
     Result := TCommonForm_Create(AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'), 
