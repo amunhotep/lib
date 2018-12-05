@@ -35,6 +35,35 @@ var
     lkSL.Free;  
   end;
   //============================================================================
+  function  TStdLibGit_GetVersion:string;
+  var
+    lkSL :TStringList;
+    lkStr:string;
+    i    :Integer;
+  begin
+    Result := '';
+    lkSL := TStringList.Create;
+    try
+      lkSL.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:VERSION.INC'));
+      for i:=0 to lkSL.Count-1 do
+        if( Pos('AmunhotepLibraryVersion', lkSL[i]) > 0 )then
+          begin
+          Result := lkSL[i];
+          break;
+          end;
+      Delete(Result, 1, Pos('=', Result) );
+      i := Length(Result);
+      while(i > 0)do
+        begin
+        if(not(Pos(Result[i], '0123456789:.-') > 0))then 
+          Delete(Result, i, 1);
+        i := i -1;
+        end;    
+    finally  
+      lkSL.Free;
+    end;
+  end;
+  //============================================================================
   function TStdLibGit_CommitFileName:string;
   begin
     Result := StrAbsolutePath( '../conf/peaktop-git.conf', Amunhotep.ExeName );
@@ -97,8 +126,9 @@ var
     ChDir(Amunhotep.SourcePath);
     lkPath := ' pull';
     lkMemo.Text := lkMemo.Text +
-      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+':>>'+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
+    TCommonForm_SetCaption(TComponent(Sender).Owner, AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления') + ' ['+TStdLibGit_GetVersion+']' );  
   end;
   //============================================================================
   procedure TStdLibGit_actUpdateCommit_OnExecute(Sender :TObject);
@@ -137,13 +167,14 @@ var
     lkMemo.Text := lkMemo.Text +
       FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+':>>'+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
+    TCommonForm_SetCaption(TComponent(Sender).Owner, AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления') + ' ['+TStdLibGit_GetVersion+']' );  
   end;
   //============================================================================
   procedure TStdLibGit_actUpdatePush_OnExecute(Sender :TObject);
   var
-    lkMemo     :TMemo;
-    lkGit      :string;
-    lkPath     :string;
+    lkMemo        :TMemo;
+    lkGit         :string;
+    lkPath        :string;
     lkGitUser     :string;
     lkGitEMail    :string; 
     lkGitPassword :string;
@@ -160,6 +191,7 @@ var
     lkMemo.Text := lkMemo.Text +
       FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+':>>'+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
+    TCommonForm_SetCaption(TComponent(Sender).Owner, AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления') + ' ['+TStdLibGit_GetVersion+']' );  
   end;
   //============================================================================
   procedure TStdLibGit_OnClose(Sender :TObject; var Action :TcloseAction);
@@ -171,6 +203,7 @@ var
   //============================================================================
   function TStdLibGit_Create(const aModalForm:Boolean):TForm;
   var
+    lkCaption:string;
     lkMemo   :TMemo;
     lkToolBar:TxcGradientPanelVista;
     lkAct    :TCustomAction;
@@ -182,9 +215,8 @@ var
       TStdLibGit_Local.Sorted     := True;
       end;
     AmunhotepLocalStringsLoad(TStdLibGit_Local, AmunhotepLocalGet, 'PEAKTOP:IDE/$COMMON/STDLIB_GIT.JSON' );  
-    
-    Result := TCommonForm_Create(AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'), 
-      AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'),STDLIBGIT_ICON, STDLIBGIT_BITMAP, aModalForm, @TCommonForm_OnClose);
+    lkCaption := AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления') + ' ['+TStdLibGit_GetVersion+']';
+    Result    := TCommonForm_Create(lkCaption, lkCaption, STDLIBGIT_ICON, STDLIBGIT_BITMAP, aModalForm, @TCommonForm_OnClose);
     TCommonForm_SetTopBarColor( Result, $BFFF80 );
     lkToolBar := CreateTxcGradientPanelVistaToolBar(Result, Result, 'ToolBar', '', alTop, 0,200,24,600, xbsRaized);  
     lkMemo := CreateTMemo(Result, Result, obj_name_common_memo, 0, 200, 200, 200, alClient);
