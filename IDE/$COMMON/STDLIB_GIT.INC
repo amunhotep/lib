@@ -5,6 +5,7 @@
 {$IFNDEF PEAKTOP:OBJ/TLABEL.INC}                        {$I PEAKTOP:OBJ/TLABEL.INC}                    {$ENDIF}
 {$IFNDEF PEAKTOP:APPL/CONSOLE/CAPTURED_WINDOWS.INC}     {$I PEAKTOP:APPL/CONSOLE/CAPTURED_WINDOWS.INC} {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}            {$I PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}        {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/$COMMON/DLG_MEMO.INC}              {$I PEAKTOP:IDE/$COMMON/DLG_MEMO.INC}          {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC}             {$I PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC}         {$ENDIF}
   //================== PEAKTOP:IDE/$COMMON/STDLIB_GIT.INC ======================
 const
@@ -14,39 +15,6 @@ const
   obj_name_act_updatepush     = 'actUpdatePush';
 var
   TStdLibGit_Local :TStringList;  
-  //============================================================================
-  function TStdLibGit_InputQueryStr(const ACaption, aPrompt:string; var aValue:string):Boolean;
-  var
-    lkForm :TForm;
-    lkMemo :TMemo;
-  begin
-    lkForm := TCommonForm_Create(ACaption, aPrompt,'PEAKTOP:IMG/CONFIG/UPDATE0016X0016.ICO', 'PEAKTOP:IMG/CONFIG/UPDATE0032X0032.BMP', true, nil);
-    with lkForm do
-      begin
-      Width := 480;
-      Height:= 320;
-      end;
-    with TxcGradientPanelVista(lkForm.FindComponent(obj_name_common_topbar)) do
-      begin
-      StyleManager          := nil;
-      Colors.HotTrack       := $BFFF80 or $A0A0A0;
-      Colors.HotTrackBorder := $BFFF80;
-      Caption               := #$20#$20#$20#$20#$20#$20+aPrompt;
-      end;  
-    lkMemo := CreateTMemo(lkForm, lkForm, 'Memo', 0, 80, 200, 200, alClient);
-    with lkMemo do
-      begin
-      Font.Name := 'Courier New';
-      Font.Size := 10;
-      Font.Style:= [fsBold];
-      ScrollBars:= ssVertical;
-      Text      := aValue;
-      end;
-    Result := (lkForm.ShowModal = mrOk);
-    if Result then
-      aValue := lkMemo.Text;
-    lkForm.Free;
-  end;
   //============================================================================
   function TStdLibGit_RunCaptured(const aWorkingDir, aExeFileName, aExeFileParams:string):string;
   var
@@ -111,7 +79,8 @@ var
     lkVerSrc   :string;
   begin
     lkComment := '';
-    TStdLibGit_InputQueryStr('Commit', 'Добавьте коментарий к коммиту', lkComment);
+    if not TDlgMemo_Execute('Commit', 'Добавьте коментарий к коммиту', 'PEAKTOP:IMG/CONFIG/UPDATE0016X0016.ICO', 'PEAKTOP:IMG/CONFIG/UPDATE0032X0032.BMP', lkComment)then
+      exit;
     lkVerSrc := 
       '//=============================================================================='+#13#10+
       '// This file content is generated automatically.'+#13#10+ 
