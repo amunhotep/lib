@@ -1,4 +1,6 @@
 {$DEFINE PEAKTOP:IDE/$COMMON/DLG.INC}
+{$IFNDEF PEAKTOP:APPL/LOCAL/VARIABLE.INC}                {$I PEAKTOP:APPL/LOCAL/VARIABLE.INC}           {$ENDIF}
+{$IFNDEF PEAKTOP:APPL/LOCAL/FILE.INC}                    {$I PEAKTOP:APPL/LOCAL/FILE.INC}               {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC}              {$I PEAKTOP:IDE/ERP/DBO/SHORTCUTS.INC}         {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TXCGRADIENTPANELVISTA.INC}          {$I PEAKTOP:OBJ/TXCGRADIENTPANELVISTA.INC}     {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}             {$I PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}        {$ENDIF}
@@ -13,12 +15,10 @@
       Width  := aWidth;
       Height := aHeight;
       end;
+    TCommonForm_SetTopBarColor( Result, aColor );
     with TxcGradientPanelVista( Result.FindComponent(obj_name_common_topbar) ) do
       begin
-      StyleManager          := nil;
-      Colors.HotTrack       := aColor or $A0A0A0;
-      Colors.HotTrackBorder := aColor;
-      Caption               := #$20#$20#$20#$20#$20#$20+aPrompt;
+      Caption := #$20#$20#$20#$20#$20#$20+aPrompt;
       end;  
   end;
   

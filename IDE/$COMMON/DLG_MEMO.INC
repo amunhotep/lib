@@ -4,10 +4,12 @@
   //========================= PEAKTOP:IDE/$COMMON/DLG_MEMO.INC =================
   function TDlgMemo_Create(const aCaption, aPrompt, aIconFileName, aImageFileName, aValue:string):TForm;
   var
-    lkMemo :TMemo;
+    lkToolBar :TxcGradientPanelVista;
+    lkMemo    :TMemo;
   begin
-    Result := TDlg_Create(aCaption, aPrompt, aIconFileName, aImageFileName, $BFFF80, 600, 400);
-    lkMemo := CreateTMemo(Result, Result, 'Editor', 0, 80, 200, 200, alClient);
+    Result    := TDlg_Create(aCaption, aPrompt, aIconFileName, aImageFileName, $BFFF80, 600, 400);
+    lkToolBar := CreateTxcGradientPanelVistaToolBar(Result, Result, 'ToolBar', '', alTop, 0, 80, 24, 600, xbsRaized);
+    lkMemo    := CreateTMemo(Result, Result, 'Editor', 0, 100, 200, 200, alClient);
     with lkMemo do
       begin
       Font.Name := 'Courier New';

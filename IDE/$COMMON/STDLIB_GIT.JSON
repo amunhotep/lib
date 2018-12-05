@@ -39,6 +39,14 @@
      ,{"LANG":"1000071","TXT":"Фіксувати зміни коду"}
      ,{"LANG":"1000008","TXT":"Фіксаваць змены кода"}
    ]}
+  ,{"NAME":"MSG_ACTCOMMIT_PROMPT","CAPTION":[
+      {"LANG":"1000054","TXT":"Добавьте коментарий"}
+     ,{"LANG":"1000056","TXT":"Please, Add a Comment"}
+     ,{"LANG":"1000204","TXT":"S'il vous plaît, ajoutez un commentaire"}
+     ,{"LANG":"1000123","TXT":"Bitte fügen Sie einen Kommentar hinzu"}
+     ,{"LANG":"1000071","TXT":"Додайте коментар"}
+     ,{"LANG":"1000008","TXT":"Дадайце каментар"}
+   ]}
   ,{"NAME":"MSG_ACTPUSH_CAPTION","CAPTION":[
       {"LANG":"1000054","TXT":"Отправить"}
      ,{"LANG":"1000056","TXT":"Push"}
