@@ -136,7 +136,7 @@ var
       TStdLibGit_Local.Duplicates := dupIgnore;
       TStdLibGit_Local.Sorted     := True;
       end;
-    AmunhotepLocalStringsLoad(TStdLibGit_Local, '1000054', 'PEAKTOP:IDE/$COMMON/STDLIB_GIT.JSON' );  
+    AmunhotepLocalStringsLoad(TStdLibGit_Local, AmunhotepLocalGet, 'PEAKTOP:IDE/$COMMON/STDLIB_GIT.JSON' );  
     
     Result := TCommonForm_Create(AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'), 
       AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления'),STDLIBGIT_ICON, STDLIBGIT_BITMAP, aModalForm, @TCommonForm_OnClose);
