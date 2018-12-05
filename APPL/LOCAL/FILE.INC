@@ -26,7 +26,7 @@
       end;
     lkLocal := aLocal;
     if(StrTrimAll(aLocal) = '')then 
-      lkLocal := '1000054'; 
+      lkLocal := AmunhotepLocalizeParamDefault; 
     try
       lkJSONLoader  := TlkJSONstreamed.Create;
       lkJSONObjRoot := lkJSONLoader.LoadFromFile( lkFileName );
@@ -69,4 +69,3 @@
     if(aStrList.IndexOfName(lkMessageName) > -1)then
       Result := aStrList.Values[lkMessageName];
   end;
-  //============================================================================
