@@ -15,6 +15,7 @@ const
   obj_name_act_updatepush     = 'actUpdatePush';
   STDLIBGIT_ICON              = 'PEAKTOP:IMG/CONFIG/UPDATE0016X0016.ICO';
   STDLIBGIT_BITMAP            = 'PEAKTOP:IMG/CONFIG/UPDATE0032X0032.BMP';
+  STDLIBGIT_URL               = 'github.com/amunhotep/lib.git';
 var
   TStdLibGit_Local :TStringList;  
   //============================================================================
@@ -34,6 +35,34 @@ var
     lkSL.Free;  
   end;
   //============================================================================
+  function TStdLibGit_CommitFileName:string;
+  begin
+    Result := StrAbsolutePath( '../conf/peaktop-git.conf', Amunhotep.ExeName );
+    {$IFDEF MSWINDOWS}
+    Result := StrReplaceStr( Result, '/', '\' );
+    {$ENDIF}
+  end;
+  //============================================================================
+  function TStdLibGit_GetCommitParams(var aGitUser, aGitEMail, aGitPassword:string):Boolean;
+  begin
+    Result := FileExists( TStdLibGit_CommitFileName );
+    if not Result then exit;
+    with TStringList.Create do
+      try
+        LoadFromFile( TStdLibGit_CommitFileName );
+        aGitUser     := Values['git_user']; 
+        aGitEMail    := Values['git_email']; 
+        aGitPassword := Values['git_password'];
+      finally
+        Free;
+      end;  
+  end;
+  //============================================================================
+  function TStdLibGit_CanCommit:Boolean;
+  begin
+    Result := FileExists( TStdLibGit_CommitFileName );
+  end;
+  //============================================================================
   function TStdLibGit_GetGitPath(var aExePath:string):Boolean;
   begin
     Result := false;
@@ -43,7 +72,7 @@ var
     {$ENDIF}
     if not FileExists(aExePath)then
       begin
-      Dialogs.MessageDlg('Не найден Git-клиент, необходимый для обновления программы.', mtError, [mbOk]);
+      Dialogs.MessageDlg( AmunhotepLocalString(TStdLibGit_Local, 'MSG_ERROR_GITNOTFOUND', 'Required Git client is not found.'), mtError, [mbOk]);
       exit;
       end;
     Result := true;  
@@ -51,7 +80,7 @@ var
   //============================================================================
   function TStdLibGit_GetUpdateURL(var aURL:string):Boolean;
   begin
-    aURL   := 'https://github.com/amunhotep/lib.git';
+    aURL   := 'https://'+STDLIBGIT_URL;
     Result := True;
   end;
   //============================================================================
@@ -74,12 +103,20 @@ var
   //============================================================================
   procedure TStdLibGit_actUpdateCommit_OnExecute(Sender :TObject);
   var
-    lkMemo     :TMemo;
-    lkGit      :string;
-    lkPath     :string;
-    lkComment  :string;
-    lkVerSrc   :string;
+    lkMemo        :TMemo;
+    lkGit         :string;
+    lkPath        :string;
+    lkComment     :string;
+    lkVerSrc      :string;
+    lkGitUser     :string;
+    lkGitEMail    :string; 
+    lkGitPassword :string;
   begin
+    if not TStdLibGit_GetCommitParams(lkGitUser, lkGitEMail, lkGitPassword) then
+      begin
+      Dialogs.MessageDlg( AmunhotepLocalString(TStdLibGit_Local, 'MSG_ERROR_GITPARAMSNOTFOUND', 'Git commit settings is not found.'), mtError, [mbOk]);
+      exit;
+      end;
     lkComment := '';
     if not TDlgMemo_Execute(AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTCOMMIT_HINT', 'Commit Changes of Source Code'), 
       AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTCOMMIT_PROMPT', 'Please, Add a Comment'), STDLIBGIT_ICON, STDLIBGIT_BITMAP, lkComment)then exit;
@@ -94,11 +131,11 @@ var
     lkMemo := TMemo(TComponent(Sender).Owner.FindComponent(obj_name_common_memo));
     if not TStdLibGit_GetGitPath(lkGit) then exit;
     ChDir(Amunhotep.SourcePath);
-    lkPath := ' commit --all ';
+    lkPath := ' commit --author="'+lkGitUser+' <'+lkGitEMail+'>" --all ';
     if(StrTrimAll(lkComment) <> '')then
       lkPath := lkPath +' -m "'+StrReplaceStr(lkComment, '"', '`')+'"';
     lkMemo.Text := lkMemo.Text +
-      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+':>>'+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
@@ -107,13 +144,21 @@ var
     lkMemo     :TMemo;
     lkGit      :string;
     lkPath     :string;
+    lkGitUser     :string;
+    lkGitEMail    :string; 
+    lkGitPassword :string;
   begin
+    if not TStdLibGit_GetCommitParams(lkGitUser, lkGitEMail, lkGitPassword) then
+      begin
+      Dialogs.MessageDlg( AmunhotepLocalString(TStdLibGit_Local, 'MSG_ERROR_GITPARAMSNOTFOUND', 'Git commit settings is not found.'), mtError, [mbOk]);
+      exit;
+      end;
     lkMemo := TMemo(TComponent(Sender).Owner.FindComponent(obj_name_common_memo));
     if not TStdLibGit_GetGitPath(lkGit) then exit;
     ChDir(Amunhotep.SourcePath);
-    lkPath := ' push --all "https://amunhotep:ljytwr051096@github.com/amunhotep/lib.git" ';
+    lkPath := ' push --all "https://'+lkGitUser+':'+lkGitPassword+'@'+STDLIBGIT_URL+'" ';
     lkMemo.Text := lkMemo.Text +
-      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+': '+lkGit+lkPath+#13#10+
+      FormatDateTime('dd.mm.yyyy hh:nn:ss',Now)+':>>'+lkGit+lkPath+#13#10+
       TStdLibGit_RunCaptured(ExtractFilePath(Amunhotep.SourcePath), lkGit, lkPath)+#13#10+#13#10;
   end;
   //============================================================================
@@ -157,7 +202,7 @@ var
       end; 
     lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updaterun, AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTUPDATE_CAPTION', 'Обновить'),
       AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTUPDATE_HINT', 'Обновить библиотеку кода из репозитария'),SHORTCUT_DATA_REFRESH,0,192,@TStdLibGit_actUpdateRun_OnExecute,nil,lkToolBar,96,nil);
-    if FileExists(StrAbsolutePath('../conf/amunhotep-peaktop.conf', Amunhotep.ExeName))then
+    if TStdLibGit_CanCommit then
       begin
       lkAct := TCommonForm_CreateAction2(Result,obj_name_act_updatecommit, AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTCOMMIT_CAPTION', 'Commit'),
           AmunhotepLocalString(TStdLibGit_Local, 'MSG_ACTCOMMIT_HINT', 'Commit Changes of Source Code'),SHORTCUT_DOC_COMMIT,0,547,@TStdLibGit_actUpdateCommit_OnExecute,nil,lkToolBar, 96,nil);

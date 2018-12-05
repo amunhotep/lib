@@ -63,4 +63,20 @@
      ,{"LANG":"1000071","TXT":"Надіслати похідний код до репозиторію"}
      ,{"LANG":"1000008","TXT":"Адправіць зыходны код у рэпазітар"}
    ]}
+  ,{"NAME":"MSG_ERROR_GITNOTFOUND","CAPTION":[
+      {"LANG":"1000054","TXT":"Не найден Git-клиент, необходимый для отправки обновления"}
+     ,{"LANG":"1000056","TXT":"Required Git client is not found."}
+     ,{"LANG":"1000204","TXT":"Requis Le client Git est introuvable."}
+     ,{"LANG":"1000123","TXT":"Erforderlicher Git-Client wird nicht gefunden."}
+     ,{"LANG":"1000071","TXT":"Не вдалося знайти Git-клієнт, необхідний для відправки поновлення"}
+     ,{"LANG":"1000008","TXT":"Не знойдзены Git-кліент, неабходны для адпраўкі абнаўлення"}
+   ]}
+  ,{"NAME":"MSG_ERROR_GITPARAMSNOTFOUND","CAPTION":[
+      {"LANG":"1000054","TXT":"Параметры для фиксации кода в репозитарий не найдены."}
+     ,{"LANG":"1000056","TXT":"Git commit params is not found."}
+     ,{"LANG":"1000204","TXT":"Git commit params n'est pas trouvé."}
+     ,{"LANG":"1000123","TXT":"Git-Commits werden nicht gefunden."}
+     ,{"LANG":"1000071","TXT":"Параметри для фіксації коду в репозитарій не знайдені."}
+     ,{"LANG":"1000008","TXT":"Параметры для фіксацыі кода ў рэпазітар не знойдзены."}
+   ]}
 ]}

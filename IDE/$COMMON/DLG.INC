@@ -6,8 +6,6 @@
 {$IFNDEF PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}             {$I PEAKTOP:IDE/$COMMON/FORMCOMMON.INC}        {$ENDIF}
   //========================== PEAKTOP:IDE/$COMMON/DLG.INC =====================
   function TDlg_Create(const aCaption, aPrompt, aIconFileName, aImageFileName:string; const aColor:TColor; const aWidth, aHeight:Integer):TForm;
-  var
-    lkBottomBar :TxcGradientPanelVista;
   begin
     Result := TCommonForm_Create(aCaption, aPrompt, aIconFileName, aImageFileName, True, nil);
     with Result do
