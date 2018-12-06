@@ -1,18 +1,18 @@
 ﻿{"MESSAGES":[
    {"NAME":"MSG_ACTLOAD_CAPTION","CAPTION":[
-      {"LANG":"1000054","TXT":"Обновления"}
-     ,{"LANG":"1000056","TXT":"Updates"}
-     ,{"LANG":"1000204","TXT":"Mises à jour"}
-     ,{"LANG":"1000123","TXT":"Aktualisierung"}
-     ,{"LANG":"1000071","TXT":"Оновлення програми"}
-     ,{"LANG":"1000008","TXT":"Абнаўлення праграмы"}
+      {"LANG":"1000054","TXT":""}
+     ,{"LANG":"1000056","TXT":""}
+     ,{"LANG":"1000204","TXT":""}
+     ,{"LANG":"1000123","TXT":""}
+     ,{"LANG":"1000071","TXT":""}
+     ,{"LANG":"1000008","TXT":""}
    ]}
   ,{"NAME":"MSG_ACTLOAD_HINT","CAPTION":[
-      {"LANG":"1000054","TXT":"Обновить"}
-     ,{"LANG":"1000056","TXT":"Update"}
-     ,{"LANG":"1000204","TXT":"Mettre à jour"}
-     ,{"LANG":"1000123","TXT":"Aktualisieren"}
-     ,{"LANG":"1000071","TXT":"Оновити"}
-     ,{"LANG":"1000008","TXT":"Абнавіць"}
+      {"LANG":"1000054","TXT":""}
+     ,{"LANG":"1000056","TXT":""}
+     ,{"LANG":"1000204","TXT":""}
+     ,{"LANG":"1000123","TXT":""}
+     ,{"LANG":"1000071","TXT":""}
+     ,{"LANG":"1000008","TXT":""}
    ]}
 ]}
