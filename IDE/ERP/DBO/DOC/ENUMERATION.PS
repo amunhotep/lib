@@ -134,11 +134,8 @@ const
     GetField(FBDataBase, 'PROC$_USERS_ACCS('''+ERP_GLOBALVARIABLE_USER_CURRENT+''')', 'ROLES_LIST', '', lkStrAccss);
     Result := TAmunhotepForm(TERPForm_Create('', ERP_FILENAME_ICO_DOC, ERP_FILENAME_BMP_DOC, false, @ERP_DocEnum_OnClose));
     lkLocal := TERPForm_Local(Result); 
-    AmunhotepLocalStringsLoad(lkLocal, '1000054', ChangeFileExt(ScriptName, '.JSON') );           
-    with Result do
-      begin
-      Caption := AmunhotepLocalString(lkLocal, 'MSG_CAPTION', 'Свойства документов');
-      end; 
+    AmunhotepLocalStringsLoad(lkLocal, '1000054', ChangeFileExt(ScriptName, '.JSON') );
+    TERPForm_SetCaption( Result, AmunhotepLocalString(lkLocal, 'MSG_CAPTION', 'Свойства документов') );           
     with TxcGradientPanelVista(Result.FindComponent(obj_name_erp_topbar)) do
       begin
       Caption               := #$20#$20#$20#$20#$20#$20+AmunhotepLocalString(lkLocal, 'MSG_CAPTION', 'Свойства документов');
