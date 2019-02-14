@@ -9,6 +9,7 @@ const
   objname_firms      = 'gbFirms';
   objname_cs         = 'edtCS';
   objname_acc        = 'edtACC';
+  objname_addr       = 'edtADDRESS';
   msg_input_firms    = 'Выберите фирмы учета';
   //============================================================================
   procedure TERPFormRpti_actDocEdt_OnExecute(Sender :TObject);
@@ -47,11 +48,12 @@ const
   begin
     with aQr do
       begin
-      ParamByName('FIRM_IDS' ).AsString := InputIntf_Ref_GetIds(aOwner.FindComponent(objname_firms));
-      ParamByName('DATE_FROM').AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_datefrom))+' 00:00:00';
-      ParamByName('DATE_TO'  ).AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+' 00:00:00';
-      ParamByName('CS_ID'    ).AsString := IntToStr(aOwner.FindComponent(objname_cs).Tag);
-      ParamByName('ACC_ID'   ).AsString := IntToStr(aOwner.FindComponent(objname_acc).Tag);
+      ParamByName('FIRM_IDS'  ).AsString := InputIntf_Ref_GetIds(aOwner.FindComponent(objname_firms));
+      ParamByName('DATE_FROM' ).AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_datefrom))+' 00:00:00';
+      ParamByName('DATE_TO'   ).AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+' 00:00:00';
+      ParamByName('ACC_ID'    ).AsString := IntToStr(aOwner.FindComponent(objname_acc).Tag);
+      ParamByName('CS_ID'     ).AsString := IntToStr(aOwner.FindComponent(objname_cs).Tag);
+      ParamByName('ADDRESS_ID').AsString := '0';
       end;  
   end;
   //============================================================================
@@ -109,9 +111,11 @@ const
     lkLastTop := 4;
     lkLastTop := lkLastTop + InputIntf_DatePeriod_Create(aOwner, aParent, 'gbDatePeriod', 'Укажите период', 4, lkLastTop, 44, 360,objname_datefrom,objname_dateto,StartOfTheMonth(Now),EndOfTheMonth(Now)).Height;
     lkLastTop := lkLastTop + 4;
-    lkLastTop := lkLastTop + InputIntf_Ref_Create(aOwner,aParent,objname_firms   ,msg_input_firms   ,4,lkLastTop,240,360,'TABL$R_FIRMS',TERPForm_Settings(aOwner).Values[ERP_SETTINGS_TABLENAME]).Height;
+    lkLastTop := lkLastTop + InputIntf_Ref_Create(aOwner,aParent,objname_firms   ,msg_input_firms   ,4,lkLastTop,280,360,'TABL$R_FIRMS',TERPForm_Settings(aOwner).Values[ERP_SETTINGS_TABLENAME]).Height;
     lkLastTop := lkLastTop + 4;
-    lkGrb     := CreateTxcGroupBox(aOwner, aParent, '', 'Выберите счет учета',alNone,4,lkLastTop,48,360);
+
+    lkLastTop := 4;
+    lkGrb     := CreateTxcGroupBox(aOwner, aParent, '', 'Выберите счет учета',alNone,368,lkLastTop,48,420);
     lkLastTop := lkLastTop + lkGrb.Height + 4;
     lkStr     := '361'; 
     lkEdt := CreateTxcEditCombo(aOwner,lkGrb,objname_acc,TERPForm_DefaultControlIndent,20,20,lkGrb.Width-(TERPForm_DefaultControlIndent*2));
@@ -127,7 +131,8 @@ const
       Text          := lkStr;
       OnButtonClick := @TERPFormRpti_edtACC_OnButtonClick;
       end;
-    lkGrb     := CreateTxcGroupBox(aOwner, aParent, '', 'Выберите Контрагента',alNone,4,lkLastTop,48,360);
+
+    lkGrb     := CreateTxcGroupBox(aOwner, aParent, '', 'Выберите Контрагента',alNone, 368, lkLastTop, 48, 420);
     lkLastTop := lkLastTop + lkGrb.Height + 4;
     lkStr     := GetGlobalVariable('P_CS_ID');
     if((StrTrimAll(lkStr) = '') or (StrTrimAll(lkStr) = 'NULL'))then

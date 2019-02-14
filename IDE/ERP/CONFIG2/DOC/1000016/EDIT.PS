@@ -163,7 +163,7 @@ var
       end;
     lkBUFFER_ID := GetGlobalVariable(lkVariableName);
     if( (UpperCase(lkBUFFER_ID)='NULL') or (StrTrimAll(lkBUFFER_ID)='') )then exit;
-    lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.SUBKONTO_ID = '''+lkBUFFER_ID+''' WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
+    lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.SUBKONTO_ID = '''+lkBUFFER_ID+''', TB.ADDRESS_ID = 0, TB.DOC_ID = 0 WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
     CloseDataSets;
     ExecSQL(dtsJournal.DataBase, lkSQL);
     RefreshView;
@@ -190,7 +190,7 @@ var
     call('PEAKTOP:IDE/ERP/CONFIG2/REF/BUHG_ACCS/DEFAULT_DLG0.PS');
     lkBUFFER_ID := GetGlobalVariable(lkVariableName);
     if( (UpperCase(lkBUFFER_ID)='NULL') or (StrTrimAll(lkBUFFER_ID)='') )then exit;
-    lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.ACC_ID = '''+lkBUFFER_ID+''' WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
+    lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.ACC_ID = '''+lkBUFFER_ID+''', TB>SUBKONTO_ID = 0, TB.ADDRESS_ID = 0, TB.DOC_ID = 0 WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
     CloseDataSets;
     ExecSQL(dtsJournal.DataBase, lkSQL);
     RefreshView;
@@ -269,7 +269,7 @@ var
       end;
     lkBUFFER_ID := GetGlobalVariable(lkVariableName);
     if( (UpperCase(lkBUFFER_ID)='NULL') or (StrTrimAll(lkBUFFER_ID)='') )then exit;
-    lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.DOC_ID = '''+lkBUFFER_ID+''' WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
+    lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.DOC_ID = '''+lkBUFFER_ID+''', TB.ADDRESS_ID = 0 WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
     CloseDataSets;
     ExecSQL(dtsJournal.DataBase, lkSQL);
     RefreshView;
