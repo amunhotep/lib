@@ -1110,6 +1110,16 @@ var
       end;
   end;
   //============================================================================
+  procedure TERPFormDocEditor_actDocInsChild_OnExecute(Sender :TObject);
+  begin
+    with TERPForm_DataSetMain(TComponent(Sender).Owner) do
+      begin
+      if not Active then exit;
+      SetGlobalVariable('J_ID', FieldByName('ID').AsString );
+      call(StrAbsolutePath('../1000020/NEW_1000028.PS', ScriptName));     
+      end;
+  end;
+  //============================================================================
   procedure TERPFormDocEditor_actDocCreate_OnExecute(Sender :TObject);
   begin
     with TERPForm_DataSetMain(TComponent(Sender).Owner) do
@@ -2962,6 +2972,8 @@ var
     CreateTMenuItem(lkMIObj,'miN'+RandomHexStr(8),'-','','',-1,0);
     lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocins      ,msg_erp_actdocins        ,msg_erp_actdocins_hint         ,SHORTCUT_DOC_INSERT  ,0,307,@TERPFormDocEditor_actDocIns_OnExecute        ,nil                                    ,lkToolBar   , 96,lkMIObj);
     lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccreate   ,msg_erp_actdoccreate     ,msg_erp_actdoccreate_hint      ,SHORTCUT_DOC_CREATE  ,0,377,@TERPFormDocEditor_actDocCreate_OnExecute     ,nil                                    ,lkToolBar   , 64,lkMIObj);
+    CreateTMenuItem(lkMIObj,'miN'+RandomHexStr(8),'-','','',-1,0);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocinschild ,msg_erp_actdocinschild   ,msg_erp_actdocinschild_hint    ,''                   ,0,364,@TERPFormDocEditor_actDocInsChild_OnExecute   ,nil                                    ,lkToolBar   , 96,lkMIObj);
 
     lkAct := TERPForm_CreateAction2(Result,'actCSIns'                  ,msg_doc_actcsins         ,msg_doc_actcsins_hint          ,''                   ,0,528,@TERPFormDocEditor_actCSIns_OnExecute         ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarEx ,132,lkMIItem);
     lkAct := TERPForm_CreateAction2(Result,'actCSUpd'                  ,msg_doc_actcsupd         ,msg_doc_actcsupd_hint          ,''                   ,0,524,@TERPFormDocEditor_actCSUpd_OnExecute         ,nil                                    ,lkToolBarEx ,136,lkMIItem);

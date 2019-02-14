@@ -146,6 +146,7 @@ const //============ PEAKTOP:IDE/ERP/DBO/$COMMON/FORMERP_NAMES.INC =============
   obj_name_erp_actdoccnd         = 'actDocConducts';
   obj_name_erp_actdocins         = 'actDocInsert';
   obj_name_erp_actdoccreate      = 'actDocCreate';
+  obj_name_erp_actdocinschild    = 'actDocInsertChild';
   obj_name_erp_actdocadd         = 'actDocAdd';
   obj_name_erp_actobjimg         = 'actObjectImages';
   obj_name_erp_data_evmain       = 'evMain';

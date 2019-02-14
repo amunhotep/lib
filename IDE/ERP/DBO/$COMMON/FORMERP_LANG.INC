@@ -102,6 +102,7 @@ const //============= PEAKTOP:IDE/ERP/DBO/$COMMON/FORMERP_LANG.INC =============
   msg_erp_actdoccnd         = 'Проводки'           ;msg_erp_actdoccnd_hint        = 'Открыть проводки по документу'; 
   msg_erp_actdocins         = 'Новый Фирма'        ;msg_erp_actdocins_hint        = 'Новый документ с выбором фирмы учёта'; 
   msg_erp_actdoccreate      = 'Создать'            ;msg_erp_actdoccreate_hint     = 'Создать документ по текущей фирме учёта'; 
+  msg_erp_actdocinschild    = 'Ввод на основании'  ;msg_erp_actdocinschild_hint   = 'Создать новый документ на основании текущего'; 
   msg_erp_actdocadd         = 'Добавить'           ;msg_erp_actdocadd_hint        = 'Создать подчинённый документ по текущей фирме учёта'; 
   msg_erp_actobjimg         = 'Изображения'        ;msg_erp_actobjimg_hint        = 'Изображения текущего элемента'; 
   msg_erp_actdocchildlist   = 'История'            ;msg_erp_actdocchildlist_hint  = 'Показать всю историю по документу'; 
