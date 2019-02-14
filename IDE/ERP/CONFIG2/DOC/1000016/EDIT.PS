@@ -57,6 +57,7 @@ var
   dbeACC_NAME         :TDBEditEh;
   dbneDOCSUMVAL       :TDBNumberEditEh;
   dbeSUBKONTO_NAME    :TDBEditEh;
+  dbeADDRESS_NAME     :TDBEditEh;
   dbeEXPTYPE_ID_      :TDBEditEh;
   dbeDOC_ID_          :TDBEditEh;
   PCDoc               :TxcPageControlEx;
@@ -166,6 +167,12 @@ var
     CloseDataSets;
     ExecSQL(dtsJournal.DataBase, lkSQL);
     RefreshView;
+  end;
+  //============================================================================
+  procedure dbeADDRESS_NAME_OnEditButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    
   end;
   //============================================================================
   procedure dbeACC_CODE_OnEditButtonClick(Sender :TObject; var Handled : Boolean);
@@ -757,6 +764,20 @@ var
         Style   := ebsGlyphEh;
         Visible := true;
         OnClick := @dbeSUBKONTO_NAME_OnEditButtonClick;
+        end;
+      end; 
+    dbeADDRESS_NAME  := TDBEditEh(Result.FindComponent('dbeADDRESS_NAME'));
+    with dbeADDRESS_NAME do 
+      begin 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Visible := true;
+        OnClick := @dbeADDRESS_NAME_OnEditButtonClick;
         end;
       end; 
     dbeEXPTYPE_ID_  := TDBEditEh(Result.FindComponent('dbeEXPTYPE_ID_'));

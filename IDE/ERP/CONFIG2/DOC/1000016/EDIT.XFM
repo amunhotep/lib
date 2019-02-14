@@ -220,7 +220,7 @@ object DocForm: TAmunhotepForm
     Left = 0
     Top = 58
     Width = 889
-    Height = 164
+    Height = 188
     Align = alTop
     Colors.Background = 8413280
     Colors.Border = clBlack
@@ -371,7 +371,7 @@ object DocForm: TAmunhotepForm
     end
     object lblTO_PLACE_NAME: TLabel
       Left = 4
-      Top = 144
+      Top = 164
       Width = 64
       Height = 16
       AutoSize = False
@@ -381,11 +381,21 @@ object DocForm: TAmunhotepForm
     end
     object Label3: TLabel
       Left = 4
-      Top = 124
+      Top = 144
       Width = 64
       Height = 16
       AutoSize = False
       Caption = #1047#1072#1082#1072#1079
+      Transparent = True
+      Layout = tlCenter
+    end
+    object Label4: TLabel
+      Left = 4
+      Top = 124
+      Width = 64
+      Height = 16
+      AutoSize = False
+      Caption = #1040#1076#1088#1077#1089
       Transparent = True
       Layout = tlCenter
     end
@@ -729,7 +739,7 @@ object DocForm: TAmunhotepForm
     end
     object dbeEXPTYPE_ID_: TDBEditEh
       Left = 64
-      Top = 144
+      Top = 164
       Width = 812
       Height = 16
       Color = 16775416
@@ -751,7 +761,7 @@ object DocForm: TAmunhotepForm
     end
     object dbeDOC_ID_: TDBEditEh
       Left = 64
-      Top = 124
+      Top = 144
       Width = 812
       Height = 16
       Color = 16775416
@@ -771,12 +781,34 @@ object DocForm: TAmunhotepForm
       TabOrder = 16
       Visible = True
     end
+    object dbeADDRESS_NAME: TDBEditEh
+      Left = 64
+      Top = 124
+      Width = 812
+      Height = 16
+      Color = 16775416
+      Ctl3D = False
+      DataField = 'ADDRESS_NAME'
+      DataSource = DSdtsJournal
+      DynProps = <>
+      EditButtons = <>
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -9
+      Font.Name = 'Verdana'
+      Font.Style = [fsBold]
+      Flat = True
+      ParentCtl3D = False
+      ParentFont = False
+      TabOrder = 17
+      Visible = True
+    end
   end
   object PanelDoc: TxcPanel
     Left = 0
-    Top = 222
+    Top = 246
     Width = 889
-    Height = 203
+    Height = 178
     Align = alClient
     Colors.Background = 8413280
     Colors.Border = clBlack
