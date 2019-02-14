@@ -464,7 +464,7 @@ var
   begin
     if not dtsJournal.Active then exit;
     if(not(dtsJournal.RecordCount>0))then exit;
-    lkScName := 'PEAKTOP:IDE/ERP/CONFIG2/DOC/'+dtsJournal.FieldByName('TYPE_ID').AsString+'/PRINT.PS';
+    lkScName := StrAbsolutePath('../'+dtsJournal.FieldByName('TYPE_ID').AsString+'/PRINT.PS', ScriptName);
     SetGlobalVariable('J_ID', dtsJournal.FieldByName('ID').AsString);
     if not call(lkScName)then
       Dialogs.MessageDlg('Ошибка в вызове скрипта '+#13#10+lkScName, mtError, [mbOk]);
