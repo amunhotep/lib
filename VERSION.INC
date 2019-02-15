@@ -3,4 +3,4 @@
 // Please, DO NOT to edit this file!
 //==============================================================================
 {$DEFINE PEAKTOP:VERSION.INC}
-const AmunhotepLibraryVersion = '2019.02.15-141122';
+const AmunhotepLibraryVersion = '2019.02.15-150140';

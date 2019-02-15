@@ -217,11 +217,21 @@ var
       begin
       if(dtsDoc.FieldByName('J28_FLAG_COMMIT').AsInteger <> 1)then
         begin
+        lkSQL := 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 1 WHERE (J.ID = '''+dtsDoc.FieldByName('J28_ID').AsString+''')';
+        if not ExecSQL(FBDataBase, lkSQL)then
+          begin
+          Dialogs.MessageDlg('Не удалось провести расходную накладную к счёту ', mtWarning, [mbOK]);
+          RefreshView;
+          break;
+          end;
+{
         dtsDoc.Edit;
         dtsDoc.FieldByName('J28_FLAG_COMMIT').AsInteger := 1;
         dtsDoc.Post;
+}
         end;
       dtsDoc.Next;
+      Amunhotep.ProcessMessages;
       end;
     RefreshView;
   end;
