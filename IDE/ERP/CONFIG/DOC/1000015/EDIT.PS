@@ -209,6 +209,7 @@ var
   procedure actDocDocCommitAll_OnExecute(Sender :TObject);
   var
     lkSQL :string;
+    lkRecNo:Integer;
   begin
     if not dtsDoc.Active then exit;
     if not(dtsDoc.RecordCount > 0)then exit;
@@ -230,6 +231,11 @@ var
         dtsDoc.Post;
 }
         end;
+      
+      lkRecNo := dtsDoc.RecNo;
+      RefreshView;
+      dtsDoc.RecNo := lkRecNo;
+        
       dtsDoc.Next;
       Amunhotep.ProcessMessages;
       end;
@@ -307,6 +313,7 @@ var
   procedure actDocDocUnCommitAll_OnExecute(Sender :TObject);
   var
     lkSQL :string;
+    lkRecNo:Integer;
   begin
     if not dtsDoc.Active then exit;
     if not(dtsDoc.RecordCount > 0)then exit;
@@ -315,11 +322,20 @@ var
       begin
       if(dtsDoc.FieldByName('J28_FLAG_COMMIT').AsInteger = 1)then
         begin
+        lkSQL := 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 0 WHERE (J.ID = '''+dtsDoc.FieldByName('J28_ID').AsString+''')';
+        ExecSQL(FBDataBase, lkSQL);
+{
         dtsDoc.Edit;
         dtsDoc.FieldByName('J28_FLAG_COMMIT').AsInteger := 0;
         dtsDoc.Post;
+}
         end;
+      lkRecNo := dtsDoc.RecNo;
+      RefreshView;
+      dtsDoc.RecNo := lkRecNo;
+        
       dtsDoc.Next;
+      Amunhotep.ProcessMessages;
       end;
     RefreshView;
   end;
