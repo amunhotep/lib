@@ -326,7 +326,7 @@ var
       'FROM   TABL$J_4 J '+SQLCRLF+
       'WHERE  (J.TYPE_ID     = 1000075) '+SQLCRLF+
       '  AND  (J.DATE_COMMIT < '''+FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+''') '+SQLCRLF+
-      '  and  (EXTRACT(YEAR FROM J.DATE_COMMIT) < EXTRACT(YEAR FROM CAST('''+FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+''' AS TIMESTAMP)) ) '+SQLCRLF+
+//      '  and  (EXTRACT(YEAR FROM J.DATE_COMMIT) < EXTRACT(YEAR FROM CAST('''+FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+''' AS TIMESTAMP)) ) '+SQLCRLF+
       'ORDER BY 1 DESCENDING ';
     lkQr.Open;
     lkQr.First;
@@ -419,22 +419,19 @@ var
       '  DATE_TO   = :Q_DATE_TO; '+SQLCRLF+
       '  FIRM_IDS  = :Q_FIRM_IDS; '+SQLCRLF+
       '  FOR '+SQLCRLF+ 
-      '    SELECT TMC.TMC_GROUP_ID, TMC.TMC_CTGR_ID '+SQLCRLF+
-      '          ,DB.TMC_ID, TMC.NAME, TMC.NAME2, TMC.ARTICLE, TMC.BARCODE, TMC.VEDCODE, TMC.NUMSHOW '+SQLCRLF+
-      '          ,SUM(DB.QUANT), SUM(IIF((DB.NDP < 0), ((DB.PRICE + DB.NDP) * DB.QUANT), (DB.PRICE * DB.QUANT))) '+SQLCRLF+
+      '    SELECT DISTINCT TMC.TMC_GROUP_ID, TMC.TMC_CTGR_ID '+SQLCRLF+
+      '          ,DB.TMC_ID, TMC.NAME, TMC.NAME2, TMC.ARTICLE, TMC.BARCODE, TMC.VEDCODE, TMC.NUMSHOW  '+SQLCRLF+
       '    FROM   TABL$J_4 J, TABL$J_1000014 J14, TABL$D_1000014 DB, TABL$R_TMC TMC '+SQLCRLF+
-      '    WHERE  (J.DATE_COMMIT BETWEEN :DATE_FROM AND :DATE_TO) '+SQLCRLF+
-      '      AND  (:Q_FIRM_IDS CONTAINING ''~''||J.FIRM_ID||''~'') '+SQLCRLF+
+      '    WHERE  (:Q_FIRM_IDS CONTAINING ''~''||J.FIRM_ID||''~'') '+SQLCRLF+
       '      AND  (J.FLAG_COMMIT = 1) '+SQLCRLF+
       '      AND  (J.TYPE_ID = 1000075) '+SQLCRLF+
       '      AND  (J14.J_ID = J.ID) '+SQLCRLF+
       '      AND  (DB.J_ID = J.ID) '+SQLCRLF+
       '      AND  (TMC.ID = DB.TMC_ID) '+SQLCRLF+
-      '    GROUP BY TMC.TMC_GROUP_ID, TMC.TMC_CTGR_ID '+SQLCRLF+
+      '    ORDER BY TMC.TMC_GROUP_ID, TMC.TMC_CTGR_ID '+SQLCRLF+
       '          ,DB.TMC_ID, TMC.NAME, TMC.NAME2, TMC.ARTICLE, TMC.BARCODE, TMC.VEDCODE, TMC.NUMSHOW '+SQLCRLF+
       '    INTO   :TMC_GROUP_ID, :TMC_CTGR_ID '+SQLCRLF+
       '          ,:TMC_ID, :TMC_NAME, :TMC_NAME2, :TMC_ARTICLE, :TMC_BARCODE, :TMC_VEDCODE, :TMC_NUMSHOW '+SQLCRLF+
-      '          ,:QUANT, :TOTAL '+SQLCRLF+
       '  DO '+SQLCRLF+
       '    BEGIN '+SQLCRLF+ 
       '    SELECT FIRST 1 COALESCE(C1.NAME,''''), COALESCE(C1.PATH, '''') '+SQLCRLF+
