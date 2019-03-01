@@ -227,9 +227,9 @@
   //============================================================================
   procedure TERPFormGrid_Destroy(aOwner :TComponent);
   begin
+    TERPFormGrid_CloseDataSets(aOwner);
     if(aOwner.FindComponent(obj_name_erp_data_evmain) <> nil)then
       with TxFBEvents(aOwner.FindComponent(obj_name_erp_data_evmain)) do
         if Registered then
           UnRegisterEvents;
-    TERPFormGrid_CloseDataSets(aOwner);
   end;    
