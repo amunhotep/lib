@@ -7,23 +7,21 @@
   //=============== PEAKTOP:IDE/ERP/DBO/OPER/DIALOGQUANT.INC ===================
 const ERP_OBJNAME_OPER_DLG_QUANT = 'DLG_QUANT';
   //============================================================================
-  function ERPDialogQuant_Execute(const aCaption, aPrompt:string; const aIntegersOnly:Boolean; const aDecimalPlaces:Integer; var aQuant:Extended):Boolean;
+  function ERPDialogQuant_Execute(const aCaption, aPrompt:string; const aIntegersOnly:Boolean; var aQuant:Extended):Boolean;
   var
     lkForm    :TForm;
-    lkCntrl   :TWinControl;
     lkLbl     :TLabel;
-    lkEdtr    :TxcEditCalc;
-    lkBtnOk   :TxcButton;
-    lkBtnCn   :TxcButton;
+    lkEdtr    :TMaskEdit;
     lkLastTop :Integer;
   begin
     Result := False;
     lkForm := TERPForm_Create(aCaption, ERP_ObjectIcon(ERP_OBJECTTYPE_OPER), ERP_ObjectBitmap(ERP_OBJECTTYPE_OPER), true, nil);
     with lkForm do
       begin
-      Position := poDesktopCenter;
-      Width    := 360;
-      Height   := 640;
+      Position    := poDesktopCenter;
+      Width       := OBJ_NAME_TOUCHEDTR_HEIGHT*6 + 8;
+      Height      := OBJ_NAME_TOUCHEDTR_HEIGHT*12;
+      BorderStyle := bsDialog;
       end; 
     lkLastTop := 0;             
     with TxcGradientPanelVista(lkForm.FindComponent(obj_name_erp_topbar)) do
@@ -31,37 +29,32 @@ const ERP_OBJNAME_OPER_DLG_QUANT = 'DLG_QUANT';
       StyleManager          := nil;
       Colors.HotTrack       := ERP_ObjectColorLight(ERP_OBJECTTYPE_OPER);
       Colors.HotTrackBorder := ERP_ObjectColor(ERP_OBJECTTYPE_OPER);
-      lkLastTop := Top + Height;
+      lkLastTop             := Top + Height;
       end;  
-    lkLbl := CreateTLabel(lkForm, lkForm, aPrompt, 0, lkLastTop+1, 36, lkForm.Width, alTop, taLeftJustify);
+    lkLbl := CreateTLabel(lkForm, lkForm, aPrompt, 0, lkLastTop+1, OBJ_NAME_TOUCHEDTR_HEIGHT*2, lkForm.Width, alTop, taLeftJustify);
     with lkLbl do
       begin
       Font.Style    := [fsBold];
-      Font.Size     := 12;
+      Font.Size     := 7;
       Font.Color    := Amunhotep.MainForm.StyleManager.Colors.Border;
       lkLastTop     := Top + Height;
       end;
-    lkEdtr := TTouchEditor_CreateTxcEditCalc(lkForm, lkForm, OBJ_NAME_TOUCHEDTR_NAME, 0, lkLastTop+1, aIntegersOnly, aDecimalPlaces, aQuant);
-    lkLastTop := lkLastTop + lkEdtr.Parent.Height + 1; 
+    lkEdtr := TTouchEditor_CreateTxcEditCalc(lkForm, lkForm, 0, lkLastTop+1, aIntegersOnly, #0, aQuant);
+    lkLastTop := lkLastTop + lkEdtr.Parent.Height; 
 
-    lkBtnCn := CreateTxcButton(lkForm, lkForm, '', 'Отмена', lkForm.Width - 96, lkLastTop+1, 32, 88, mrCancel, False, True);
-    with lkBtnCn do
-      begin
-      Font.Style    := [fsBold];
-      Font.Size     := 12;
-      Font.Color    := Amunhotep.MainForm.StyleManager.Colors.Border;
-      Anchors       := [akRight, akBottom];
-      end;
-    lkBtnOk := CreateTxcButton(lkForm, lkForm, '', 'OK'    , lkForm.Width - (96*2), lkLastTop+1, 32, 88, mrOK    , True , False);
-    with lkBtnOk do
-      begin
-      Font.Style    := [fsBold];
-      Font.Size     := 12;
-      Font.Color    := Amunhotep.MainForm.StyleManager.Colors.Border;
-      Anchors       := [akRight, akBottom];
-      end;
+    lkForm.Height := lkLastTop + OBJ_NAME_TOUCHEDTR_HEIGHT*2;    
     Result := (lkForm.ShowModal = mrOK);
     if Result then
-      aQuant := lkEdtr.Value;
+      aQuant := StrToFloat( StrReplaceStr(lkEdtr.Text, ',', '.') );
     lkForm.Free;
+  end;
+  //============================================================================
+  function ERPDialogQuantInt_Execute(const aCaption, aPrompt:string; var aQuant:Integer):Boolean;
+  var
+    lkQuant :Extended;
+  begin
+    lkQuant := aQuant;
+    Result := ERPDialogQuant_Execute(aCaption, aPrompt, True, lkQuant);
+    if Result then
+      aQuant := Trunc(lkQuant); 
   end;
