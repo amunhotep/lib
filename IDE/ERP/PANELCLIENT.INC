@@ -407,7 +407,6 @@
     lkUsrName := Button.Caption;
     lkUsrPwd  := '';
     if not ERPDialogPwd_Execute('', '¬ведите пароль:', lkUsrPwd)then exit;
-    
     lkTr := TxFBTransaction.Create(nil);
     with lkTr do
       begin
@@ -489,7 +488,9 @@
           Picture.Bitmap.LoadFromFile(lkFileName);
         end;  
       end;
-    lkILDB32 := CreateTImageListSimple(Result,'ilUsers32',32,32); PanelClient_LoadImages(lkILDB32,'PEAKTOP:IMG/CONFIG/USERS',['USER']);
+    lkILDB32 := CreateTImageListSimple(Result,'ilUsers32',32,32); 
+    PanelClient_LoadImages(lkILDB32, 'PEAKTOP:IMG/CONFIG/USERS/',['USER','USERFEMALE']);
+    
     lkCBTNS := TCategoryButtons.Create(Result);
     with lkCBTNS do
       begin
@@ -537,7 +538,6 @@
         exit; 
       end;
       end;
-
     lkTr := TxFBTransaction.Create(nil);
     with lkTr do
       begin
@@ -573,11 +573,9 @@
         Hint        := lkQr.FieldByName('PWD').AsString;
         ImageIndex  := 0;
         end;
-        
       lkQr.Next;
       end;
     if lkTr.InTransaction then
       lkTr.Commit;
     lkTr.Free;  
-      
   end; 
