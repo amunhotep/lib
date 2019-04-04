@@ -34,6 +34,8 @@ const
             Text := Text + '0';
         Text := Text + Chr( TComponent(Sender).Tag );
         end;
+      SelLength := 0;
+      SelStart  := Length(Text);  
       end;  
   end;
   //============================================================================
