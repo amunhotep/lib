@@ -50,6 +50,7 @@ const
     lkSpec   :string;
   begin
     lkParent := CreateTxcStdPanel(aOwner, aParent, OBJ_NAME_TOUCHEDTR_PARENT, '', alNone, aLeft, aTop, OBJ_NAME_TOUCHEDTR_HEIGHT*9+8, OBJ_NAME_TOUCHEDTR_HEIGHT*6+2, xbsNone);
+    lkParent.Color := Amunhotep.MainForm.StyleManager.Colors.Window;
     Result   := CreateTMaskEdit(lkParent, lkParent, OBJ_NAME_TOUCHEDTR_NAME, 1, 1, OBJ_NAME_TOUCHEDTR_HEIGHT, Trunc(OBJ_NAME_TOUCHEDTR_HEIGHT*6));
     with Result do
       begin
