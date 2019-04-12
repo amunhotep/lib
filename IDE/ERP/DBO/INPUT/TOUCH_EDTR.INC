@@ -56,6 +56,7 @@ const
       begin
       Color         := Amunhotep.MainForm.StyleManager.Colors.Window;
       Font.Color    := Amunhotep.MainForm.StyleManager.Colors.Border;
+      Font.Name     := 'Courier New';
       Font.Style    := [fsBold];
       Font.Size     := 20;
       Anchors       := [akLeft, akTop, akRight];

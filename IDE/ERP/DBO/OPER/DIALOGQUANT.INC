@@ -52,7 +52,7 @@ const ERP_OBJNAME_OPER_DLG_QUANT = 'DLG_QUANT';
       TTouchEditor_CreateButton(lkForm, lkPnlBottom, 'btnOK', 'OK', '', '', '', alNone, taCenter, tlCenter, 
                  1, 0, lkPnlBottom.Height, Trunc(OBJ_NAME_TOUCHEDTR_HEIGHT * 3), xbsNone, $3C8E38, @ERPDialogQuant_btnOK_OnClick, true, 12);
       TTouchEditor_CreateButton(lkForm, lkPnlBottom, 'btnCancel', 'Œ“Ã≈Õ¿', '', '', '', alNone, taCenter, tlCenter, 
-                 OBJ_NAME_TOUCHEDTR_HEIGHT*3 + 3, 0, lkPnlBottom.Height, Trunc(OBJ_NAME_TOUCHEDTR_HEIGHT * 3), xbsNone, $5B18C2, @ERPDialogQuant_btnCancel_OnClick, true, 12);
+                 OBJ_NAME_TOUCHEDTR_HEIGHT*3 + 3, 0, lkPnlBottom.Height, Trunc(OBJ_NAME_TOUCHEDTR_HEIGHT * 3)-4, xbsNone, $5B18C2, @ERPDialogQuant_btnCancel_OnClick, true, 12);
     lkForm.Height := lkLastTop + OBJ_NAME_TOUCHEDTR_HEIGHT;    
     Result := (lkForm.ShowModal = mrOK);
     if Result then

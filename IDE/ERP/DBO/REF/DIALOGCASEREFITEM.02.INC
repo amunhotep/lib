@@ -152,3 +152,16 @@
       ERP_ObjectCaption(ERP_OBJECTTYPE_REF) +': '+lkCaption, 
       aLabelCaption, ERP_ObjectIcon(ERP_OBJECTTYPE_REF), ERP_ObjectBitmap(ERP_OBJECTTYPE_REF), aReferenceID);
   end;
+  //============================================================================
+  function ERPDialogCaseReferenceItem03_Execute(const aObjId, aWhereClause, aLabelCaption:string; var aReferenceID:string):Boolean;
+  var
+    lkCaption :string;
+  begin
+    Result := false;
+    lkCaption := '';
+    GetField(FBDataBase, 'TABL$_TB', 'NAME', 'TRIM(ID) = '''+aObjId+'''', lkCaption);
+    Result := ERPDialogCaseItem02_Execute(
+      'SELECT R.ID, R.NAME FROM '+aObjId+' R WHERE ((R.FLAG_DELETE <> 1) OR (R.FLAG_DELETE IS NULL)) AND ('+aWhereClause+') ORDER BY R.NAME ', 
+      ERP_ObjectCaption(ERP_OBJECTTYPE_REF) +': '+lkCaption, 
+      aLabelCaption, ERP_ObjectIcon(ERP_OBJECTTYPE_REF), ERP_ObjectBitmap(ERP_OBJECTTYPE_REF), aReferenceID);
+  end;
