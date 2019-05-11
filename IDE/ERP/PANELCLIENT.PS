@@ -20,6 +20,7 @@
   end;
 
 begin
+  Amunhotep.MainForm.WindowState := wsMaximized;
   if(Amunhotep.MainForm.FindComponent(obj_name_erp_amunhotepmainform_panelclient) <> nil)then
     try Amunhotep.MainForm.FindComponent(obj_name_erp_amunhotepmainform_panelclient).Free; except end
   else if CheckAutoConnect then

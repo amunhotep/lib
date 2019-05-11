@@ -1,4 +1,5 @@
 {$DEFINE PEAKTOP:IDE/ERP/DBO/INPUT/TOUCH_EDTR.INC}
+{$IFNDEF PEAKTOP:COM/MICROSOFT/WINDOWS/VK_KEYS.INC}        {$I PEAKTOP:COM/MICROSOFT/WINDOWS/VK_KEYS.INC}       {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TMASKEDIT.INC}                        {$I PEAKTOP:OBJ/TMASKEDIT.INC}                       {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TXCEDITCALC.INC}                      {$I PEAKTOP:OBJ/TXCEDITCALC.INC}                     {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TXCEDITCOMBO.INC}                     {$I PEAKTOP:OBJ/TXCEDITCOMBO.INC}                    {$ENDIF}
@@ -29,7 +30,7 @@ const
         end 
       else
         begin
-        if(Chr( TComponent(Sender).Tag ) = Copy(FormatFloat('#0.00',0),2,1) )then
+        if(Chr( TComponent(Sender).Tag ) = Copy(FormatFloat('#0.00',0), 2, 1) )then
           if(Length(Text) = 0)then
             Text := Text + '0';
         Text := Text + Chr( TComponent(Sender).Tag );
@@ -37,6 +38,30 @@ const
       SelLength := 0;
       SelStart  := Length(Text);  
       end;  
+  end;
+  //============================================================================
+  function TTouchEditor_GetOwnerForm(aCmp:TComponent):TComponent;
+  begin
+    Result := aCmp;
+    while(Result <> nil)do
+      begin
+      if(ObjectInheritsFrom(Result,'TCustomForm'))then exit;
+      Result := Result.Owner;
+      end;
+    if(not ObjectInheritsFrom(Result,'TCustomForm'))then 
+      Result := nil;
+  end;
+  //============================================================================
+  procedure TTouchEditor_OnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  var
+    lkForm :TComponent;
+  begin
+    lkForm := TTouchEditor_GetOwnerForm( TComponent(Sender) );
+    if(lkForm <> nil)then
+      begin
+      if(Key = VK_RETURN)then TCustomForm(lkForm).ModalResult := mrOK;
+      if(Key = VK_ESCAPE)then TCustomForm(lkForm).ModalResult := mrCancel;
+      end; 
   end;
   //============================================================================
   function TTouchEditor_CreateTxcEditCalc(aOwner :TComponent; aParent:TWinControl; 
@@ -70,6 +95,7 @@ const
         Text       := FormatFloat('#0.######', aValue);
         end;
       //Enabled       := False;  
+      OnKeyDown    := @TTouchEditor_OnKeyDown;
       end;
     for i:=7 to 9 do
       TTouchEditor_CreateButton(lkParent, lkParent, 'btn'+IntToStr(i), IntToStr(i), IntToStr(i), '', '', alNone, taCenter, tlCenter, 

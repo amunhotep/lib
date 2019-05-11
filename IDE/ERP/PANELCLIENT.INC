@@ -440,8 +440,8 @@
     lkTr.Free;
     SetGlobalVariable(ERP_GLOBALVARIABLE_USER_CURRENT , StrTrimAll(UpperCase(lkUsrName)));
     ExecSQL(FBDataBase, 'EXECUTE BLOCK AS BEGIN RDB$SET_CONTEXT(''USER_SESSION'', '''+ERP_GLOBALVARIABLE_USER_CURRENT+''', '''+StrTrimAll(UpperCase(lkUsrName))+'''); END ');
-    SetGlobalVariable(ERP_GLOBALVARIABLE_USER_LOCAL   , '1000054' );
-    ExecSQL(FBDataBase, 'EXECUTE BLOCK AS BEGIN RDB$SET_CONTEXT(''USER_SESSION'', '''+ERP_GLOBALVARIABLE_USER_LOCAL  +''', ''1000054''); END ');
+    SetGlobalVariable(ERP_GLOBALVARIABLE_USER_LOCAL   , GetGlobalVariable('AUTOCONNECT_DATABASE_LOCAL') );
+    ExecSQL(FBDataBase, 'EXECUTE BLOCK AS BEGIN RDB$SET_CONTEXT(''USER_SESSION'','''+ERP_GLOBALVARIABLE_USER_LOCAL+''','''+GetGlobalVariable('AUTOCONNECT_DATABASE_LOCAL')+'''); END ');
     FBDataBase.AfterDisconnect := @FBDataBase_AfterDisconnect;
     call('PEAKTOP:IDE/ERP/PANELCLIENT.PS');            
     call('PEAKTOP:IDE/ERP/START/DEFAULT.PS');          
@@ -489,7 +489,7 @@
         end;  
       end;
     lkILDB32 := CreateTImageListSimple(Result,'ilUsers32',32,32); 
-    PanelClient_LoadImages(lkILDB32, 'PEAKTOP:IMG/CONFIG/USERS/',['USER','USERFEMALE']);
+    PanelClient_LoadImages(lkILDB32, 'PEAKTOP:IMG/CONFIG/ERP/',['USER','USERFEMALE']);
     
     lkCBTNS := TCategoryButtons.Create(Result);
     with lkCBTNS do
@@ -530,7 +530,7 @@
         Clear;
         Add('USER_NAME='+GetGlobalVariable('AUTOCONNECT_DATABASE_USER'));
         Add('PASSWORD='+GetGlobalVariable('AUTOCONNECT_DATABASE_PWD'));
-        Add('LC_CTYPE=WIN1251');
+        Add('LC_CTYPE='+GetGlobalVariable('AUTOCONNECT_DATABASE_CODEPAGE'));
         end
       try 
         Open; 
@@ -571,7 +571,10 @@
         Caption     := lkQr.FieldByName('ID').AsString;
         CaptionSmall:= '';
         Hint        := lkQr.FieldByName('PWD').AsString;
-        ImageIndex  := 0;
+        if(UpperCase(lkQr.FieldByName('AVATAR').AsString) = 'PEAKTOP:IMG/CONFIG/ERP/USERFEMALE0032X0032.BMP')then
+          ImageIndex:= 1
+         else  
+          ImageIndex:= 0;
         end;
       lkQr.Next;
       end;
