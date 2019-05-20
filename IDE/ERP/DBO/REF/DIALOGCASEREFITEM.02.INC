@@ -73,9 +73,8 @@
       SelectedButtonColor         := Amunhotep.MainForm.StyleManager.Colors.HotTrackBorder;
       ShowHint                    := true;
       Images                      := lkIL32;
-      ButtonHeight                := Images.Height + 4;
-      ButtonHeight                := Images.Height + 4;
-      ButtonWidth                 := Images.Height * 5 + 4;
+      ButtonHeight                := Images.Height + 2;
+      ButtonWidth                 := Images.Height * 6 + 4;
       OnButtonClicked             := @ERPDialogCaseReferenceItem02_CategoryButtons_OnButtonClicked;
       SelectedItem                := nil;
       end;
@@ -128,7 +127,8 @@
     if(lkCBTNS.SelectedItem = nil)then
       if(lkCategory.Items.Count > 0)then
         lkCBTNS.SelectedItem := lkCategory.Items[0]; 
-    lkFrm.Height := 600;    
+    lkFrm.Height := Screen.Height - 96;    
+    lkFrm.Width  := Screen.Width  - 32;    
   loop:          
     lkCategory.Collapsed := false;
     Result := (lkFrm.ShowModal = mrOk);
