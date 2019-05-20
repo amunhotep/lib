@@ -28,7 +28,7 @@
       AlphaBlend      := true;
       Position        := poDesktopCenter;
       Height          := 320;
-      Width           := 480;
+      Width           := 800;
       BorderStyle := bsDialog;
       end;
     with TERPForm_Settings(lkFrm) do
@@ -74,7 +74,8 @@
       ShowHint                    := true;
       Images                      := lkIL32;
       ButtonHeight                := Images.Height + 4;
-      ButtonWidth                 := lkFrm.Width - 24;
+      ButtonHeight                := Images.Height + 4;
+      ButtonWidth                 := Images.Height * 5 + 4;
       OnButtonClicked             := @ERPDialogCaseReferenceItem02_CategoryButtons_OnButtonClicked;
       SelectedItem                := nil;
       end;
@@ -127,7 +128,7 @@
     if(lkCBTNS.SelectedItem = nil)then
       if(lkCategory.Items.Count > 0)then
         lkCBTNS.SelectedItem := lkCategory.Items[0]; 
-    lkFrm.Height := 96 + (lkCBTNS.ButtonHeight * lkCategory.Items.Count);    
+    lkFrm.Height := 600;    
   loop:          
     lkCategory.Collapsed := false;
     Result := (lkFrm.ShowModal = mrOk);
