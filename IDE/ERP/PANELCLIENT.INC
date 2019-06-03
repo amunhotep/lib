@@ -387,7 +387,7 @@
       begin
       lkLastTop   := lkLastTop + Height + 2;
       end;  
-    with CreateTImage(Result,lkPnlLeft, 'ImageLogoLeft', alTop,0,lkLastTop,160,160)do
+    with CreateTImage(Result,lkPnlLeft, 'ImageLogoLeft', alTop, 0, lkLastTop, lkPnlLeft.Width, Trunc(lkPnlLeft.Width * 1.5) )do
       begin 
       lkFileName := PrepareAbsoleteFileName(DefaultFirebirdDialogImageLogoError);
       if FileExists(lkFileName)then
