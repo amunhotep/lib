@@ -108,23 +108,6 @@
     if(lkCmp <> nil)then try lkCmp.Free;except end;
   end;
   //============================================================================
-  procedure MainPageControl_OnPageChange(Sender :TObject);
-  begin
-    with TxcPageControlEx(Sender).ActivePage do
-      begin
-      if(UpperCase(Name) = 'TSBASEURL')then
-        begin
-        if(not(ControlCount > 0))then
-          with TWebBrowser.Create(TxcPageControlEx(Sender).ActivePage) do
-            begin
-            Parent := TxcPageControlEx(Sender).ActivePage;
-            Align  := alClient;
-            end;
-        TWebBrowser(Controls[0]).Navigate('http://amunhotep.orphan.site/');
-        end;
-      end;
-  end;
-  //============================================================================
   procedure Amunhotep_MainForm_PanelClient_OnDestroy(Sender :TObject);
   begin
     AutoFree;
@@ -151,12 +134,11 @@
     lkLastTop     :Integer;
   begin
     Result   := CreateTxcPanel(Amunhotep.MainForm, Amunhotep.MainForm, obj_name_erp_amunhotepmainform_panelclient, '', alClient, 0,0,200,600,xbsNone);
-//    Result.OnDestroy := @Amunhotep_MainForm_PanelClient_OnDestroy;
     lkILDB64 := CreateTImageListSimple(Result,'ilDatabase64',64,64); PanelClient_LoadImages(lkILDB64,'PEAKTOP:IMG/FIREBIRD/',['DATABASE','DATABASE_INS','DATABASE_UPD','DATABASE_DEL','SERVER','SERVER_INS','SERVER_UPD','SERVER_DEL']);
     lkILDB48 := CreateTImageListSimple(Result,'ilDatabase48',48,48); PanelClient_LoadImages(lkILDB48,'PEAKTOP:IMG/FIREBIRD/',['DATABASE','DATABASE_INS','DATABASE_UPD','DATABASE_DEL','SERVER','SERVER_INS','SERVER_UPD','SERVER_DEL']);
     lkILDB32 := CreateTImageListSimple(Result,'ilDatabase32',32,32); PanelClient_LoadImages(lkILDB32,'PEAKTOP:IMG/FIREBIRD/',['DATABASE','DATABASE_INS','DATABASE_UPD','DATABASE_DEL','SERVER','SERVER_INS','SERVER_UPD','SERVER_DEL']);
     lkILDB16 := CreateTImageListSimple(Result,'ilDatabase16',16,16); PanelClient_LoadImages(lkILDB16,'PEAKTOP:IMG/FIREBIRD/',['DATABASE','DATABASE_INS','DATABASE_UPD','DATABASE_DEL','SERVER','SERVER_INS','SERVER_UPD','SERVER_DEL']);
-    lkTopBarBorder := CreateTxcPanel(Result,Result,'TopBarBorder','',alTop,0,0,56,600,xbsRaized);
+    lkTopBarBorder := CreateTxcPanel(Result, Result, 'TopBarBorder', '', alTop, 0, 0, 56, 600, xbsRaized);
     lkTopBar := CreateTxcGradientPanelVista(Result, lkTopBarBorder,'TopBar','', alClient, 0,0,54,600, xbsNone);
     with lkTopBar do
       begin
@@ -197,14 +179,11 @@
       TextAlignment  := taLeftJustify;
       Transparent    := true;
       Margin         := TabHeight;
-      OnPageChange   := @MainPageControl_OnPageChange;
       end;
     PanelClient_LoadImages(lkPC.Images,'PEAKTOP:IMG/FIREBIRD/'  ,['DATABASE_NEW','DATABASE']);  
     PanelClient_LoadImages(lkPC.Images,'PEAKTOP:IMG/CONFIG/'    ,['OPTIONS','OPTIONS']);
     PanelClient_LoadImages(lkPC.Images,'PEAKTOP:IMG/CONFIG/ERP/',['DBCONFIGURATOR']);
     PanelClient_LoadImages(lkPC.Images,'PEAKTOP:IMG/CONFIG/'    ,['APP_CLOSE','APP_EXIT','LIBSTD','BROWSER']);  
-//    PanelClient_LoadImages(lkPC.Images,'PEAKTOP:IMG/CONFIG/ERP/',['AMUNHOTEP_']);  
-//    lkTS := CreateTxcTabSheet(lkPC,'tsBaseNew'    ,'Создать'     , 0,Amunhotep.MainForm.StyleManager.Colors.Highlight);
     lkTS := CreateTxcTabSheet(lkPC,'tsBaseConnect','Подключиться', 1,Amunhotep.MainForm.StyleManager.Colors.Foreground);
     lkPC.ActivePage        := lkTS;
     lkPC.ActivePageDefault := lkTS;
@@ -216,12 +195,6 @@
       Font.Style := [fsBold];
       Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border; 
       Font.Size  := 10; 
-      end;
-    with CreateTImage(Result,lkPnlRight, 'ImageBgrRight', alBottom,0,0, 96,160) do
-      begin 
-      lkFileName := PrepareAbsoleteFileName('PEAKTOP:IMG/SPLASH/BACKGROUND0002.BMP');
-      if FileExists(lkFileName)then
-        Picture.Bitmap.LoadFromFile(lkFileName);
       end;
     lkCBTNS := TCategoryButtons.Create(Result);
     with lkCBTNS do
@@ -246,80 +219,16 @@
       ShowHint                    := true;
       Images                      := lkILDB32;
       ButtonHeight                := Images.Height + 4;
-      ButtonWidth                 := Images.Height * 5 + 4;
+      ButtonWidth                 := Images.Height * 6 + 4;
       OnButtonClicked             := @tsBaseConnect_CategoryButtons_OnButtonClicked;
       end;
-    try
-      lkFBFileConfig := LoadEncryptTxFBFileConfig(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName));
-    except
-    end;  
+    lkFBFileConfig := LoadEncryptTxFBFileConfig(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName));
     if(lkFBFileConfig = nil)then
       lkFBFileConfig := TxFBFileConfig.Create(nil);
     lkFBFileConfig.Name := 'FBFileConfig';
     Result.InsertComponent(lkFBFileConfig);
     FirebirdDialog_DatabaseSelect_FillCategories(lkFBFileConfig, lkCBTNS);
     FirebirdDialog_DataBaseSelect_CreateToolButtons(Result, lkPnlRight, lkCBTNS.Images, [5, 6, 7, 1, 2, 3]);
-{
-    lkTS := CreateTxcTabSheet(lkPC,'tsBaseAppl'  ,'Приложения', 2,Amunhotep.MainForm.StyleManager.Colors.Highlight);
-    lkCBTNS := TCategoryButtons.Create(Result);
-    with lkCBTNS do
-      begin
-      Name                        := 'CategoryButtonsAppl';
-      BorderStyle                 := bsNone;
-      Parent                      := lkTS;
-      Align                       := alClient;
-      BackgroundGradientColor     := Amunhotep.MainForm.StyleManager.Colors.Window;
-      BackgroundGradientDirection := gdLeftToRight; 
-      ButtonFlow                  := cbfVertical;
-      ButtonOptions               := [boGradientFill,boShowCaptions,boBoldCaptions,boUsePlusMinus,boCaptionOnlyBorder];
-      Color                       := lkTS.Color;
-      Font.Name                   := 'Verdana';
-      Font.Color                  := Amunhotep.MainForm.StyleManager.Colors.Border;
-      Font.Style                  := [fsBold];
-      Font.Size                   := 10;
-      GradientDirection           := gdTopToBottom;
-      HotButtonColor              := Amunhotep.MainForm.StyleManager.Colors.Highlight;
-      RegularButtonColor          := clNone;
-      SelectedButtonColor         := Amunhotep.MainForm.StyleManager.Colors.Highlight;
-      ShowHint                    := false;
-      Images                      := CreateTImageListSimple(lkCBTNS,'ilAppl',48,48);
-      ButtonHeight                := Images.Height + 4;
-      ButtonWidth                 := Images.Height * 8 + 4;
-      OnButtonClicked             := @tsBaseAppl_CategoryButtons_OnButtonClicked;
-      with Categories.Add do
-        begin 
-        ImageIndex    := -1;
-        Caption       := lkTS.Caption+' '+UpperCase(Amunhotep.Name);
-        Color         := Amunhotep.MainForm.StyleManager.Colors.HotTrackBorder;
-        GradientColor := Amunhotep.MainForm.StyleManager.Colors.Border;
-        TextColor     := Amunhotep.MainForm.StyleManager.Colors.Window;
-        end;
-      end;
-    PanelClient_LoadImages(lkCBTNS.Images,'PEAKTOP:IMG/CONFIG/',['APP_APPL']);  
-    with TClientDataSet.Create(nil) do
-      begin
-      FileName := AmunhotepFileNameStartParamsGet;
-      if not FileExists(FileName)then
-        Amunhotep_StartParams_Create(FileName);
-      if not Active then  
-        Open;
-      First;
-      while not EOF do
-        begin
-        with lkCBTNS.Categories[0].Items.Add do
-          begin
-          Caption     := FieldByName('NAME').AsString;
-          CaptionSmall:= FieldByName('ID').AsString;
-          Hint        := FieldByName('FILEPATH').AsString;
-          ImageIndex  := 0;
-          end; 
-        Next;
-        end;
-      if Active then Close;
-      Free;  
-      end;
-}
-//    lkTS := CreateTxcTabSheet(lkPC,'tsBaseURL'   ,'lom-bard.com.ua'       , 8,Amunhotep.MainForm.StyleManager.Colors.Window);
     lkTS := CreateTxcTabSheet(lkPC,'tsBaseParams','Настройки'             , 4,Amunhotep.MainForm.StyleManager.Colors.Error);
     lkPCParams := CreateTxcPageControlEx(Result, lkTS, 'PageControlParams', 0,0,100,100,alClient);
     with lkPCParams do
@@ -383,10 +292,6 @@
         lkLastTop   := lkLastTop + Height + 2;
         end; 
       end;
-    with CreateTLabel(Result,lkPnlLeft,'',0,lkLastTop,lkPC.TabHeight*2,200,alTop,taCenter) do
-      begin
-      lkLastTop   := lkLastTop + Height + 2;
-      end;  
     with CreateTImage(Result,lkPnlLeft, 'ImageLogoLeft', alTop, 0, lkLastTop, lkPnlLeft.Width, Trunc(lkPnlLeft.Width * 1.5) )do
       begin 
       lkFileName := PrepareAbsoleteFileName(DefaultFirebirdDialogImageLogoError);
@@ -462,7 +367,6 @@
     lkQr          :TxFBQuery;
   begin
     Result   := CreateTxcPanel(Amunhotep.MainForm, Amunhotep.MainForm, obj_name_erp_amunhotepmainform_panelclient, '', alClient, 0,0,200,600,xbsNone);
-//    Result.OnDestroy := @Amunhotep_MainForm_PanelClient_OnDestroy;
     lkTopBarBorder := CreateTxcPanel(Result,Result,'TopBarBorder','',alTop,0,0,56,600,xbsRaized);
     lkTopBar := CreateTxcGradientPanelVista(Result, lkTopBarBorder,'TopBar','', alClient, 0,0,54,600, xbsNone);
     with lkTopBar do
