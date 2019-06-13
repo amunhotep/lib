@@ -1,4 +1,4 @@
-object Report1DEB8387250D26C2576C0795BC31E378: TxReport
+object ReportABAB1D6885AE6E9C0ADC5AAD5D9ECA8A: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -695,7 +695,7 @@ object Report1DEB8387250D26C2576C0795BC31E378: TxReport
       Indent = 0
       Layout = tlTop
       Lines.Strings = (
-        #1058#1086#1074#1072#1088' '#1074#1110#1076#1087#1091#1089#1090#1080#1074': ______________ (_____________)'
+        #1058#1086#1074#1072#1088' '#1074#1110#1076#1087#1091#1089#1090#1080#1074': ______________ ({qrEnt.ENT_CS_NAME})'
         '{FORMATDATETIME('#39'dd.mm.yyyy'#39',qrJrnl.DATE_COMMIT)} '#1088'. ')
       ParentFont = False
       WordWrap = True
