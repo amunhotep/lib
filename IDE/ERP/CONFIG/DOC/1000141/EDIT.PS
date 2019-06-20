@@ -34,6 +34,8 @@ const
   msg_actprint_hint          = 'Печать документа'; 
   msg_actcommit              = 'Провести'; 
   msg_actcommit_hint         = 'Провести документ'; 
+  msg_actcommitndp           = 'Провести НДС'; 
+  msg_actcommitndp_hint      = 'Провести документ, исправив цены для проводок по НДС'; 
   msg_actuncommit            = 'Отменить'; 
   msg_actuncommit_hint       = 'Отменить проведение докумнта'; 
   msg_actdocdelete           = 'Удалить'; 
@@ -589,6 +591,53 @@ var
     lkSQL := StringsLoadFromFile(StrAbsolutePath('./COMMIT_NEW.SQL', ScriptName));
     lkID  := dtsJournal.FieldByName('ID').AsString;  
     CloseDataSets;
+    TERPForm_ExecSQLParams([], lkSQL, ['J_ID'], [lkID]);
+    RefreshView;
+  end;
+  //============================================================================
+  procedure actCommitNDP_OnExecute(Sender :TObject);
+  var
+    lkTr  :TxFBTransaction;
+    lkQr  :TxFBQuery;
+    lkSQL :string;
+    lkID  :string;
+  begin
+    if not(Dialogs.MessageDlg('Провести документ, исправив цены для проводок по НДС ?', mtConfirmation, [mbYes, mbNo])=mrYes)then exit;
+    lkID  := dtsJournal.FieldByName('ID').AsString;  
+    CloseDataSets;
+    lkTr := TxFBTransaction.Create(nil);
+    with lkTr do
+      begin
+      DefaultDataBase := FBDataBase;
+      with Params do
+        begin
+        Clear;
+        Add('isc_tpb_read_committed');
+        Add('isc_tpb_write');
+        Add('isc_tpb_rec_version');
+        Add('isc_tpb_nowait');
+        end;
+      end;
+    lkQr := TxFBQuery.Create(lkTr); 
+    with lkQr do
+      begin
+      Transaction := lkTr;
+      SQL.Text := StringsLoadFromFile(StrAbsolutePath('../1000028/EDIT_POS_SS_JRNL_COMMNDP.SQL',ScriptName));
+      Prepare;
+      ParamByName('ID').AsString := lkID;
+      try 
+        Open;
+      finally
+        Last;
+      end;   
+      end;
+    with lkTr do
+      begin
+      if InTransaction then
+        Commit;
+      Free;  
+      end;  
+    lkSQL := StringsLoadFromFile(StrAbsolutePath('./COMMIT_NEW.SQL', ScriptName));
     TERPForm_ExecSQLParams([], lkSQL, ['J_ID'], [lkID]);
     RefreshView;
   end;
@@ -1685,6 +1734,7 @@ var
     lkAct := FindTAction(Result,'actPrintChilds'  ,msg_actprint         ,msg_actprint_hint        ,'Alt+P'              , 0,105); lkAct.OnExecute:=@actPrintChilds_OnExecute  ; lkAct.OnUpdate:=@actPrintChilds_OnUpdate;
     lkAct := FindTAction(Result,'actEditChilds'   ,msg_acttmcedit       ,msg_acttmcedit_hint      ,''                   , 0,375); lkAct.OnExecute:=@actEditChilds_OnExecute   ; lkAct.OnUpdate:=@actPrintChilds_OnUpdate;
     lkAct := FindTAction(Result,'actCommit'       ,msg_actcommit        ,msg_actcommit_hint       ,SHORTCUT_DOC_COMMIT  , 0,298); lkAct.OnExecute:=@actCommit_OnExecute       ; lkAct.OnUpdate:=@actCommit_OnUpdate; 
+    lkAct := FindTAction(Result,'actCommitNDP'    ,msg_actcommitndp     ,msg_actcommitndp_hint    ,''                   , 0,298); lkAct.OnExecute:=@actCommitNDP_OnExecute    ; lkAct.OnUpdate:=@actCommit_OnUpdate; 
     lkAct := FindTAction(Result,'actUnCommit'     ,msg_actuncommit      ,msg_actuncommit_hint     ,SHORTCUT_DOC_UNCOMMIT, 0,297); lkAct.OnExecute:=@actUnCommit_OnExecute     ; lkAct.OnUpdate:=@actUnCommit_OnUpdate; 
     lkAct := FindTAction(Result,'actDocNew'       ,msg_actdocnew        ,msg_actdocnew_hint       ,''                   , 0,377); lkAct.OnExecute:=@actDocNew_OnExecute       ;
     lkAct.Visible := false;

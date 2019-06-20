@@ -6,12 +6,14 @@
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/INPUT/CHECKBOX/INTF.INC}       {$I PEAKTOP:IDE/ERP/DBO/INPUT/CHECKBOX/INTF.INC}       {$ENDIF}
 {$IFNDEF PEAKTOP:OBJ/TXCEDITCOMBO.INC}                      {$I PEAKTOP:OBJ/TXCEDITCOMBO.INC}                      {$ENDIF}
 const
-  objname_datefrom   = 'dtpDateFrom';
-  objname_dateto     = 'dtpDateTo';
-  objname_firms      = 'gbFirms';
-  objname_acc        = 'edtACC';
-  objname_showjrnl   = 'cbxShowJournal';
-  msg_input_firms    = 'Выберите фирмы учета';
+  objname_datefrom       = 'dtpDateFrom';
+  objname_dateto         = 'dtpDateTo';
+  objname_firms          = 'gbFirms';
+  objname_acc            = 'edtACC';
+  objname_showjrnl       = 'cbxShowJournal';
+  objname_checkfilials   = 'cbxCheckFilials';
+  msg_input_firms        = 'Выберите фирмы учета';
+  msg_input_checkfilials = 'Разворачивать в разрезе филиалов';
 const
   DefaultColumnWidth = 80;  
   DefaultPrefix      = 'S0';
@@ -64,6 +66,8 @@ const
     lkSQLSum  :string;
     lkSQLBody :string;
     lkSQLBody0:string;
+    lkSQLBodyA :string;
+    lkSQLBodyA0:string;
     lkDocType :string;
     lkDBG     :TDBGridEh;
     lkCol     :TColumnEh;
@@ -81,6 +85,27 @@ const
       begin
       Color                := lkDBG.Color;
       HideDuplicates       := true;
+      end;
+    lkCol       := CreateTColumnEh(lkDBG,'FILIAL_ID','# ### ##0','Филиал|Код', 32,taRightJustify);
+    with lkCol do
+      begin
+      Color                := lkDBG.Color;
+      HideDuplicates       := true;
+      Footer.Color         := Color;
+      Footer.Alignment     := Alignment;
+      Footer.ValueType     := fvtStaticText;
+      Footer.Value         := ' ';  
+      end;
+    lkCol := CreateTColumnEh(lkDBG,'FILIAL_NAME','','Филиал|Название',80,taLeftJustify );
+    with lkCol do
+      begin
+      Color                := lkDBG.Color;
+      HideDuplicates       := true;
+      Footer.Color         := Color;
+      Footer.Alignment     := Alignment;
+      Footer.DisplayFormat := DisplayFormat;
+      Footer.ValueType     := fvtStaticText;
+      Footer.Value         := ' ';  
       end;
     lkCol       := CreateTColumnEh(lkDBG,'SUBKONTO_ID','# ### ##0','Субконто|Код', 60,taRightJustify);
     with lkCol do
@@ -129,6 +154,8 @@ const
     lkFldS     := '';
     lkSQLBody  := '';
     lkSQLBody0 := '';
+    lkSQLBodyA := '';
+    lkSQLBodyA0:= '';
 
     lkTr := TxFBTransaction.Create(nil);
     with lkTr do 
@@ -166,6 +193,15 @@ const
       '    WHERE (C.DATE_COMMIT BETWEEN :DATE_FROM AND :DATE_TO) '+SQLCRLF+
       '      AND (:FIRM_IDS CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
       '      AND (C.ACC_IDS_DEB CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '      AND (C.SUBKONTO_ID_DEB = :SUBKONTO_ID) '+SQLCRLF+
+      '      AND ((C.ACC_ID_KRED+0) = '+lkQr.FieldByName('ACC_ID').AsString+') '+SQLCRLF+
+      '    INTO   :'+lkFld+'; '+SQLCRLF;
+      lkSQLBodyA := lkSQLBodyA +
+      '    SELECT COALESCE(SUM(C.CND_VALUE),0) FROM TABL$P_CND C '+SQLCRLF+
+      '    WHERE (C.DATE_COMMIT BETWEEN :DATE_FROM AND :DATE_TO) '+SQLCRLF+
+      '      AND (:FIRM_IDS CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
+      '      AND (C.ACC_IDS_DEB CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '      AND ((C.FILIAL_ID+0)   = :FILIAL_ID) '+SQLCRLF+
       '      AND (C.SUBKONTO_ID_DEB = :SUBKONTO_ID) '+SQLCRLF+
       '      AND ((C.ACC_ID_KRED+0) = '+lkQr.FieldByName('ACC_ID').AsString+') '+SQLCRLF+
       '    INTO   :'+lkFld+'; '+SQLCRLF;
@@ -247,6 +283,15 @@ const
       '      AND (C.SUBKONTO_ID_KRED = :SUBKONTO_ID) '+SQLCRLF+
       '      AND ((C.ACC_ID_DEB+0) = '+lkQr.FieldByName('ACC_ID').AsString+') '+SQLCRLF+
       '    INTO   :'+lkFld+'; '+SQLCRLF;
+      lkSQLBodyA := lkSQLBodyA +
+      '    SELECT COALESCE(SUM(C.CND_VALUE),0) FROM TABL$P_CND C '+SQLCRLF+
+      '    WHERE (C.DATE_COMMIT BETWEEN :DATE_FROM AND :DATE_TO) '+SQLCRLF+
+      '      AND (:FIRM_IDS CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
+      '      AND (C.ACC_IDS_KRED CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '      AND ((C.FILIAL_ID+0)    = :FILIAL_ID) '+SQLCRLF+
+      '      AND (C.SUBKONTO_ID_KRED = :SUBKONTO_ID) '+SQLCRLF+
+      '      AND ((C.ACC_ID_DEB+0) = '+lkQr.FieldByName('ACC_ID').AsString+') '+SQLCRLF+
+      '    INTO   :'+lkFld+'; '+SQLCRLF;
       lkCol := CreateTColumnEh(lkDBG,lkFld,'# ### ### ##0.00','Оборот|С кредита счета|в дебет счетов|'+lkQr.FieldByName('ACC_ID').AsString,DefaultColumnWidth,taRightJustify );
       with lkCol do
         begin
@@ -322,7 +367,7 @@ const
     lkCol := CreateTColumnEh(lkDBG,'J_TYPE_NAME'   ,''                   ,'Документ|тип'  ,180,taLeftJustify );
     lkCol := CreateTColumnEh(lkDBG,'J_DOCNUMBERSTR',''                   ,'Документ|номер', 96,taLeftJustify );
     lkCol := CreateTColumnEh(lkDBG,'J_DATE_COMMIT' ,'dd.mm.yyyy hh:nn:ss','Документ|дата' ,104,taLeftJustify );
-    lkDBG.FrozenCols     := 5;
+    lkDBG.FrozenCols     := 7;
     if lkShowJrnl then
       lkDBG.FooterRowCount := 0
      else   
@@ -334,10 +379,13 @@ const
       '  ,Q_DATE_TO      TYPE OF COLUMN TABL$J_4.DATE_COMMIT = ?DATE_TO '+SQLCRLF+
       '  ,Q_FIRM_IDS     TYPE OF COLUMN TABL$J_4.DOCSTR      = ?FIRM_IDS '+SQLCRLF+
       '  ,Q_ACC_ID       TYPE OF COLUMN TABL$R_BUHG_ACCS.ID  = ?ACC_ID '+SQLCRLF+
+      '  ,Q_FLAG_FILIALS TYPE OF COLUMN TABL$J_4.FLAG_COMMIT = ?FLAG_FILIALS '+SQLCRLF+
       ')RETURNS( '+SQLCRLF+
       '   DATE_FROM      TYPE OF COLUMN TABL$J_4.DATE_COMMIT '+SQLCRLF+
       '  ,DATE_TO        TYPE OF COLUMN TABL$J_4.DATE_COMMIT '+SQLCRLF+
       '  ,FIRM_IDS       TYPE OF COLUMN TABL$J_4.DOCSTR '+SQLCRLF+
+      '  ,FILIAL_ID      TYPE OF COLUMN TABL$R_FILIALS.ID '+SQLCRLF+
+      '  ,FILIAL_NAME    TYPE OF COLUMN TABL$R_FILIALS.NAME '+SQLCRLF+
       '  ,ACC_ID         TYPE OF COLUMN TABL$R_BUHG_ACCS.ID '+SQLCRLF+
       '  ,ACC_NAME       TYPE OF COLUMN TABL$R_BUHG_ACCS.NAME '+SQLCRLF+
       '  ,SUBKONTO_ID    TYPE OF COLUMN TABL$R_BUHG_ACCS.ID '+SQLCRLF+
@@ -363,6 +411,8 @@ const
       '  DATE_FROM    = :Q_DATE_FROM; '+SQLCRLF+
       '  DATE_TO      = :Q_DATE_TO; '+SQLCRLF+
       '  FIRM_IDS     = :Q_FIRM_IDS; '+SQLCRLF+
+      '  FILIAL_ID   = -1; '+SQLCRLF+
+      '  FILIAL_NAME = NULL; '+SQLCRLF+
       '  ACC_ID       = :Q_ACC_ID; SELECT FIRST 1 B1.NAME FROM TABL$R_BUHG_ACCS B1 WHERE(B1.ID = :ACC_ID)INTO :ACC_NAME; '+SQLCRLF+
       '  '+DefaultPrefix+'BEG     = 0; '+DefaultPrefix+'BEG_DEB = 0; '+DefaultPrefix+'BEG_KRD = 0; '+DefaultPrefix+'_DEBET  = 0; '+SQLCRLF+
       '  '+DefaultPrefix+'END     = 0; '+DefaultPrefix+'END_DEB = 0; '+DefaultPrefix+'END_KRD = 0; '+DefaultPrefix+'_KREDIT = 0; '+SQLCRLF+
@@ -391,6 +441,8 @@ const
       '  DO '+SQLCRLF+
       '    BEGIN '+SQLCRLF+
       '    J_ID = 0; J_TYPE_ID = 0; J_TYPE_NAME = ''''; J_DOCNUMBERSTR = ''''; J_DATE_COMMIT = NULL; COLOR_BGR = 0XFFF0F0; COLOR_FRG = 0X000000; '+SQLCRLF+
+      '    FILIAL_ID   = -1; '+SQLCRLF+
+      '    FILIAL_NAME = NULL; '+SQLCRLF+
       '    SELECT COALESCE(SUM(C.CND_VALUE),0) '+SQLCRLF+
       '    FROM   TABL$P_CND C '+SQLCRLF+
       '    WHERE  (C.DATE_COMMIT < :DATE_FROM) '+SQLCRLF+
@@ -428,7 +480,53 @@ const
       ' '+SQLCRLF+
       lkSQLBody0+
       lkSQLBody+
-      '    SUSPEND; '+SQLCRLF;
+      '    SUSPEND; '+SQLCRLF+
+      '    IF(:Q_FLAG_FILIALS = 1)THEN '+SQLCRLF+
+      '      FOR SELECT F.ID, F.NAME FROM TABL$R_FILIALS F ORDER BY F.ID INTO :FILIAL_ID, :FILIAL_NAME DO '+SQLCRLF+  
+      '        BEGIN '+SQLCRLF+
+      '        SELECT COALESCE(SUM(C.CND_VALUE),0) '+SQLCRLF+
+      '        FROM   TABL$P_CND C '+SQLCRLF+
+      '        WHERE  (C.DATE_COMMIT < :DATE_FROM) '+SQLCRLF+
+      '          AND  (:FIRM_IDS   CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
+      '          AND  (C.ACC_IDS_DEB CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '          AND  ((C.FILIAL_ID+0)   = :FILIAL_ID) '+SQLCRLF+
+      '          AND  (C.SUBKONTO_ID_DEB = :SUBKONTO_ID) '+SQLCRLF+
+      '        INTO   :'+DefaultPrefix+'BEG_DEB; '+SQLCRLF+
+      '        SELECT COALESCE(SUM(C.CND_VALUE),0) '+SQLCRLF+
+      '        FROM   TABL$P_CND C '+SQLCRLF+
+      '        WHERE  (C.DATE_COMMIT < :DATE_FROM) '+SQLCRLF+
+      '          AND  (:FIRM_IDS    CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
+      '          AND  (C.ACC_IDS_KRED CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '          AND  ((C.FILIAL_ID+0)   = :FILIAL_ID) '+SQLCRLF+
+      '          AND  (C.SUBKONTO_ID_KRED = :SUBKONTO_ID) '+SQLCRLF+
+      '        INTO   :'+DefaultPrefix+'BEG_KRD; '+SQLCRLF+
+      '        '+DefaultPrefix+'BEG = :'+DefaultPrefix+'BEG_DEB - :'+DefaultPrefix+'BEG_KRD; '+SQLCRLF+
+      '        '+DefaultPrefix+'BEG_DEB = 0; '+DefaultPrefix+'BEG_KRD = 0; '+SQLCRLF+
+      '        IF(:'+DefaultPrefix+'BEG < 0)THEN '+DefaultPrefix+'BEG_KRD = ABS(:'+DefaultPrefix+'BEG); ELSE '+DefaultPrefix+'BEG_DEB = :'+DefaultPrefix+'BEG; '+SQLCRLF+
+      '        SELECT COALESCE(SUM(C.CND_VALUE),0) '+SQLCRLF+
+      '        FROM  TABL$P_CND C '+SQLCRLF+
+      '        WHERE (C.DATE_COMMIT BETWEEN :DATE_FROM AND :DATE_TO) '+SQLCRLF+
+      '          AND (:FIRM_IDS     CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
+      '          AND (C.ACC_IDS_DEB CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '          AND ((C.FILIAL_ID+0)   = :FILIAL_ID) '+SQLCRLF+
+      '          AND (C.SUBKONTO_ID_DEB = :SUBKONTO_ID) '+SQLCRLF+
+      '        INTO  :'+DefaultPrefix+'_DEBET; '+SQLCRLF+
+      '        SELECT COALESCE(SUM(C.CND_VALUE),0) '+SQLCRLF+
+      '        FROM   TABL$P_CND C '+SQLCRLF+
+      '        WHERE (C.DATE_COMMIT  BETWEEN :DATE_FROM AND :DATE_TO) '+SQLCRLF+
+      '          AND (:FIRM_IDS      CONTAINING ''~''||C.FIRM_ID||''~'') '+SQLCRLF+
+      '          AND (C.ACC_IDS_KRED CONTAINING ''~''||:ACC_ID||''~'') '+SQLCRLF+
+      '          AND ((C.FILIAL_ID+0)   = :FILIAL_ID) '+SQLCRLF+
+      '          AND (C.SUBKONTO_ID_KRED = :SUBKONTO_ID) '+SQLCRLF+
+      '        INTO  :'+DefaultPrefix+'_KREDIT; '+SQLCRLF+
+      '        '+DefaultPrefix+'END = :'+DefaultPrefix+'BEG + :'+DefaultPrefix+'_DEBET - :'+DefaultPrefix+'_KREDIT; '+SQLCRLF+
+      '        '+DefaultPrefix+'END_DEB = 0; '+DefaultPrefix+'END_KRD = 0; '+SQLCRLF+
+      '        IF(:'+DefaultPrefix+'END < 0)THEN '+DefaultPrefix+'END_KRD = ABS(:'+DefaultPrefix+'END); ELSE '+DefaultPrefix+'END_DEB = :'+DefaultPrefix+'END; '+SQLCRLF+
+      '        '+SQLCRLF+
+      lkSQLBody0+
+      lkSQLBodyA+
+      '        SUSPEND; '+SQLCRLF+
+      '        END '+SQLCRLF;
     if lkShowJrnl then
       begin
       aSQL := aSQL +  
@@ -460,10 +558,10 @@ const
         '      IF(:J_ID <> 0)THEN '+SQLCRLF+
         '        BEGIN '+SQLCRLF+
         '        J_TYPE_ID = 0; J_TYPE_NAME = ''''; J_DOCNUMBERSTR = ''''; COLOR_BGR = 0xFFF0F0; COLOR_FRG = 0x000000; '+SQLCRLF+
-        '        SELECT FIRST 1 J.TYPE_ID, DD.NAME, J.DOCNUMBERSTR, DD.COLOR_FRG, DD.COLOR_BGR '+SQLCRLF+
-        '        FROM   TABL$J_4 J, TABL$_TB_DOCS DD '+SQLCRLF+
-        '        WHERE  (J.ID = :J_ID)AND(DD.ID = J.TYPE_ID) '+SQLCRLF+
-        '        INTO   :J_TYPE_ID, :J_TYPE_NAME, :J_DOCNUMBERSTR, :COLOR_FRG, :COLOR_BGR; '+SQLCRLF+
+        '        SELECT FIRST 1 J.TYPE_ID, DD.NAME, J.DOCNUMBERSTR, DD.COLOR_FRG, DD.COLOR_BGR, J.FILIAL_ID, F.NAME '+SQLCRLF+
+        '        FROM   TABL$J_4 J, TABL$_TB_DOCS DD, TABL$R_FILIALS F '+SQLCRLF+
+        '        WHERE  (J.ID = :J_ID)AND(DD.ID = J.TYPE_ID)AND(F.ID = J.FILIAL_ID) '+SQLCRLF+
+        '        INTO   :J_TYPE_ID, :J_TYPE_NAME, :J_DOCNUMBERSTR, :COLOR_FRG, :COLOR_BGR, :FILIAL_ID, :FILIAL_NAME; '+SQLCRLF+
         '        END '+SQLCRLF+
         '      SUSPEND; '+SQLCRLF+
         '      END'+SQLCRLF;
@@ -486,6 +584,7 @@ const
       ParamByName('DATE_FROM').AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_datefrom))+' 00:00:00';
       ParamByName('DATE_TO'  ).AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+' 00:00:00';
       ParamByName('ACC_ID'   ).AsString := IntToStr(aOwner.FindComponent(objname_acc).Tag);
+      ParamByName('FLAG_FILIALS').AsString := InputIntf_CheckBox_Checked(aOwner, objname_checkfilials);
       end;  
   end;
   //============================================================================
@@ -530,7 +629,7 @@ const
     lkLastTop := 4;
     lkLastTop := lkLastTop + InputIntf_DatePeriod_Create(aOwner, aParent, 'gbDatePeriod', 'Укажите период', 4, lkLastTop, 44, 360,objname_datefrom,objname_dateto,StartOfTheMonth(Now),EndOfTheMonth(Now)).Height;
     lkLastTop := lkLastTop + 4;
-    lkLastTop := lkLastTop + InputIntf_Ref_Create(aOwner,aParent,objname_firms   ,msg_input_firms   ,4,lkLastTop, 0,360,'TABL$R_FIRMS',TERPForm_Settings(aOwner).Values[ERP_SETTINGS_TABLENAME]).Height;
+    lkLastTop := lkLastTop + InputIntf_Ref_Create(aOwner,aParent,objname_firms   ,msg_input_firms   ,4,lkLastTop,220,360,'TABL$R_FIRMS',TERPForm_Settings(aOwner).Values[ERP_SETTINGS_TABLENAME]).Height;
     lkLastTop := lkLastTop + 4;
     lkGrb     := CreateTxcGroupBox(aOwner, aParent, '', 'Выберите счет учета',alNone,4,lkLastTop,48,360);
     lkLastTop := lkLastTop + lkGrb.Height + 4;
@@ -550,9 +649,15 @@ const
       Text          := lkStr;
       OnButtonClick := @TERPFormRpti_edtACC_OnButtonClick;
       end;
+    with InputIntf_CheckBox_Create(aOwner,aParent,objname_checkfilials,msg_input_checkfilials,4,lkLastTop, 20,360) do
+      begin
+      Checked   := True;
+      lkLastTop := lkLastTop + Height;
+      end;
+    lkLastTop := lkLastTop + 4;
     with InputIntf_CheckBox_Create  (aOwner,aParent,objname_showjrnl,'Раскрывать обороты по документам',4,lkLastTop, 20,360) do
       begin  
-      Checked   := true;
+      Checked   := false;
       lkLastTop := lkLastTop + Height;
       end;
     lkLastTop := lkLastTop + 4;

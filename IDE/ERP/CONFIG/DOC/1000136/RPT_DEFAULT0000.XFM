@@ -1,4 +1,4 @@
-object Report4BCC1D1C99DD17AED842D34011AB77ED: TxReport
+object ReportD8E0298DD2D2CE9087724E721C0C4647: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -571,10 +571,8 @@ object Report4BCC1D1C99DD17AED842D34011AB77ED: TxReport
       Lines.Strings = (
         
           '{IF(qrCS.CS_EDRPOU='#39#39','#39#39','#39#1045#1044#1056#1055#1054#1059': '#39'+qrCS.CS_EDRPOU+'#39', '#39')}{IF(qrC' +
-          'S.CS_CERTIFICATE='#39#39','#39#39','#39#1053#1086#1084#1077#1088' '#1089#1074#1080#1076#1077#1090#1077#1083#1100#1089#1090#1074#1072': '#39'+qrCS.CS_CERTIFICA' +
-          'TE+'#39', '#39')}{IF(qrCS.CS_INN='#39#39','#39#39','#39#1048#1053#1053': '#39'+qrCS.CS_INN+'#39', '#39')}{IF(qrC' +
-          'S.CS_NDS_PAYED=0,'#39#39','#39#1050#1086#1076' '#1087#1083#1072#1090#1077#1083#1100#1097#1080#1082#1072' '#1053'.'#1044'.'#1057'.: '#39'+qrCS.CS_NDS_CODE+' +
-          #39', '#39')}')
+          'S.CS_CERTIFICATE='#39#39','#39#39' '#39')}{IF(qrCS.CS_INN='#39#39','#39#39','#39#1048#1053#1053': '#39'+qrCS.CS_' +
+          'INN+'#39', '#39')}{IF(qrCS.CS_NDS_PAYED=0,'#39#39')}')
       ParentFont = False
       WordWrap = True
       FontSize = 8

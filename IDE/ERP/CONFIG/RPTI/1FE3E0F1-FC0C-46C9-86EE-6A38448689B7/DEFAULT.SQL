@@ -97,8 +97,8 @@ BEGIN
                       SELECT JP171.ID
                       FROM   TABL$J_4 JP171
                       WHERE  (JP171.ID          = JJ75.J_PAY_ID)
---                        AND  (JP171.DATE_COMMIT <= :J_1000017_DATE_COMMIT)
-                        AND  (JP171.DATE_COMMIT > '01.01.2018 00:00:00')
+                        AND  (JP171.DATE_COMMIT <= :DATE_TO)
+--                        AND  (JP171.DATE_COMMIT > '01.01.2018 00:00:00')
                         AND  (JP171.TYPE_ID     = 1000017)
                         AND  (JP171.FLAG_COMMIT = 1)
                     )
@@ -106,8 +106,8 @@ BEGIN
                       SELECT DP17.ID
                       FROM   TABL$J_4 JP17, TABL$D_1000017 DP17
                       WHERE  (JP17.TYPE_ID     = 1000017)
---                        AND  (JP17.DATE_COMMIT <= :J_1000017_DATE_COMMIT)
-                        AND  (JP17.DATE_COMMIT > '01.01.2018 00:00:00')
+                        AND  (JP17.DATE_COMMIT <= :DATE_TO)
+--                        AND  (JP17.DATE_COMMIT > '01.01.2018 00:00:00')
                         AND  (JP17.FLAG_COMMIT = 1)
                         AND  (DP17.J_ID        = JP17.ID)
                         AND  (DP17.J_REASON_ID = J75.ID)

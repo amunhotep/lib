@@ -56,39 +56,6 @@ var
       end;
   end;
   //============================================================================
-  procedure TERPFormDocEditor_RefreshView(aOwner :TComponent);
-  begin
-    TERPFormGrid_CloseDataSets(aOwner);
-    with TERPForm_DataSetMain(aOwner) do
-      begin
-      SelectSQL.Text  := StringsLoadFromFile(StrAbsolutePath('./EDIT_POS_SS_JRNL_SEL.SQL',ScriptName));
-      RefreshSQL.Text := SelectSQL.Text;
-      ModifySQL.Text := 
-        'EXECUTE BLOCK ( '+SQLCRLF+
-        '   QID           DOMN$PSTRING  = ?ID '+SQLCRLF+
-        '  ,QNAME         DOMN$PSTRING  = ?NAME '+SQLCRLF+
-        '  ,QDATE_COMMIT  DOMN$DATETIME = ?DATE_COMMIT '+SQLCRLF+
-        ')AS'+SQLCRLF+
-        'BEGIN '+SQLCRLF+
-        '  UPDATE TABL$J_4 J SET '+SQLCRLF+
-        '     J.NAME = :QNAME '+SQLCRLF+
-        '    ,J.DATE_COMMIT = :QDATE_COMMIT '+SQLCRLF+
-        '  WHERE (J.ID = :QID); '+SQLCRLF+
-        '  '+SQLCRLF+
-        '  UPDATE TABL$J_1000014 JB1 SET '+SQLCRLF+
-        '    JB1.WRK_ID      = 0 '+SQLCRLF+
-        '   ,JB1.TMC_GRID_ID = 0 '+SQLCRLF+
-        '  WHERE (JB1.J_ID = :QID); '+SQLCRLF+
-        'END ';  
-      Prepare;
-      ParamByName('ID').AsString := TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY];
-      try
-        Open;
-      except
-      end;
-      end;
-  end;
-  //============================================================================
   procedure  TERPFormDocEditor_RefreshViewTMC(aOwner :TComponent);
   var
    i            :Integer;
@@ -172,11 +139,43 @@ var
       end;
   end;
   //============================================================================
+  procedure TERPFormDocEditor_RefreshView(aOwner :TComponent);
+  begin
+    TERPFormGrid_CloseDataSets(aOwner);
+    with TERPForm_DataSetMain(aOwner) do
+      begin
+      SelectSQL.Text  := StringsLoadFromFile(StrAbsolutePath('./EDIT_POS_SS_JRNL_SEL.SQL',ScriptName));
+      RefreshSQL.Text := SelectSQL.Text;
+      ModifySQL.Text := 
+        'EXECUTE BLOCK ( '+SQLCRLF+
+        '   QID           DOMN$PSTRING  = ?ID '+SQLCRLF+
+        '  ,QNAME         DOMN$PSTRING  = ?NAME '+SQLCRLF+
+        '  ,QDATE_COMMIT  DOMN$DATETIME = ?DATE_COMMIT '+SQLCRLF+
+        ')AS'+SQLCRLF+
+        'BEGIN '+SQLCRLF+
+        '  UPDATE TABL$J_4 J SET '+SQLCRLF+
+        '     J.NAME = :QNAME '+SQLCRLF+
+        '    ,J.DATE_COMMIT = :QDATE_COMMIT '+SQLCRLF+
+        '  WHERE (J.ID = :QID); '+SQLCRLF+
+        '  '+SQLCRLF+
+        '  UPDATE TABL$J_1000014 JB1 SET '+SQLCRLF+
+        '    JB1.WRK_ID      = 0 '+SQLCRLF+
+        '   ,JB1.TMC_GRID_ID = 0 '+SQLCRLF+
+        '  WHERE (JB1.J_ID = :QID); '+SQLCRLF+
+        'END ';  
+      Prepare;
+      ParamByName('ID').AsString := TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY];
+      try
+        Open;
+      except
+      end;
+      end;
+  end;
+  //============================================================================
   procedure TERPFormDocEditor_dtsMain_AfterOpen(DataSet :TDataSet);
   begin
     TERPForm_SetCaption(DataSet.Owner.Owner, DataSet.FieldByName('TYPE_NAME').AsString+' №'+DataSet.FieldByName('DOCNUMBERSTR').AsString);
     TERPForm_OpenDataSetsChilds(DataSet);
-    TERPFormDocEditor_RefreshViewTMC(DataSet.Owner.Owner);
 
     TxcGradientPanel(DataSet.Owner.Owner.FindComponent(obj_name_erp_panelClient)).Enabled := (DataSet.FieldByName('FLAG_COMMIT').AsInteger = 0);
     with TDBGridEh(DataSet.Owner.Owner.FindComponent(obj_name_erp_data_dbgdata)) do
@@ -234,6 +233,7 @@ var
     TERPFormGrid_CloseDataSets(lkDBE.Owner);
     ExecSQL(TERPForm_DataSetMain(lkDBE.Owner).DataBase, lkSQL);
     TERPFormDocEditor_RefreshView(lkDBE.Owner);
+    TERPFormDocEditor_RefreshViewTMC(lkDBE.Owner);
   end; 
   //============================================================================
   procedure TERPFormDocEditor_dbeFILIAL_NAME_OnButtonClick(Sender :TObject; var Handled : Boolean);
@@ -276,6 +276,7 @@ var
     TERPFormGrid_CloseDataSets(lkDBE.Owner);
     ExecSQL(TERPForm_DataSetMain(lkDBE.Owner).DataBase, lkSQL);
     TERPFormDocEditor_RefreshView(lkDBE.Owner);
+    TERPFormDocEditor_RefreshViewTMC(lkDBE.Owner);
   end; 
   //============================================================================
   procedure TERPFormDocEditor_dbeCS_ADDR_NAME_OnButtonClick(Sender :TObject; var Handled : Boolean);
@@ -422,6 +423,7 @@ var
     TERPFormGrid_CloseDataSets(lkDBE.Owner);
     ExecSQL(TERPForm_DataSetMain(lkDBE.Owner).DataBase, lkSQL);
     TERPFormDocEditor_RefreshView(lkDBE.Owner);
+    TERPFormDocEditor_RefreshViewTMC(lkDBE.Owner);
   end; 
   //============================================================================
   procedure TERPFormDocEditor_dbeWRK_NAME_OnButtonClick(Sender :TObject; var Handled : Boolean);
@@ -501,7 +503,7 @@ var
   //============================================================================
   procedure TERPFormDocEditor_edtPLACE_OnButtonClick(Sender :TObject);
   var
-    lkID, lkName, lkSQL :string;
+    lkID, lkJ_ID, lkName, lkSQL :string;
   begin
     lkID := IntToStr(TxcEditCombo(Sender).Tag);
     SetGlobalVariable('PLACE_ID', lkID);
@@ -512,13 +514,27 @@ var
     TxcEditCombo(Sender).Tag := StrToInt(lkID);
     if GetField(FBDataBase, 'TABL$R_PLACES', 'NAME', 'ID = '''+lkID+''' ', lkName)then
       TxcEditCombo(Sender).Text := lkName; 
+    lkJ_ID := TERPForm_DataSetMain(TComponent(Sender).Owner).FieldByName('ID').AsString;  
     lkSQL := 
-      'EXECUTE BLOCK AS BEGIN '+#13#10+
-      '  UPDATE TABL$J_1000014 J SET J.PLACE_ID = '''+lkID+''' WHERE (J.J_ID = '''+TERPForm_DataSetMain(TComponent(Sender).Owner).FieldByName('ID').AsString+'''); '+#13#10+
-      'END';
+      'EXECUTE BLOCK '+SQLCRLF+
+      'AS '+SQLCRLF+
+      '  DECLARE VARIABLE P_FILIAL_ID TYPE OF COLUMN TABL$J_4.FILIAL_ID; '+SQLCRLF+
+      'BEGIN '+SQLCRLF+
+      '  SELECT FIRST 1 J.FILIAL_ID '+SQLCRLF+
+      '  FROM   TABL$J_4 J '+SQLCRLF+
+      '  WHERE  (J.ID = '''+lkJ_ID+''') '+SQLCRLF+
+      '  INTO   :P_FILIAL_ID; '+SQLCRLF+
+      '  SELECT FIRST 1 COALESCE(P.FILIAL_ID, :P_FILIAL_ID) '+SQLCRLF+
+      '  FROM   TABL$R_PLACES P '+SQLCRLF+
+      '  WHERE  (P.ID = '''+lkID+''') '+SQLCRLF+
+      '  INTO   :P_FILIAL_ID; '+SQLCRLF+
+      '  UPDATE TABL$J_1000014 TB SET TB.PLACE_ID = '''+lkID+''' WHERE(TB.J_ID = '''+lkJ_ID+'''); '+SQLCRLF+
+      '  UPDATE TABL$J_4 J SET J.FILIAL_ID = :P_FILIAL_ID WHERE(J.ID = '''+lkJ_ID+'''); '+SQLCRLF+
+      'END '+SQLCRLF;
     TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
     ExecSQL(TERPForm_DataSetMain(TComponent(Sender).Owner).DataBase, lkSQL);
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
+    TERPFormDocEditor_RefreshViewTMC(TComponent(Sender).Owner);
   end;
   //============================================================================
   procedure TERPFormDocEditor_edtTMCGROUP_OnButtonClick(Sender :TObject);
@@ -683,6 +699,7 @@ var
   procedure TERPFormDocEditor_actRefresh_OnExecute(Sender :TObject);
   begin
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
+    TERPFormDocEditor_RefreshViewTMC(TComponent(Sender).Owner);
   end;
   //============================================================================
   procedure TERPFormDocEditor_actPrint_OnExecute(Sender :TObject);
@@ -929,6 +946,7 @@ var
   var
     lkTMC_ID:string;
     lkQuant :Extended;
+    lkPrice :Extended;
     lkSQL   :string;
   begin
     if(aOwner = nil)then exit;
@@ -939,10 +957,13 @@ var
       if(FieldByName('FLAG_COMMIT').AsInteger = 1)then exit;
       end;
     lkTMC_ID := aDBGrid.DataSource.DataSet.FieldByName('TMC_ID').AsString;
+    lkPrice  := aDBGrid.DataSource.DataSet.FieldByName('PRICE').AsFloat;
     lkQuant  := 1;
     if(not(Dialogs.InputQueryExtended('Добавить Т.М.Ц.', 'Введите количество', lkQuant)))then exit;
-    lkSQL := 'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, QUANT, WRK_ID)VALUES('''+TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+
-      ''', '''+lkTMC_ID+''', '+StrReplaceStr(FormatFloat('0.000', lkQuant),',','.')+
+    lkSQL := 'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, QUANT, PRICE, WRK_ID)VALUES('''+TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+
+      ''', '''+lkTMC_ID+
+      ''', '+StrReplaceStr(FormatFloat('0.000', lkQuant),',','.')+
+      ', '+StrReplaceStr(FormatFloat('0.000', lkPrice),',','.')+
       ', (SELECT FIRST 1 J.WRK_ID FROM TABL$J_1000014 J WHERE(J.J_ID = '''+TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+''')))';
     TERPFormGrid_CloseDataSets(aOwner);
     ExecSQL(FBDataBase, lkSQL);
@@ -1141,6 +1162,7 @@ var
   var
     lkUserHasRight:Boolean;
     lkFirmId      :string;
+    lkFilialId    :string; 
     lkStr         :string;
     lkToolBar     :TxcGradientPanelVista;
     lkToolBarCat  :TxcGradientPanelVista;
@@ -1171,8 +1193,10 @@ var
     lkAct         :TCustomAction;
   begin
     lkUserHasRight := Doc_User_HasRights(GetGlobalVariable(ERP_GLOBALVARIABLE_USER_CURRENT), ['1000000','1000004']);
-    lkFirmId := '2';
-    GetField(FBDataBase, 'TABL$J_4', 'FIRM_ID', 'ID = '+aJ_ID, lkFirmId);
+    lkFirmId   := '2';
+    lkFilialId := '0';
+    GetField(FBDataBase, 'TABL$J_4', 'FIRM_ID'  , 'ID = '+aJ_ID, lkFirmId);
+    GetField(FBDataBase, 'TABL$J_4', 'FILIAL_ID', 'ID = '+aJ_ID, lkFilialId);
     Result := TAmunhotepForm(TERPForm_Create('', ERP_ObjectIcon(ERP_OBJECTTYPE_DOC), ERP_ObjectBitmap(ERP_OBJECTTYPE_DOC), false, @TERPFormDocEditor_OnClose));
     with Result do
       begin
@@ -1867,7 +1891,7 @@ var
         end
        else 
         begin
-        if GetField(FBDataBase, 'TABL$R_PAYSRC', 'COALESCE(MIN(ID),0)', '(TYPE_ID = 2) AND (FIRM_ID = '+lkFirmId+') AND (FILIAL_ID IN (SELECT FIRST 1 P1.ID FROM PROC$R_FILIALS_DEFAULT P1)) ', lkStr)then
+        if GetField(FBDataBase, 'TABL$R_PAYSRC', 'COALESCE(MIN(ID),0)', '(TYPE_ID = 2) AND (FIRM_ID = '+lkFirmId+') AND (FILIAL_ID = '+lkFilialId+') ', lkStr)then
           Tag := StrToInt(lkStr);
         end;  
       if GetField(FBDataBase, 'TABL$R_PAYSRC', 'NAME', 'ID = '''+IntToStr(Tag)+'''', lkStr)then
@@ -1926,6 +1950,7 @@ var
     lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit+'75NDP','Провести счет с НДС','Провести счет-фактуру для безналичной продажи c корректировкой цены для НДС','' ,0,298,@TERPFormDocEditor_actCommitPos1000075NDP_OnExecute,@TERPFormDocEditor_actCommit_OnUpdate   ,lkToolBarCmt,140,nil);
     TxcPageControlEx_ActivateDefaultPage(lkPC);
     TERPFormDocEditor_RefreshView(Result);    // refresh doc
+    TERPFormDocEditor_RefreshViewTMC(Result);    // refresh doc
     TERPFormDocEditor_OnResize(Result);       // refresh client area repaint
   end;
   //============================================================================

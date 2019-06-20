@@ -160,7 +160,7 @@ object DocForm: TAmunhotepForm
       Style = bstSmall
     end
     object tbbUnCommit: TxcToolBarButton
-      Left = 161
+      Left = 289
       Top = 1
       Width = 80
       Height = 22
@@ -187,7 +187,7 @@ object DocForm: TAmunhotepForm
       Style = bstSmall
     end
     object tbbPrint: TxcToolBarButton
-      Left = 241
+      Left = 369
       Top = 1
       Width = 80
       Height = 22
@@ -214,7 +214,7 @@ object DocForm: TAmunhotepForm
       Style = bstSmall
     end
     object tbbactDocNew: TxcToolBarButton
-      Left = 321
+      Left = 449
       Top = 1
       Width = 80
       Height = 22
@@ -241,7 +241,7 @@ object DocForm: TAmunhotepForm
       Style = bstSmall
     end
     object tbbactDocNew1000142_2: TxcToolBarButton
-      Left = 401
+      Left = 529
       Top = 1
       Width = 80
       Height = 22
@@ -259,6 +259,33 @@ object DocForm: TAmunhotepForm
       StyleManager = AmunhotepMainForm.StyleManager
       ViewStyle = vsOFF03
       Action = actDocNew1000142
+      Gradient = True
+      Down = False
+      Margin = 2
+      ImageIndex = -1
+      ImagesSmall = AmunhotepMainForm.ImageListMain
+      ShowCaption = True
+      Style = bstSmall
+    end
+    object TBBactCommitNDP: TxcToolBarButton
+      Left = 161
+      Top = 1
+      Width = 128
+      Height = 22
+      Align = alLeft
+      Colors.Background = 8413280
+      Colors.Border = clBlack
+      Colors.Error = 8388863
+      Colors.Foreground = 13615039
+      Colors.Window = 16775416
+      Colors.Highlight = 15769760
+      Colors.HotTrack = 15769760
+      Colors.HotTrackBorder = 10502208
+      ParentShowHint = False
+      ShowHint = True
+      StyleManager = AmunhotepMainForm.StyleManager
+      ViewStyle = vsOFF03
+      Action = actCommitNDP
       Gradient = True
       Down = False
       Margin = 2
@@ -449,10 +476,11 @@ object DocForm: TAmunhotepForm
       Top = 64
       Width = 300
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'CS_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -470,10 +498,11 @@ object DocForm: TAmunhotepForm
       Top = 44
       Width = 740
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'NAME'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -491,10 +520,11 @@ object DocForm: TAmunhotepForm
       Top = 4
       Width = 140
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'DATE_COMMIT'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -513,10 +543,11 @@ object DocForm: TAmunhotepForm
       Top = 104
       Width = 436
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'PLACE_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -534,10 +565,11 @@ object DocForm: TAmunhotepForm
       Top = 104
       Width = 204
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'WRK_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -555,10 +587,11 @@ object DocForm: TAmunhotepForm
       Top = 24
       Width = 176
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'FILIAL_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -576,10 +609,11 @@ object DocForm: TAmunhotepForm
       Top = 24
       Width = 145
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'USER_ID'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -598,10 +632,11 @@ object DocForm: TAmunhotepForm
       Top = 4
       Width = 56
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'ID'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -620,10 +655,11 @@ object DocForm: TAmunhotepForm
       Top = 4
       Width = 80
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'DOCNUMBER'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -641,10 +677,11 @@ object DocForm: TAmunhotepForm
       Top = 4
       Width = 136
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'DOCNUMBERSTR'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -663,10 +700,11 @@ object DocForm: TAmunhotepForm
       Top = 4
       Width = 144
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'DOCNUMBERIN'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -684,10 +722,11 @@ object DocForm: TAmunhotepForm
       Top = 24
       Width = 169
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'FIRM_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -705,10 +744,11 @@ object DocForm: TAmunhotepForm
       Top = 24
       Width = 140
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'WRK_NAME'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -726,10 +766,11 @@ object DocForm: TAmunhotepForm
       Top = 64
       Width = 372
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'CS_DOC_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -747,10 +788,11 @@ object DocForm: TAmunhotepForm
       Top = 84
       Width = 804
       Height = 16
-      Ctl3D = False
       Color = 16775416
+      Ctl3D = False
       DataField = 'CS_ADDR_ID_'
       DataSource = DSdtsJournal
+      DynProps = <>
       EditButtons = <>
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -768,7 +810,7 @@ object DocForm: TAmunhotepForm
     Left = 0
     Top = 182
     Width = 954
-    Height = 243
+    Height = 242
     Align = alClient
     Colors.Background = 8413280
     Colors.Border = clBlack
@@ -779,12 +821,12 @@ object DocForm: TAmunhotepForm
     Colors.HotTrack = 15769760
     Colors.HotTrackBorder = 15769760
     ViewStyle = vsOFF03
-    ActivePage = tsTMC
+    ActivePage = tsDoc
     ActivePageDefault = tsDoc
     UseColoredTabs = True
     FlatColor = 8413280
     Images = AmunhotepMainForm.ImageListMain
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 3
     Gradient = True
     FixedDimension = 22
@@ -796,7 +838,7 @@ object DocForm: TAmunhotepForm
         Left = 646
         Top = 24
         Width = 4
-        Height = 193
+        Height = 192
         Align = alRight
       end
       object ToolBarTMC: TxcGradientPanelVista
@@ -829,32 +871,22 @@ object DocForm: TAmunhotepForm
         Left = 0
         Top = 24
         Width = 646
-        Height = 193
+        Height = 192
         Align = alClient
         Color = 15723242
         Ctl3D = False
-        DataGrouping.GroupLevels = <>
         DataSource = DSdtsTMC
+        DynProps = <>
         FixedColor = 13615039
         Flat = True
-        FooterColor = 15723242
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clBlack
-        FooterFont.Height = -9
-        FooterFont.Name = 'Verdana'
-        FooterFont.Style = []
         FooterRowCount = 1
+        FooterParams.Color = 15723242
         IndicatorOptions = [gioShowRowIndicatorEh]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         ParentCtl3D = False
         RowDetailPanel.Color = clBtnFace
         TabOrder = 1
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clBlack
-        TitleFont.Height = -9
-        TitleFont.Name = 'Verdana'
-        TitleFont.Style = []
-        UseMultiTitle = True
+        TitleParams.MultiTitle = True
         object RowDetailData: TRowDetailPanelControlEh
         end
       end
@@ -862,7 +894,7 @@ object DocForm: TAmunhotepForm
         Left = 650
         Top = 24
         Width = 300
-        Height = 193
+        Height = 192
         Align = alRight
         Colors.Background = 8413280
         Colors.Border = clBlack
@@ -890,39 +922,29 @@ object DocForm: TAmunhotepForm
         Left = 586
         Top = 24
         Width = 4
-        Height = 193
+        Height = 192
         Align = alRight
       end
       object dbgDoc: TDBGridEh
         Left = 0
         Top = 24
         Width = 586
-        Height = 193
+        Height = 192
         Align = alClient
         Color = 15723242
         Ctl3D = False
-        DataGrouping.GroupLevels = <>
         DataSource = DSdtsDoc
+        DynProps = <>
         FixedColor = 13615039
         Flat = True
-        FooterColor = 15723242
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clBlack
-        FooterFont.Height = -9
-        FooterFont.Name = 'Verdana'
-        FooterFont.Style = []
         FooterRowCount = 1
+        FooterParams.Color = 15723242
         IndicatorOptions = [gioShowRowIndicatorEh]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         ParentCtl3D = False
         RowDetailPanel.Color = clBtnFace
         TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clBlack
-        TitleFont.Height = -9
-        TitleFont.Name = 'Verdana'
-        TitleFont.Style = []
-        UseMultiTitle = True
+        TitleParams.MultiTitle = True
         object RowDetailData: TRowDetailPanelControlEh
         end
       end
@@ -1172,32 +1194,22 @@ object DocForm: TAmunhotepForm
         Left = 590
         Top = 24
         Width = 360
-        Height = 193
+        Height = 192
         Align = alRight
         Color = 15723242
         Ctl3D = False
-        DataGrouping.GroupLevels = <>
         DataSource = DSqrQuantParty
+        DynProps = <>
         FixedColor = 13615039
         Flat = True
-        FooterColor = 15723242
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clBlack
-        FooterFont.Height = -9
-        FooterFont.Name = 'Verdana'
-        FooterFont.Style = []
         FooterRowCount = 1
+        FooterParams.Color = 15723242
         IndicatorOptions = [gioShowRowIndicatorEh]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
         ParentCtl3D = False
         RowDetailPanel.Color = clBtnFace
         TabOrder = 2
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clBlack
-        TitleFont.Height = -9
-        TitleFont.Name = 'Verdana'
-        TitleFont.Style = []
-        UseMultiTitle = True
+        TitleParams.MultiTitle = True
         object RowDetailData: TRowDetailPanelControlEh
         end
       end
@@ -1214,8 +1226,8 @@ object DocForm: TAmunhotepForm
         Align = alClient
         Color = 15723242
         Ctl3D = False
-        DataGrouping.GroupLevels = <>
         DataSource = DSqrChilds
+        DynProps = <>
         FixedColor = 13615039
         Flat = True
         Font.Charset = DEFAULT_CHARSET
@@ -1223,13 +1235,8 @@ object DocForm: TAmunhotepForm
         Font.Height = -9
         Font.Name = 'Verdana'
         Font.Style = []
-        FooterColor = 15723242
-        FooterFont.Charset = DEFAULT_CHARSET
-        FooterFont.Color = clBlack
-        FooterFont.Height = -9
-        FooterFont.Name = 'Verdana'
-        FooterFont.Style = []
         FooterRowCount = 1
+        FooterParams.Color = 15723242
         IndicatorOptions = [gioShowRowIndicatorEh]
         Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
         OptionsEh = [dghFixed3D, dghHighlightFocus, dghClearSelection, dghRowHighlight, dghDialogFind, dghColumnResize, dghColumnMove, dghExtendVertLines]
@@ -1237,16 +1244,12 @@ object DocForm: TAmunhotepForm
         ParentFont = False
         RowDetailPanel.Color = clBtnFace
         TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clBlack
-        TitleFont.Height = -9
-        TitleFont.Name = 'Verdana'
-        TitleFont.Style = [fsBold]
-        UseMultiTitle = True
-        VTitleMargin = 4
+        TitleParams.MultiTitle = True
+        TitleParams.VTitleMargin = 4
         Columns = <
           item
             Color = clWhite
+            DynProps = <>
             EditButtons = <>
             FieldName = 'INDENT'
             Font.Charset = DEFAULT_CHARSET
@@ -1260,6 +1263,7 @@ object DocForm: TAmunhotepForm
           end
           item
             Checkboxes = True
+            DynProps = <>
             EditButtons = <>
             FieldName = 'FLAG_COMMIT'
             Footers = <>
@@ -1275,6 +1279,7 @@ object DocForm: TAmunhotepForm
           item
             Alignment = taRightJustify
             DisplayFormat = '# ### ### ##0'
+            DynProps = <>
             EditButtons = <>
             FieldName = 'ID'
             Footer.DisplayFormat = '# ### ### ##0'
@@ -1285,6 +1290,7 @@ object DocForm: TAmunhotepForm
             Width = 60
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'TYPE_ID_'
             Footers = <>
@@ -1292,6 +1298,7 @@ object DocForm: TAmunhotepForm
             Width = 150
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'DOCNUMBERSTR'
             Footers = <>
@@ -1301,6 +1308,7 @@ object DocForm: TAmunhotepForm
           item
             Alignment = taRightJustify
             DisplayFormat = '# ### ##0.00'
+            DynProps = <>
             EditButtons = <>
             FieldName = 'DOCSUM'
             Footer.DisplayFormat = '# ### ##0.00'
@@ -1310,6 +1318,7 @@ object DocForm: TAmunhotepForm
             Width = 60
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'NAME'
             Footers = <>
@@ -1318,6 +1327,7 @@ object DocForm: TAmunhotepForm
           end
           item
             DisplayFormat = 'dd.mm.yyyy hh:nn:ss'
+            DynProps = <>
             EditButtons = <>
             FieldName = 'DATE_COMMIT'
             Footers = <>
@@ -1325,6 +1335,7 @@ object DocForm: TAmunhotepForm
             Width = 71
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'FIRM_ID_'
             Footers = <>
@@ -1332,6 +1343,7 @@ object DocForm: TAmunhotepForm
             Width = 142
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'FILIAL_ID_'
             Footers = <>
@@ -1339,6 +1351,7 @@ object DocForm: TAmunhotepForm
             Width = 96
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'USER_ID'
             Footers = <>
@@ -1346,6 +1359,7 @@ object DocForm: TAmunhotepForm
             Width = 124
           end
           item
+            DynProps = <>
             EditButtons = <>
             FieldName = 'WRK_NAME'
             Footers = <>
@@ -1506,6 +1520,8 @@ object DocForm: TAmunhotepForm
     object actPrint: TAction
     end
     object actCommit: TAction
+    end
+    object actCommitNDP: TAction
     end
     object actUnCommit: TAction
     end

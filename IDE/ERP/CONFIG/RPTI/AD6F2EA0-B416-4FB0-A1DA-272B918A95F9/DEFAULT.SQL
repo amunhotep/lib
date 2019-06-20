@@ -91,13 +91,12 @@ BEGIN
         SELECT P.DATE_COMMIT
         FROM   PROC$P_TMCQUANT_MOVESONDATE(:J_REASON_FIRM_ID, NULL, :D14_TMC_ID, :J_REASON_DATE_COMMIT) P, TABL$J_1000014 J14
         WHERE  (J14.J_ID = P.J_ID) 
-        
           AND  (    (J14.FLAG_OLDPAYMENT = 1)
                  OR EXISTS(
                       SELECT JP171.ID
                       FROM   TABL$J_4 JP171
                       WHERE  (JP171.ID          = J14.J_PAY_ID)
-                        AND  (JP171.DATE_COMMIT <= :J_1000017_DATE_COMMIT)
+                        AND  (JP171.DATE_COMMIT <= :DATE_TO)
                         AND  (JP171.TYPE_ID     = 1000017)
                         AND  (JP171.FLAG_COMMIT = 1)
                     )
@@ -105,13 +104,12 @@ BEGIN
                       SELECT DP17.ID
                       FROM   TABL$J_4 JP17, TABL$D_1000017 DP17
                       WHERE  (JP17.TYPE_ID     = 1000017)
-                        AND  (JP17.DATE_COMMIT <= :J_1000017_DATE_COMMIT)
+                        AND  (JP17.DATE_COMMIT <= :DATE_TO)
                         AND  (JP17.FLAG_COMMIT = 1)
                         AND  (DP17.J_ID        = JP17.ID)
                         AND  (DP17.J_REASON_ID = P.J_ID)
                     )
                )  
-       
         ORDER BY P.DATE_COMMIT DESCENDING
         INTO   :J_1000026_DATE_COMMIT
       DO
