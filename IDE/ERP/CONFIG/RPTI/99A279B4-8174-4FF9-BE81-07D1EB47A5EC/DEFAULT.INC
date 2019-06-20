@@ -10,12 +10,9 @@ const
   objname_dateto         = 'dtpDateTo';
   objname_firms          = 'gbFirms';
   objname_acc            = 'edtACC';
-  objname_filial         = 'edtFILIAL';
   objname_checkfilials   = 'cbxCheckFilials';
-  objname_checkfilial    = 'cbxFilialOnly';
   msg_input_firms        = 'Выберите фирмы учета';
   msg_input_checkfilials = 'Разворачивать в разрезе филиалов';
-  msg_input_checkfilial  = 'Показывать только филиал (быстрее)';
   //============================================================================
   function TERPFormRpti_GetExportFilter(aOwner:TComponent):string;
   begin
@@ -45,8 +42,6 @@ const
       ParamByName('DATE_TO'     ).AsString := FormatDateTime('dd.mm.yyyy', InputIntf_DatePeriod_Date(aOwner, objname_dateto)+1)+' 00:00:00';
       ParamByName('ACC_ID'      ).AsString := IntToStr(aOwner.FindComponent(objname_acc).Tag);
       ParamByName('FLAG_FILIALS').AsString := InputIntf_CheckBox_Checked(aOwner, objname_checkfilials);
-      ParamByName('FLAG_FILIAL' ).AsString := InputIntf_CheckBox_Checked(aOwner, objname_checkfilial);
-      ParamByName('FILIAL_ID'   ).AsString := IntToStr(aOwner.FindComponent(objname_filial).Tag);
       end;  
   end;
   //============================================================================
@@ -77,25 +72,6 @@ const
       if( (UpperCase(lkStr) = 'NULL') or (StrTrimAll(lkStr)='') )then exit;
       Tag := StrToInt(lkStr);
       GetField(FBDataBase, 'TABL$R_BUHG_ACCS', 'NAME', 'ID = '+lkStr, lkStr);
-      Text := lkStr;
-      end;
-  end;
-  //============================================================================
-  procedure TERPFormRpti_edtFILIAL_OnButtonClick(Sender :TObject);
-  var
-    lkLastTop :Integer;
-    lkGrb     :TxcGroupBox;
-    lkEdt     :TxcEditCombo;
-    lkStr     :string;
-  begin
-    with TxcEditCombo(Sender) do
-      begin
-      SetGlobalVariable('FILIAL_ID', IntToStr(Tag));
-      call('DB:CONFIG/REF/FILIALS/DEFAULT_DLG.PS');
-      lkStr := GetGlobalVariable('FILIAL_ID');
-      if( (UpperCase(lkStr) = 'NULL') or (StrTrimAll(lkStr)='') )then exit;
-      Tag := StrToInt(lkStr);
-      GetField(FBDataBase, 'TABL$R_FILIALS', 'NAME', 'ID = '+lkStr, lkStr);
       Text := lkStr;
       end;
   end;
@@ -131,31 +107,8 @@ const
     lkLastTop := lkLastTop + 4;
     with InputIntf_CheckBox_Create(aOwner,aParent,objname_checkfilials,msg_input_checkfilials,4,lkLastTop, 20,360) do
       begin
-      Checked   := true;
+      Checked   := false;
       lkLastTop := lkLastTop + Height;
-      end;
-    lkLastTop := lkLastTop + 4;
-    with InputIntf_CheckBox_Create(aOwner,aParent,objname_checkfilial ,msg_input_checkfilial ,4,lkLastTop, 20,360) do
-      begin
-      Checked   := true;
-      lkLastTop := lkLastTop + Height;
-      end;
-    lkLastTop := lkLastTop + 4;
-    lkGrb     := CreateTxcGroupBox(aOwner, aParent, '', 'Выберите филиал',alNone,4,lkLastTop,48,360);
-    lkLastTop := lkLastTop + lkGrb.Height + 4;
-    lkStr     := '0'; 
-    lkEdt := CreateTxcEditCombo(aOwner,lkGrb,objname_filial,TERPForm_DefaultControlIndent,20,20,lkGrb.Width-(TERPForm_DefaultControlIndent*2));
-    with lkEdt do
-      begin
-      Color         := Amunhotep.MainForm.StyleManager.Colors.Window;
-      GlyphKind     := gkEllipsis;
-      ReadOnly      := true;
-      AlwaysEnable  := true;
-      Font.Style    := [fsBold];
-      Tag           := StrToInt(lkStr);
-      GetField(FBDataBase, 'TABL$R_FILIALS', 'NAME', 'ID = '+lkStr, lkStr);
-      Text          := lkStr;
-      OnButtonClick := @TERPFormRpti_edtFilial_OnButtonClick;
       end;
   end;
   //============================================================================
