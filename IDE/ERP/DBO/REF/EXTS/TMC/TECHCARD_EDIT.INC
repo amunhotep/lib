@@ -319,10 +319,16 @@ const
   //============================================================================
   procedure actTMCQuantDel_OnExecute(Sender :TObject);
   var
-    lkID :string;
+    lkDBG  :TDBGridEh;
+    lkSQL  :string;
+    lkCntr :Integer;
+    lkCol  :TColumnEh;
+    lkID   :string;
     lkName :string;
   begin
-    with TxFBDataSet(TDBGridEh(TComponent(Sender).Owner.FindComponent(obj_name_erp_data_dbgchilds+'CardEditorQuant')).DataSource.DataSet) do
+    lkDBG := TDBGridEh(TComponent(Sender).Owner.FindComponent(obj_name_erp_data_dbgchilds+'CardEditorQuant'));
+    
+    with TxFBDataSet(lkDBG.DataSource.DataSet) do
       begin
       if not Active then exit;
       if not(RecordCount>0)then exit;
@@ -330,12 +336,33 @@ const
       lkName := FieldByName('TMC_ID').AsString;
       GetField(FBDataBase, 'TABL$R_TMC', 'ID||''. "''||COALESCE(NAME,'''')||''"'' ', 'ID = '+lkName, lkName);
       end;
-    if(Dialogs.MessageDlg(msg_acttmcquantdel_hint+' ?'+SQLCRLF+SQLCRLF+lkName, mtConfirmation, [mbYes, mbNo]) <> mrYes)then exit;
-    with TxFBDataSet(TDBGridEh(TComponent(Sender).Owner.FindComponent(obj_name_erp_data_dbgchilds+'CardEditorQuant')).DataSource.DataSet) do
+ 
+    if(lkDBG.SelectedRows.Count > 0)then
+      begin
+      if(Dialogs.MessageDlg('Удалить выделенные ТМЦ из калькуляции ?', mtConfirmation, [mbYes, mbNo]) <> mrYes)then exit;
+      lkSQL := 'EXECUTE BLOCK AS BEGIN '+SQLCRLF;
+      lkDBG.DataSource.DataSet.DisableControls;
+      lkDBG.SaveBookMark; 
+      for lkCntr:=0 to lkDBG.SelectedRows.Count-1 do
+        begin
+        lkDBG.DataSource.DataSet.Bookmark := lkDBG.SelectedRows[lkCntr];
+        lkSQL := lkSQL + '  DELETE FROM TABL$R_TMC_LISTQUANT TQ WHERE (TQ.ID = '''+lkDBG.DataSource.DataSet.FieldByName(ERP_DATASET_DBKEY).AsString+'''); '+SQLCRLF;
+        end
+      lkDBG.RestoreBookMark; 
+      lkDBG.DataSource.DataSet.EnableControls;
+      lkSQL := lkSQL + 'END '; 
+      end
+     else
+      begin
+      if(Dialogs.MessageDlg(msg_acttmcquantdel_hint+' ?'+SQLCRLF+SQLCRLF+lkName, mtConfirmation, [mbYes, mbNo]) <> mrYes)then exit;
+      lkSQL := 'DELETE FROM TABL$R_TMC_LISTQUANT TQ WHERE (TQ.ID = '''+lkID+''')';
+      end;  
+       
+    with TxFBDataSet(lkDBG.DataSource.DataSet) do
       begin
       if DataSource.DataSet.Active then
         DataSource.Dataset.Close;
-      TERPForm_ExecSQL([], 'DELETE FROM TABL$R_TMC_LISTQUANT TQ WHERE (TQ.ID = '''+lkID+''')');
+      TERPForm_ExecSQL([], lkSQL);
       if not DataSource.DataSet.Active then
         DataSource.DataSet.Open;
       end;
@@ -523,11 +550,13 @@ const
     lkDBGQuant := CreateTDBGridEh(aOwner, lkPnlClient, lkDSQuant, obj_name_erp_data_dbgchilds+'CardEditorQuant', 0,0,200,200, alClient);  
     with lkDBGQuant do
       begin
-      HelpKeyWord    := '1';
-      FooterRowCount := 1;
-      AllowedOperations := [alopUpdateEh]
-      SumList.Active := true;
-      OnDblClick     := @actTMCQuantUpd_OnExecute;
+      HelpKeyWord       := '1';
+      FooterRowCount    := 1;
+//      IndicatorOptions  := [gioShowRowIndicatorEh, gioShowRowselCheckboxesEh];  
+      AllowedOperations := [alopUpdateEh];
+      Options           := Options + [dgMultiSelect, dgAlwaysShowSelection];
+      SumList.Active    := true;
+      OnDblClick        := @actTMCQuantUpd_OnExecute;
       end;
     CreateTxFBTransQuery(nil, '', '', '', ['isc_tpb_read_committed', 'isc_tpb_read', 'isc_tpb_rec_version', 'isc_tpb_nowait'], lkTrTemp, lkQrTemp, lkDSTemp);  
     TERPFormGrid_LoadDBGridColumns('TABL$R_TMC_LISTQUANT', lkQrTemp, lkDBGQuant, nil, true, false, 'TMC_LIST_ID', lkSQLSelect, lkSQLRefresh, lkSQLInsert, lkSQLUpdate, lkSQLDelete, lkSelectFilter);      
@@ -539,7 +568,7 @@ const
       if(AnsiUpperCase(lkDBGQuant.Columns[i].FieldName) = 'TMC_TMC_LIST_ID')then
         begin
         lkDBGQuant.Columns[i].KeyList.Text     := '0'+#13#10+'1';
-        lkDBGQuant.Columns[i].PickList.Text    := 'T'+#13#10+'K';
+        lkDBGQuant.Columns[i].PickList.Text    := 'TМЦ'+#13#10+'ТK';
         lkDBGQuant.Columns[i].ImageList        := CreateTImageList(lkDBGQuant, 'ilTMCLitId', [13,14]);
         lkDBGQuant.Columns[i].NotInKeyListIndex:= 1;
         end;
