@@ -222,12 +222,6 @@
       ButtonWidth                 := Images.Height * 6 + 4;
       OnButtonClicked             := @tsBaseConnect_CategoryButtons_OnButtonClicked;
       end;
-    lkFBFileConfig := LoadEncryptTxFBFileConfig(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName));
-    if(lkFBFileConfig = nil)then
-      lkFBFileConfig := TxFBFileConfig.Create(nil);
-    lkFBFileConfig.Name := 'FBFileConfig';
-    Result.InsertComponent(lkFBFileConfig);
-    FirebirdDialog_DatabaseSelect_FillCategories(lkFBFileConfig, lkCBTNS);
     FirebirdDialog_DataBaseSelect_CreateToolButtons(Result, lkPnlRight, lkCBTNS.Images, [5, 6, 7, 1, 2, 3]);
     lkTS := CreateTxcTabSheet(lkPC,'tsBaseParams','Настройки'             , 4,Amunhotep.MainForm.StyleManager.Colors.Error);
     lkPCParams := CreateTxcPageControlEx(Result, lkTS, 'PageControlParams', 0,0,100,100,alClient);
@@ -299,6 +293,14 @@
         Picture.Bitmap.LoadFromFile(lkFileName);
       end;
     lkPC.OnChange := @PC_OnChange;
+
+    lkFBFileConfig := LoadEncryptTxFBFileConfig(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName));
+    if(lkFBFileConfig = nil)then
+      lkFBFileConfig := TxFBFileConfig.Create(nil);
+    lkFBFileConfig.Name := 'FBFileConfig';
+    Result.InsertComponent(lkFBFileConfig);
+    FirebirdDialog_DatabaseSelect_FillCategories(lkFBFileConfig, lkCBTNS);
+
     PC_OnChange(lkPC);  
   end; 
   //============================================================================
