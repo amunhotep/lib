@@ -293,15 +293,17 @@
         Picture.Bitmap.LoadFromFile(lkFileName);
       end;
     lkPC.OnChange := @PC_OnChange;
+    PC_OnChange(lkPC);  
 
-    lkFBFileConfig := LoadEncryptTxFBFileConfig(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName));
-    if(lkFBFileConfig = nil)then
-      lkFBFileConfig := TxFBFileConfig.Create(nil);
+    try
+      lkFBFileConfig := LoadEncryptTxFBFileConfig( PrepareAbsoleteFileName(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName)) );
+    except  
+      if(lkFBFileConfig = nil)then
+        lkFBFileConfig := TxFBFileConfig.Create(nil);
+    end;    
     lkFBFileConfig.Name := 'FBFileConfig';
     Result.InsertComponent(lkFBFileConfig);
     FirebirdDialog_DatabaseSelect_FillCategories(lkFBFileConfig, lkCBTNS);
-
-    PC_OnChange(lkPC);  
   end; 
   //============================================================================
   procedure CategoryButtonsLogin_OnButtonClicked(Sender: TObject; const Button: TButtonItem);
