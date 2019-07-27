@@ -295,12 +295,9 @@
     lkPC.OnChange := @PC_OnChange;
     PC_OnChange(lkPC);  
 
-    try
-      lkFBFileConfig := LoadEncryptTxFBFileConfig( PrepareAbsoleteFileName(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName)) );
-    except  
-      if(lkFBFileConfig = nil)then
-        lkFBFileConfig := TxFBFileConfig.Create(nil);
-    end;    
+    lkFBFileConfig := LoadEncryptTxFBFileConfig( PrepareAbsoleteFileName(StrAbsolutePath('../conf/fb.conf', Amunhotep.ExeName)) );
+    if(lkFBFileConfig = nil)then
+      lkFBFileConfig := TxFBFileConfig.Create(nil);
     lkFBFileConfig.Name := 'FBFileConfig';
     Result.InsertComponent(lkFBFileConfig);
     FirebirdDialog_DatabaseSelect_FillCategories(lkFBFileConfig, lkCBTNS);
