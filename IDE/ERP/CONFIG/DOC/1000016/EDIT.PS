@@ -124,6 +124,7 @@ var
     lkScriptName   :string;
     lkVariableName :string;
     lkBUFFER_ID    :string;
+    lkFILIAL_ID    :string;
     lkSQL          :string;
   begin
     Handled := true;
@@ -144,7 +145,25 @@ var
     lkBUFFER_ID := dtsJournal.FieldByName('SUBKONTO_ID').AsString;
     if(StrTrimAll(lkBUFFER_ID) = '')then lkBUFFER_ID := '0';
     SetGlobalVariable(lkVariableName, lkBUFFER_ID);
-    if not call(lkScriptName) then exit;
+    if(StrTrimAll(lkObjectId) = 'TABL$R_PAYSRC')then
+      begin
+      GetField(FBDataBase, 'PROC$R_FILIALS_DEFAULT', 'ID', '', lkFILIAL_ID); 
+      lkScriptName := 
+        '{$IFNDEF PEAKTOP:IDE/ERP/DBO/REF/FORMREF.INC}  {$I PEAKTOP:IDE/ERP/DBO/REF/FORMREF.INC}{$ENDIF} '+SQLCRLF+
+        'begin '+SQLCRLF+
+        '  TERPFormGrid_DataSetFilter_Add(''FIRM_ID'', ''FIRM_ID = '''''+dtsJournal.FieldByName('FIRM_ID').AsString+''''' ''); '+SQLCRLF; 
+        if(lkFILIAL_ID <> '0')then
+          lkScriptName := lkScriptName +
+            '  TERPFormGrid_DataSetFilter_Add(''FILIAL_ID'', ''(FILIAL_ID = '''''+dtsJournal.FieldByName('FILIAL_ID').AsString+''''') OR (FILIAL_ID = 0) ''); '+SQLCRLF;
+        lkScriptName := lkScriptName +
+        '  Reference_Execute(''TABL$R_PAYSRC''); '+SQLCRLF+
+        'end. '+SQLCRLF;
+      run(lkScriptName, 'DB:CONFIG/REF/PAYSRC/DEFAULT_DLG.PS');
+      end
+    else
+      begin  
+      if not call(lkScriptName) then exit;
+      end;
     lkBUFFER_ID := GetGlobalVariable(lkVariableName);
     if( (UpperCase(lkBUFFER_ID)='NULL') or (StrTrimAll(lkBUFFER_ID)='') )then exit;
     lkSQL := 'UPDATE TABL$J_1000016 TB SET TB.SUBKONTO_ID = '''+lkBUFFER_ID+''' WHERE(TB.J_ID = '''+dtsJournal.FieldByName('ID').AsString+''')';
@@ -269,20 +288,26 @@ var
   procedure dbePAYSRC_ID__OnEditButtonClick(Sender :TObject; var Handled : Boolean);
   var
     lkVariableName :string;
+    lkFILIAL_ID    :string;
     lkBUFFER_ID    :string;
     lkSQL          :string;
     lkScript       :string;
   begin
     Handled := true;
     if not dtsJournal.Active then exit;
-    if not(dtsJournal.RecordCount>0)then exit; 
+    if not(dtsJournal.RecordCount>0)then exit;
     lkVariableName := 'PAYSRC_ID';
     lkBUFFER_ID := dtsJournal.FieldByName('PAYSRC_ID').AsString;
     SetGlobalVariable(lkVariableName, lkBUFFER_ID);
+    GetField(FBDataBase, 'PROC$R_FILIALS_DEFAULT', 'ID', '', lkFILIAL_ID); 
     lkScript := 
       '{$IFNDEF PEAKTOP:IDE/ERP/DBO/REF/FORMREF.INC}  {$I PEAKTOP:IDE/ERP/DBO/REF/FORMREF.INC}{$ENDIF} '+SQLCRLF+
       'begin '+SQLCRLF+
-      '  TERPFormGrid_DataSetFilter_Add(''FIRM_ID'', ''FIRM_ID = '''''+dtsJournal.FieldByName('FIRM_ID').AsString+''''' ''); '+SQLCRLF+ 
+      '  TERPFormGrid_DataSetFilter_Add(''FIRM_ID'', ''FIRM_ID = '''''+dtsJournal.FieldByName('FIRM_ID').AsString+''''' ''); '+SQLCRLF; 
+      if(lkFILIAL_ID <> '0')then
+        lkScript := lkScript +
+          '  TERPFormGrid_DataSetFilter_Add(''FILIAL_ID'', ''(FILIAL_ID = '''''+dtsJournal.FieldByName('FILIAL_ID').AsString+''''') OR (FILIAL_ID = 0) ''); '+SQLCRLF;
+      lkScript := lkScript +
       '  Reference_Execute(''TABL$R_PAYSRC''); '+SQLCRLF+
       'end. '+SQLCRLF;
     run(lkScript, 'DB:CONFIG/REF/PAYSRC/DEFAULT_DLG.PS');
@@ -353,8 +378,10 @@ var
       with Params do
         begin
         Clear;
-        Add('isc_tpb_write');
-        Add('isc_tpb_consistency');
+        Add('isc_tpb_read_committed'); 
+        Add('isc_tpb_write'); 
+        Add('isc_tpb_rec_version'); 
+        Add('isc_tpb_nowait'); 
         end;
       end;
     lkQr := TxFBQuery.Create(lkTr);
@@ -416,42 +443,46 @@ var
     OsnovanieAccounts.Clear;
     if(DataSet.FieldByName('TYPE_ID').AsString = '1000020')then
       begin
-      OsnovanieAccounts.Add('0'); OsnovanieStrings.Add('Ввод начальных остатков');
-      OsnovanieAccounts.Add('373'); OsnovanieStrings.Add('Ввод начальных остатков по процентам');
-      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Поступление средств из кассы отделения');
-      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Поступление средств из кассы предприятия');
-      OsnovanieAccounts.Add('361'); OsnovanieStrings.Add('Оплата за товар або надання послуг');
-      OsnovanieAccounts.Add('372'); OsnovanieStrings.Add('Возврат подотчета');
-      OsnovanieAccounts.Add('3771'); OsnovanieStrings.Add('Возврат залога');
+      OsnovanieAccounts.Add('303'); OsnovanieStrings.Add('Переміщення коштів у касу РРО з каси філії');
+      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Переміщення коштів у касу філії з каси РРО');
+      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Отримання готівки з каси відділення');
+      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Отримання готівки з каси підприємства');
+      OsnovanieAccounts.Add('373'); OsnovanieStrings.Add('Введення початкових залишків по відсоткам');
+      OsnovanieAccounts.Add('0'); OsnovanieStrings.Add('Введення початкових залишків');
+      OsnovanieAccounts.Add('361'); OsnovanieStrings.Add('Оплата за продані вироби з драг.металів');
+      OsnovanieAccounts.Add('372'); OsnovanieStrings.Add('Повернення підзвіта');
+      OsnovanieAccounts.Add('3771'); OsnovanieStrings.Add('Повернення залогу');
       OsnovanieAccounts.Add('6852'); OsnovanieStrings.Add('Поступление денег от Аптеки');
      end
      else
       begin
-      OsnovanieAccounts.Add('631'); OsnovanieStrings.Add('Оплата постачальнику за товар або надання послуг');
+      OsnovanieAccounts.Add('303'); OsnovanieStrings.Add('Переміщення коштів до каси РРО з каси філії');
+      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Переміщення коштів до каси філії з каси РРО');
+      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Готівка до каси підприємства');
+      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Поповнення каси відділення');
+      OsnovanieAccounts.Add('311'); OsnovanieStrings.Add('Готівка до банку');
+      OsnovanieAccounts.Add('311'); OsnovanieStrings.Add('Оплата за дебетование счета');
+      OsnovanieAccounts.Add('311'); OsnovanieStrings.Add('Комісія банку');
+      OsnovanieAccounts.Add('3772'); OsnovanieStrings.Add('Страховий платіж до Страхувальника');
+      OsnovanieAccounts.Add('3771'); OsnovanieStrings.Add('Выдача залога');
+      OsnovanieAccounts.Add('372'); OsnovanieStrings.Add('Надання підзвіту');
       OsnovanieAccounts.Add('91');  OsnovanieStrings.Add('Оплата готівкою виробничих витрат');
       OsnovanieAccounts.Add('92');  OsnovanieStrings.Add('Оплата готівкою адміністративних витрат');
       OsnovanieAccounts.Add('93');  OsnovanieStrings.Add('Оплата витрат, пов''язаних з доставкою, відвантаженням або реалізацією продукції');
-      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Выручка в кассу предприятия');
-      OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Пополнение кассы отделения');
-      OsnovanieAccounts.Add('311'); OsnovanieStrings.Add('Выручка в банк');
-      OsnovanieAccounts.Add('311'); OsnovanieStrings.Add('Оплата за дебетование счета');
-      OsnovanieAccounts.Add('311'); OsnovanieStrings.Add('Комиссия банка');
-      OsnovanieAccounts.Add('6852'); OsnovanieStrings.Add('Повернення фiнансових коштiв до Аптеки');
-      OsnovanieAccounts.Add('3771'); OsnovanieStrings.Add('Выдача залога');
-      OsnovanieAccounts.Add('372'); OsnovanieStrings.Add('Выдача подотчет');
       OsnovanieAccounts.Add('641'); OsnovanieStrings.Add('Оплата державних податків та обов''язкових зборів');
       OsnovanieAccounts.Add('6411'); OsnovanieStrings.Add('Оплата прибуткового податку працiвникiв');
       OsnovanieAccounts.Add('6414'); OsnovanieStrings.Add('Оплата мiсцевих податкiв');
       OsnovanieAccounts.Add('6414'); OsnovanieStrings.Add('Оплата комунальних платежiв');
       OsnovanieAccounts.Add('6416'); OsnovanieStrings.Add('Оплата податку на прибуток пiдприемства');
-      OsnovanieAccounts.Add('651'); OsnovanieStrings.Add('Оплата соцiального та пенсiйного сбору працiвникiв');
+      OsnovanieAccounts.Add('651'); OsnovanieStrings.Add('Оплата соцiяльного та пенсiйного сбору працiвникiв');
       OsnovanieAccounts.Add('951'); OsnovanieStrings.Add('Погашення кредитів та процентів по кредитам');
       OsnovanieAccounts.Add('6852'); OsnovanieStrings.Add('Оплата оренди приміщення');
       OsnovanieAccounts.Add('375'); OsnovanieStrings.Add('Списання недостачі в касі');
       OsnovanieAccounts.Add('-71'); OsnovanieStrings.Add('Списание безнадежной дебиторской задолженности');
       OsnovanieAccounts.Add('661'); OsnovanieStrings.Add('Виплата готівкою заробітної плати');
       OsnovanieAccounts.Add('6611');OsnovanieStrings.Add('Виплата авансу заробітної платі');
-      OsnovanieAccounts.Add('6612');OsnovanieStrings.Add('Виплата отпускных');
+      OsnovanieAccounts.Add('6612');OsnovanieStrings.Add('Виплата відпускних');
+      OsnovanieAccounts.Add('6852'); OsnovanieStrings.Add('Повернення фiнансових коштiв до Аптеки');
       OsnovanieAccounts.Add('-3'); OsnovanieStrings.Add('Изьятие прибыли из оборота');
       end;
     dbcbxNAME.Items.Text := OsnovanieStrings.Text;  
@@ -826,8 +857,8 @@ var
       AfterOpen   := @dtsJournal_AfterOpen;
       BeforeClose := @dtsJournal_BeforeClose;
       AfterScroll := @dtsJournal_AfterScroll;
-      SelectSQL.Text  := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/1000016/EDIT_JRNL0001.SQL');
-      RefreshSQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/1000016/EDIT_JRNL0001.SQL');
+      SelectSQL.Text  := StringsLoadFromFile( StrAbsolutePath('./EDIT_JRNL0001.SQL', ScriptName) );
+      RefreshSQL.Text := SelectSQL.Text;
       ModifySQL.Text  := 
         'EXECUTE BLOCK ( '+SQLCRLF+
         '   Q_ID          TYPE OF COLUMN TABL$J_4.ID           = ?ID '+SQLCRLF+
