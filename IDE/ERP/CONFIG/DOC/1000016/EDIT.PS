@@ -443,19 +443,20 @@ var
     OsnovanieAccounts.Clear;
     if(DataSet.FieldByName('TYPE_ID').AsString = '1000020')then
       begin
+      OsnovanieAccounts.Add('361'); OsnovanieStrings.Add('Отримання оплати за товари або надані послуги');
       OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Переміщення коштів у касу РРО з каси філії');
       OsnovanieAccounts.Add('303'); OsnovanieStrings.Add('Переміщення коштів у касу філії з каси РРО');
       OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Отримання готівки з каси відділення');
       OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Отримання готівки з каси підприємства');
       OsnovanieAccounts.Add('373'); OsnovanieStrings.Add('Введення початкових залишків по відсоткам');
       OsnovanieAccounts.Add('0'); OsnovanieStrings.Add('Введення початкових залишків');
-      OsnovanieAccounts.Add('361'); OsnovanieStrings.Add('Оплата за продані вироби з драг.металів');
       OsnovanieAccounts.Add('372'); OsnovanieStrings.Add('Повернення підзвіта');
       OsnovanieAccounts.Add('3771'); OsnovanieStrings.Add('Повернення залогу');
       OsnovanieAccounts.Add('6852'); OsnovanieStrings.Add('Поступление денег от Аптеки');
      end
      else
       begin
+      OsnovanieAccounts.Add('631'); OsnovanieStrings.Add('Оплата постачальнику за товари або надані послуги');
       OsnovanieAccounts.Add('303'); OsnovanieStrings.Add('Переміщення коштів до каси РРО з каси філії');
       OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Переміщення коштів до каси філії з каси РРО');
       OsnovanieAccounts.Add('301'); OsnovanieStrings.Add('Готівка до каси підприємства');
