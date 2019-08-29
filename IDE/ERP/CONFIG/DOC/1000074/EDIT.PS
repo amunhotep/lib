@@ -272,7 +272,7 @@ var
   procedure actPodbor_OnExecute(Sender :TObject);
   var
     lkTMC_ID :string;
-    lkSQL    :string;
+    lkSQL, lkPrice :string;
   begin
     lkTMC_ID := '0';
     SetGlobalVariable('TMC_ID', lkTMC_ID);
@@ -280,7 +280,12 @@ var
     lkTMC_ID := GetGlobalVariable('TMC_ID');
     if((UpperCase(lkTMC_ID)<>'') and (lkTMC_ID <> '0'))then
       begin
-      lkSQL := 'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, QUANT)VALUES('''+DocId+''', '''+lkTMC_ID+''', 1.000)';
+      lkPrice := '0';  
+      GetField(FBDataBase, 'PROC$R_TMC_LIST_SEBESTLAST('+lkTMC_ID+')', 'PRICE', '', lkPrice);
+      if(StrTrimAll(lkPrice) = '')then
+        lkPrice := '0';
+
+      lkSQL := 'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, QUANT, PRICE)VALUES('''+DocId+''', '''+lkTMC_ID+''', 1.000, '+lkPrice+')';
       CloseDataSets;
       ExecSQL(dtsJournal.DataBase, lkSQL);
       RefreshView;
@@ -418,14 +423,18 @@ var
   procedure actPodborId_OnExecute(Sender :TObject);
   var
     lkTMC_ID   :Integer;
-    lkSQL, lkS :string;
+    lkSQL, lkS, lkPrice :string;
   begin
     lkTMC_ID := 0;
     if(not(Dialogs.InputQueryInteger('Подбор ТМЦ по коду', 'Введите код ТМЦ', lkTMC_ID)))then exit;
     GetField(FBDataBase, 'TABL$R_TMC', 'COUNT(ID)', 'ID = '''+IntToStr(lkTMC_ID)+''' ', lkS);
     if(lkS <> '0')then
       begin
-      lkSQL := 'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, QUANT)VALUES('''+DocId+''', '''+IntToStr(lkTMC_ID)+''', 1)';
+      lkPrice := '0';  
+      GetField(FBDataBase, 'PROC$R_TMC_LIST_SEBESTLAST('+IntToStr(lkTMC_ID)+')', 'PRICE', '', lkPrice);
+      if(StrTrimAll(lkPrice) = '')then
+        lkPrice := '0';
+      lkSQL := 'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, QUANT,PRICE)VALUES('''+DocId+''', '''+IntToStr(lkTMC_ID)+''', 1.000, '+lkPrice+')';
       CloseDataSets;
       ExecSQL(dtsJournal.DataBase, lkSQL);
       RefreshView;
