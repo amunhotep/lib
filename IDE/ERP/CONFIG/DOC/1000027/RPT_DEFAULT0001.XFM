@@ -1,4 +1,4 @@
-object Report47763E58C9432066A2C49EEBE9680098: TxReport
+object Report266014ADDB13A49EB31143DAED1B24A8: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -423,7 +423,7 @@ object Report47763E58C9432066A2C49EEBE9680098: TxReport
       Width = 72
       Height = 20
       Frame.Color = clBlack
-      Frame.Top = True
+      Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
@@ -738,18 +738,18 @@ object Report47763E58C9432066A2C49EEBE9680098: TxReport
       Mask = '# ### ### ##0.00 '
       FontSize = 6
     end
-    object xrExpression17: TxrExpression
+    object xrExpression8: TxrExpression
       Left = 580
       Top = 0
       Width = 72
-      Height = 15
+      Height = 14
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = True
       Frame.Left = False
       Frame.Right = True
       Size.Values = (
-        39.687500000000000000
+        37.041666666666670000
         1534.583333333333000000
         0.000000000000000000
         190.500000000000000000)
@@ -770,7 +770,7 @@ object Report47763E58C9432066A2C49EEBE9680098: TxReport
       ResetAfterPrint = False
       WordWrap = True
       Expression = 'qrDoc.QUANT'
-      Mask = '# ### ### ##0.000  '
+      Mask = '# ### ### ##0.00 '
       FontSize = 6
     end
   end
