@@ -21,7 +21,7 @@
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/REF/DIALOGCASEREFITEM.02.INC}   {$I PEAKTOP:IDE/ERP/DBO/REF/DIALOGCASEREFITEM.02.INC}   {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/CONFIG/REF/FIRMS/DIALOGCASEITEM.INC}{$I PEAKTOP:IDE/ERP/CONFIG/REF/FIRMS/DIALOGCASEITEM.INC}{$ENDIF} 
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/OPER/DIALOGPAYMENT.INC}         {$I PEAKTOP:IDE/ERP/DBO/OPER/DIALOGPAYMENT.INC}         {$ENDIF}
-{$IFNDEF PEAKTOP:IDE/ERP/CONFIG2/DOC/SQLEXEC.INC}            {$I ../SQLEXEC.INC}                                     {$ENDIF}
+{ю$IFNDEF PEAKTOP:IDE/ERP/CONFIG2/DOC/SQLEXEC.INC}            {ю$I ../SQLEXEC.INC}                                     {ю$ENDIF}
 const
   msg_doc_actcsins               = 'Создать контрагента';
   msg_doc_actcsins_hint          = 'Создать новую карточку Контрагента';
@@ -509,7 +509,7 @@ var
     lkSQL := 'SELECT FIRST 1 P.NEW_NUMBER FROM PROC$J$GENDOCNUMBER('+lkDBE.DataSource.DataSet.FieldByName('TYPE_ID').AsString+', '+
                 lkDBE.DataSource.DataSet.FieldByName('FIRM_ID').AsString+') P ';
     SetLength(lkNumber, 1);
-    if DocForm_SelectSQLParams([], lkSQL, [],[],['NEW_NUMBER'], lkNumber)then
+    if TERPForm_SelectSQLParams([], lkSQL, [],[],['NEW_NUMBER'], lkNumber)then
       begin
       if(StrTrimAll(lkNumber[0]) = '')then exit;
       with lkDBE.DataSource.DataSet do
@@ -1167,7 +1167,7 @@ var
       end;    
     TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
     SetLength(lkIDS, 1);
-    DocForm_SelectSQLParams([], lkSQL, [],[], ['CS_ID'], lkIDS);
+    TERPForm_SelectSQLParams([], lkSQL, [],[], ['CS_ID'], lkIDS);
     SetGlobalVariable('CS_ID',lkIDS[0]);
     call(StrAbsolutePath('../../REF/CS/DEFAULT_ITEM.PS', ScriptName));
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
@@ -1275,7 +1275,7 @@ var
         'END';  
       TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
       SetLength(lkIDS, 1);
-      DocForm_SelectSQLParams([], lkSQL, [],[], ['CS_ADDR_ID'], lkIDS);
+      TERPForm_SelectSQLParams([], lkSQL, [],[], ['CS_ADDR_ID'], lkIDS);
       SetGlobalVariable('CS_ADDR_ID',lkIDS[0]);
       call(StrAbsolutePath('../../REF/CS_ADDR/DEFAULT_ITEM_DLG.PS', ScriptName));
       TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
@@ -1329,7 +1329,7 @@ var
       '  SUSPEND; '+SQLCRLF+
       'END';  
     SetLength(lkIDS, 1);
-    DocForm_SelectSQLParams([], lkSQL, [],[], ['TMC_ID'], lkIDS);
+    TERPForm_SelectSQLParams([], lkSQL, [],[], ['TMC_ID'], lkIDS);
     SetGlobalVariable('TMC_ID',lkIDS[0]);
     call(StrAbsolutePath('../../REF/TMC/DEFAULT_ITEM.PS', ScriptName));
     TERPFormDocEditor_RefreshViewData(TComponent(Sender).Owner);

@@ -130,7 +130,7 @@
         begin
         SetGlobalVariable('J_ID', FieldByName('J_ID').AsString);
         if(FindField('J_TYPE_ID') <> nil)then
-          call(StrReplaceStr('PEAKTOP:IDE/ERP/CONFIG/DOC/<%OBJECT_TYPE%>/EDIT.PS', '<%OBJECT_TYPE%>', FieldByName('J_TYPE_ID').AsString));
+          call('DB:CONFIG/DOC/'+FieldByName('J_TYPE_ID').AsString+'/EDIT.PS');
         end;  
       end
      else

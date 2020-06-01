@@ -109,6 +109,6 @@ begin
       if GetFieldCommit(FBDataBase, 'PROC$J_INS_1000062('''+lkFirmId+''','''+lkTMCGroupId+''', '''+lkCsId+''', NULL)', 'J_ID', '', lkJ_ID)then
         begin
         SetGlobalVariable('J_ID', lkJ_ID);
-        call(StrAbsolutePath('./EDIT.PS',ScriptName));
+        call('DB:CONFIG/DOC/1000062/EDIT.PS');
         end;  
 end.  

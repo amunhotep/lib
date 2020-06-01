@@ -95,7 +95,7 @@ var
   function TStdLibGit_GetGitPath(var aExePath:string):Boolean;
   begin
     Result := false;
-    aExePath := StrAbsolutePath('../../git/bin/git.exe', Amunhotep.ExeName);
+    aExePath := StrAbsolutePath('../../git/32/bin/git.exe', Amunhotep.ExeName);
     {$IFDEF MSWINDOWS}
     aExePath := StrReplaceStr(aExePath, '/', '\');
     {$ENDIF}
