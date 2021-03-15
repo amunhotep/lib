@@ -349,7 +349,7 @@ var
         'SELECT TMP.ID, TMP.NAME FROM ( '+SQLCRLF+
         '            SELECT M.NAME AS ID, M.DESCR AS NAME FROM TABL$_MENUS M WHERE (TRIM(M.NAME) = '''+aCurrentTypeId+''') '+SQLCRLF+
         '  UNION ALL SELECT M.NAME AS ID, M.DESCR AS NAME FROM TABL$_MENUS M WHERE (TRIM(M.NAME) IN (SELECT T.ID FROM TABL$_TB T WHERE (T.TYPE_ID = '''+aCurrentTypeId+'''))) '+SQLCRLF+
-        '  UNION ALL SELECT M.NAME AS ID, M.DESCR AS NAME FROM TABL$_MENUS M WHERE ((M.ID = 1000000) AND (''-1'' = '''+aCurrentTypeId+''')) '+SQLCRLF+
+        '  UNION ALL SELECT M.NAME AS ID, M.DESCR AS NAME FROM TABL$_MENUS M WHERE ((M.ID < 1100000) AND (''-1'' = '''+aCurrentTypeId+''')) '+SQLCRLF+
         ')TMP ORDER BY 2 ';
     end;
   end;            
