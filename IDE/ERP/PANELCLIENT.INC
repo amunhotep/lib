@@ -286,11 +286,14 @@
         lkLastTop   := lkLastTop + Height + 2;
         end; 
       end;
-    with CreateTImage(Result,lkPnlLeft, 'ImageLogoLeft', alTop, 0, lkLastTop, lkPnlLeft.Width, Trunc(lkPnlLeft.Width * 1.5) )do
+    with CreateTImage(Result,lkPnlLeft, 'ImageLogoLeft', alTop, 0, lkLastTop, Trunc(lkPnlLeft.Width * 2.5), lkPnlLeft.Width )do
       begin 
-      lkFileName := PrepareAbsoleteFileName(DefaultFirebirdDialogImageLogoError);
+      lkFileName := PrepareAbsoleteFileName('PEAKTOP:IMG/SPLASH/BARLEFT01.BMP');
       if FileExists(lkFileName)then
         Picture.Bitmap.LoadFromFile(lkFileName);
+      Stretch      := False;
+      Center       := False;
+      Proportional := True;
       end;
     lkPC.OnChange := @PC_OnChange;
     PC_OnChange(lkPC);  

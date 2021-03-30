@@ -47,6 +47,7 @@ const //==================== PEAKTOP:APPL/SPLASH.INC ===========================
       Progress := 0;
       Visible  := false;
       StyleManager          := nil;
+      Colors.Background     := $000000;
       Colors.Highlight      := $9F5F00;
       Colors.HotTrackBorder := $9F5F00;
       Colors.Foreground     := $FFBF00;
@@ -105,9 +106,9 @@ const //==================== PEAKTOP:APPL/SPLASH.INC ===========================
           end
          else
           begin
-          Font.Color := clBlack;
-          TLabel(Result.FindComponent(amunhotep_splash_label_big)  ).Font.Color := clBlack;
-          TLabel(Result.FindComponent(amunhotep_splash_label_small)).Font.Color := clBlack + $2F2020;
+          Font.Color := $BF7F00;
+          TLabel(Result.FindComponent(amunhotep_splash_label_big)  ).Font.Color := $BF7F00;
+          TLabel(Result.FindComponent(amunhotep_splash_label_small)).Font.Color := $FFBF00;
           end;
         Brush.Style:= bsClear;
         lkCaption  := #$20#$A9+' ALOD software, 2002-'+FormatDateTime('yyyy', Now);
