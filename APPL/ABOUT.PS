@@ -23,8 +23,8 @@
     with lkForm do
       begin
       BorderStyle := bsDialog;
-      Height      := 480 + 64;
-      Width       := 540 + 18;
+      Height      := 360 + 48;
+      Width       := 480 + 2;
       Caption     := lkStr;
       Position    := poScreenCenter;
       Color       := Amunhotep.MainForm.StyleManager.Colors.Foreground;
@@ -39,18 +39,23 @@
     lkTS := CreateTxcTabSheet(lkPC,'tsLogo'   ,UpperCase(Amunhotep.Name),263,Amunhotep.MainForm.StyleManager.Colors.Window);
     lkTS.ParentFont := false;
     lkTS.Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
-    lkImgClient := CreateTImage(lkForm, lkTS, 'ImgCleint', alClient, 0, 0, 33, 34); lkImgClient.Transparent := false;
-    lkFileName := PrepareAbsoleteFileName('PEAKTOP:IMG/SPLASH/AMUNHOTEP1000.BMP');
+    lkImgClient := CreateTImage(lkForm, lkTS, 'ImgCleint', alClient, 0, 0, lkForm.Height, lkForm.Width); 
+    lkImgClient.Transparent := false;
+    lkImgClient.Stretch     := False;
+    lkImgClient.Center      := false;
+    lkFileName := PrepareAbsoleteFileName('PEAKTOP:IMG/SPLASH/AMUNHOTEP4.BMP');
     if FileExists(lkFileName)then
       lkImgClient.Picture.LoadFromFile(lkFileName);
     with lkImgClient.Picture.Bitmap.Canvas do
       begin
       Brush.Style := bsClear;
       Font.Color  := Amunhotep.MainForm.StyleManager.Colors.Border;
-      Font.Name   := 'Impact';
-      Font.Size   := 36;
-      Font.Style  := [];
-      TextOut(540 - TextWidth(lkVer) - 4, 0, lkVer);
+      Font.Name   := 'Tahoma';
+      Font.Size   := 12;
+      Font.Style  := [fsBold];
+      Font.Color  := $FFBF00;
+      lkVer := 'Core version: ' + lkVer;
+      TextOut(480 - TextWidth(lkVer) - 4, 360 - TextHeight(lkVer) - 4, lkVer);
       end;  
     lkTS := CreateTxcTabSheet(lkPC,'tsCopyright',#$A9' Copyright',103,Amunhotep.MainForm.StyleManager.Colors.Foreground);
     lkTS := CreateTxcTabSheet(lkPC,'tsLicense'  ,'Соглашение'    ,103,Amunhotep.MainForm.StyleManager.Colors.Window);

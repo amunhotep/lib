@@ -1,0 +1,20 @@
+{$IFNDEF PEAKTOP:GLOBAL_VARIABLES.INC}             {$I PEAKTOP:GLOBAL_VARIABLES.INC}              {$ENDIF}
+{$IFNDEF PEAKTOP:SYSUTILS/FILES/SEARCH_UTILS.INC}  {$I PEAKTOP:SYSUTILS/FILES/SEARCH_UTILS.INC}   {$ENDIF}
+var
+  lkSL :TStringList;
+  I :Integer;
+  lkRC_DATA :string;
+begin
+  lkRC_DATA := ''; 
+
+  lkSL := Files_FindFiles(ExtractFilePath(PrepareAbsoleteFileName('PEAKTOP:IMG/DUMMY.TXT')), '*.BMP', false);
+  for i:= 0 to lkSL.Count-1 do
+    begin
+    lkRC_DATA := lkRC_DATA + 
+      'AMUNHOTEP' + ExtractFileName(StrReplaceStr(lkSL[i], '.BMP', ''))+'    RCDATA    "'+lkSL[i]+'" '+#13#10;
+    WriteLn(ExtractFileName(lkSL[i]) + ' = ' + lkSL[i]);
+    end;
+  lkSL.Free;
+  
+  StringsSaveToFile('D:\projects\pas\alod.restaurant\res\ALODImagesAmunhotep.rc', lkRC_DATA);
+end.
