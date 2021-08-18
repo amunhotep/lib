@@ -933,7 +933,7 @@ var
     GetField(FBDataBase, 'TABL$R_TMC', 'URL', 'ID = '''+lkTMC_ID+''' ', lkTMC_URL);
     if(StrTrimAll(lkTMC_URL) = '')then
       begin
-      lkTMC_URL := 'http://www.google.com.ua/#hl=ru&q='+lkTMC_NAME;
+      lkTMC_URL := 'https://google.ru/search?q='+lkTMC_NAME;
       if(Dialogs.MessageDlg('В справочнике ТМЦ для данной позиции не указан ULR с описанием.'+#13#10+#13#10+
         'Попытаться найти описание ТМЦ в интеренете ?', mtConfirmation, [mbYes, mbNo]) = mrYes)then
         TERPFormDocEditor_ShellExecute(0, 'open', lkTMC_URL, '', '', 5);  

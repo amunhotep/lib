@@ -64,7 +64,8 @@
     while not aQr.EOF do
       begin
       if TERPFormGrid_DataSetFilter_Exists(aQr.FieldByName('ID').AsString) then
-        lkSQLWhere := lkSQLWhere +'  AND ('+StrReplaceStr(TERPFormGrid_DataSetFilter[TERPFormGrid_DataSetFilter_Index(aQr.FieldByName('ID').AsString)].FilterStr, '?', ' '+ERP_SQL_TABLEPREFIX+'.')+') '+SQLCRLF;
+        lkSQLWhere := lkSQLWhere +'  AND ('+
+          StrReplaceStr(TERPFormGrid_DataSetFilter[TERPFormGrid_DataSetFilter_Index(aQr.FieldByName('ID').AsString)].FilterStr, '?', ' '+ERP_SQL_TABLEPREFIX+'.')+') '+SQLCRLF;
       lkFieldType     := UpperCase(aQr.FieldByName('FIELD_TYPE').AsString);  
       lkSQLInsUpdVars := lkSQLInsUpdVars +'  ,'+StrEndSpaces(ERP_SQL_FIELDPREFIX+StrTrimAll(aQr.FieldByName('ID').AsString),32)+' '+StrEndSpaces(lkFieldType,20)+' = ?'+StrTrimAll(aQr.FieldByName('ID').AsString)+' '+SQLCRLF;   
       if(aQr.FieldByName('FLAG_PERIODICAL').AsInteger = 1)then
