@@ -11,7 +11,7 @@ SELECT FIRST 1 R.ID AS DS$ID
       ,R.TMC_LIST_ID  
       ,R.NAME  
       ,R.NAME2  
-      ,R.ARTICLE  
+      ,COALESCE( TRIM(R.ARTICLE), '') AS ARTICLE  
       ,R.STATEFINE  
       ,R.MODELNAME  
       ,R.NUMSHOW  
