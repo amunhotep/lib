@@ -1,4 +1,4 @@
-object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
+object Report885ACCA7D69A41A472D8B0C0D7A83958: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -89,7 +89,7 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
     BandType = rbDetail
     object xrDBBarcode1: TxrDBBarcode
       Left = 5
-      Top = 93
+      Top = 117
       Width = 240
       Height = 32
       Frame.Color = clBlack
@@ -100,14 +100,15 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
       Size.Values = (
         84.666666666666670000
         13.229166666666670000
-        246.062500000000000000
+        309.562500000000000000
         635.000000000000000000)
       Transparent = False
       BarType = xbcCodeEAN13
+      BarCode = '2000000862019'
       BarHeight = 0
       Modul = 1
       Ratio = 2.000000000000000000
-      CheckSum = xbccsModulo10
+      CheckSum = xbccsNone
       ColorSpc = clWhite
       ColorBar = clBlack
       Orientation = gdLeftToRight
@@ -118,40 +119,6 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
       HMargin = 0
       DataField = 'BARCODE'
       DataSetIndex = 0
-    end
-    object xrExpression4: TxrExpression
-      Left = 72
-      Top = 125
-      Width = 154
-      Height = 27
-      Frame.Color = clBlack
-      Frame.Top = False
-      Frame.Bottom = False
-      Frame.Left = False
-      Frame.Right = False
-      Size.Values = (
-        71.437500000000000000
-        190.500000000000000000
-        330.729166666666700000
-        407.458333333333300000)
-      Transparent = True
-      Alignment = taRightJustify
-      AlignToBand = False
-      AutoSize = False
-      AutoStretch = False
-      Font.Charset = RUSSIAN_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -24
-      Font.Name = 'Times New Roman'
-      Font.Style = [fsBold]
-      Color = clWhite
-      Indent = 0
-      Layout = tlTop
-      ParentFont = False
-      ResetAfterPrint = False
-      WordWrap = True
-      Expression = 'FORMATNUMERIC('#39'# ### ##0.00 '#1075#1088#1085'.'#39',qrMain.PRICE)'
-      FontSize = 18
     end
     object xrExpression5: TxrExpression
       Left = 1
@@ -187,43 +154,10 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
       Expression = 'qrMain.ARTICLE'
       FontSize = 6
     end
-    object xrLabel1: TxrLabel
-      Left = 9
-      Top = 125
-      Width = 64
-      Height = 27
-      Frame.Color = clBlack
-      Frame.Top = False
-      Frame.Bottom = False
-      Frame.Left = False
-      Frame.Right = False
-      Size.Values = (
-        71.437500000000000000
-        23.812500000000000000
-        330.729166666666700000
-        169.333333333333300000)
-      Transparent = True
-      Alignment = taLeftJustify
-      AlignToBand = False
-      AutoSize = False
-      AutoStretch = False
-      Caption = #1062'i'#1085#1072':'
-      Color = clWhite
-      Font.Charset = RUSSIAN_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -24
-      Font.Name = 'Times New Roman'
-      Font.Style = [fsBold]
-      Indent = 0
-      Layout = tlTop
-      ParentFont = False
-      WordWrap = True
-      FontSize = 18
-    end
     object xrExpressionMemo1: TxrExpressionMemo
-      Left = 1
-      Top = 42
-      Width = 250
+      Left = 4
+      Top = 66
+      Width = 242
       Height = 48
       Frame.Color = clBlack
       Frame.Top = False
@@ -232,9 +166,9 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
       Frame.Right = False
       Size.Values = (
         127.000000000000000000
-        2.645833333333333000
-        111.125000000000000000
-        661.458333333333300000)
+        10.583333333333330000
+        174.625000000000000000
+        640.291666666666700000)
       Transparent = True
       RemoveBlankLines = False
       Alignment = taLeftJustify
@@ -256,20 +190,20 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
       FontSize = 6
     end
     object xrExpressionMemo2: TxrExpressionMemo
-      Left = 1
-      Top = 13
-      Width = 250
-      Height = 28
+      Left = 4
+      Top = 18
+      Width = 242
+      Height = 44
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        74.083333333333330000
-        2.645833333333333000
-        34.395833333333330000
-        661.458333333333300000)
+        116.416666666666700000
+        10.583333333333330000
+        47.625000000000000000
+        640.291666666666700000)
       Transparent = True
       RemoveBlankLines = False
       Alignment = taCenter
@@ -324,40 +258,39 @@ object ReportB6535B7C30327BE18BC62CE794B4C579: TxReport
       Expression = 'qrEnt.FILIAL_NAME'
       FontSize = 7
     end
-    object xrExpressionMemo3: TxrExpressionMemo
-      Left = 96
-      Top = 88
-      Width = 152
-      Height = 36
+    object xrExpression4: TxrExpression
+      Left = 112
+      Top = 109
+      Width = 138
+      Height = 45
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        95.250000000000000000
-        254.000000000000000000
-        232.833333333333300000
-        402.166666666666700000)
+        119.062500000000000000
+        296.333333333333300000
+        288.395833333333300000
+        365.125000000000000000)
       Transparent = True
-      RemoveBlankLines = False
       Alignment = taRightJustify
       AlignToBand = False
       AutoSize = False
       AutoStretch = False
-      Color = clWhite
       Font.Charset = RUSSIAN_CHARSET
-      Font.Color = 10485760
-      Font.Height = -32
+      Font.Color = clWindowText
+      Font.Height = -37
       Font.Name = 'Times New Roman'
       Font.Style = [fsBold]
+      Color = clWhite
       Indent = 0
       Layout = tlTop
-      Lines.Strings = (
-        '{IF(qrMain.FLAG_LOCKED=1,'#39#1040#1050#1062#1048#1071#39','#39#39')}')
       ParentFont = False
+      ResetAfterPrint = False
       WordWrap = True
-      FontSize = 24
+      Expression = 'FORMATNUMERIC('#39'# ### ##0.00 '#39',qrMain.PRICE)'
+      FontSize = 28
     end
   end
 end
