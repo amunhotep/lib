@@ -26,7 +26,7 @@
       lkRpt.DataSets[2].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/4/RPT_DEFAULT02.SQL');
       lkRpt.DataSets[3].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/REF/CS/RPT0000.SQL'); 
       lkImg := TxrImage(lkRpt.FindComponent('ImgLogo'));
-      lkRes := StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName);
+      lkRes := StrAbsolutePath('../conf/ent/logo_filial.bmp', Amunhotep.ExeName);
       if FileExists(lkRes)then
         try
           lkImg.Picture.LoadFromFile(lkRes);
