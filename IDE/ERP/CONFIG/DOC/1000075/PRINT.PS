@@ -84,20 +84,12 @@ begin
   if not GetField(FBDataBase, 'TABL$J_4', 'TYPE_ID', 'ID = '+J_ID+' ', J_TYPE_ID)then exit;
   Varnts := 
     'Шаблон документа на украинском языке'+#13#10+
-    '  +--- маленький шрифт '+#13#10+
 //    'Шаблон документа на русском языке'+#13#10+
-    'Спецификация по счету-фактуре'+#13#10+
-    'Штрих-коды на ТМЦ   6,5 x 4,5см (3 в ряд на A4)'+#13#10+
-    'Штрих-коды на ТМЦ   5,0 x 3,0см (4 в ряд на A4)'+#13#10+
-    'Штрих-коды на ТМЦ   5,0 x 2,0см (4 в ряд на A4)';
+    'Спецификация по счету-фактуре';
   Indx := 0;
   if not Dialogs.CaseItem('Выберите шаблон печати', Varnts, Indx) then exit;
   case Indx of
     0:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_DEFAULT0001'+lkSuffix+'.XFM');
-    1:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_DEFAULT0001S'+lkSuffix+'.XFM');
-    2:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_SPECIFICATION.XFM');
-    3:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC_CTGR/PRICE0001.XFM');
-    4:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC_CTGR/PRICE0002.XFM');
-    5:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC_CTGR/PRICE0003.XFM');
+    1:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_SPECIFICATION.XFM');
   end;   
 end.
