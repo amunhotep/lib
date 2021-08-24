@@ -1,6 +1,6 @@
-object Report38AA118BA4062B0047D197173EB1CB09: TxReport
+object Report356447D175355517AEA2D04C963ED68C: TxReport
   Left = 0
-  Top = -326
+  Top = -238
   Width = 794
   Height = 1123
   Frame.Color = clBlack
@@ -593,7 +593,7 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
     Left = 38
     Top = 445
     Width = 718
-    Height = 152
+    Height = 136
     Frame.Color = clBlack
     Frame.Top = False
     Frame.Bottom = False
@@ -605,7 +605,7 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
     ForceNewColumn = False
     ForceNewPage = False
     Size.Values = (
-      402.166666666666700000
+      359.833333333333300000
       1899.708333333333000000)
     BandType = rbSummary
     object xrLabel11: TxrLabel
@@ -678,19 +678,19 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
     end
     object xrExpressionMemo18: TxrExpressionMemo
       Left = 0
-      Top = 58
-      Width = 718
-      Height = 58
+      Top = 48
+      Width = 716
+      Height = 16
       Frame.Color = clBlack
       Frame.Top = False
-      Frame.Bottom = False
-      Frame.Left = False
-      Frame.Right = False
+      Frame.Bottom = True
+      Frame.Left = True
+      Frame.Right = True
       Size.Values = (
-        153.458333333333300000
+        42.333333333333330000
         0.000000000000000000
-        153.458333333333300000
-        1899.708333333333000000)
+        127.000000000000000000
+        1894.416666666667000000)
       Transparent = True
       RemoveBlankLines = False
       Alignment = taLeftJustify
@@ -707,8 +707,8 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
       Layout = tlTop
       Lines.Strings = (
         
-          #1042#1089#1100#1086#1075#1086' '#1085#1072' '#1089#1091#1084#1091': {FORMATCURR(qrJrnl.P_SUMNDP, '#39'UAH'#39', '#39'UKR'#39', FALSE' +
-          ')}')
+          #1057#1091#1084#1072' '#1087#1088#1086#1087#1080#1089#1086#1084': {FORMATCURR(qrJrnl.P_SUMNDP, '#39'UAH'#39', '#39'UKR'#39', FALSE)' +
+          '}')
       ParentFont = False
       WordWrap = True
       FontSize = 8
@@ -851,7 +851,7 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
     end
     object xrExpressionMemo10: TxrExpressionMemo
       Left = 114
-      Top = 117
+      Top = 101
       Width = 600
       Height = 16
       Frame.Color = clBlack
@@ -862,7 +862,7 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
       Size.Values = (
         42.333333333333330000
         301.625000000000000000
-        309.562500000000000000
+        267.229166666666700000
         1587.500000000000000000)
       Transparent = True
       RemoveBlankLines = False
@@ -890,7 +890,7 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
     end
     object xrExpressionMemo6: TxrExpressionMemo
       Left = 114
-      Top = 133
+      Top = 117
       Width = 600
       Height = 16
       Frame.Color = clBlack
@@ -901,7 +901,7 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
       Size.Values = (
         42.333333333333330000
         301.625000000000000000
-        351.895833333333300000
+        309.562500000000000000
         1587.500000000000000000)
       Transparent = True
       RemoveBlankLines = False
@@ -1202,18 +1202,18 @@ object Report38AA118BA4062B0047D197173EB1CB09: TxReport
     BandType = rbPageHeader
     object xrExpressionMemo1: TxrExpressionMemo
       Left = 0
-      Top = 284
+      Top = 276
       Width = 718
-      Height = 36
+      Height = 44
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        95.250000000000000000
+        116.416666666666700000
         0.000000000000000000
-        751.416666666666700000
+        730.250000000000000000
         1899.708333333333000000)
       Transparent = True
       RemoveBlankLines = False
