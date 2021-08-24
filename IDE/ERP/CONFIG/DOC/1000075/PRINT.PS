@@ -75,8 +75,10 @@ begin
   lkStr := '';
   lkSuffix := '';
   GetField(FBDataBase,'MON$DATABASE' ,'MON$DATABASE_NAME','', lkStr);
-  if(Pos('SS_001TOOLSWORLD.FDB', lkStr) > 0)then
+  if(Pos('SS_001.FDB', lkStr) > 0)then
     lkSuffix := 'SS001';
+  if(Pos('SS003.FDB', lkStr) > 0)then
+    lkSuffix := 'SS003';
 
 
   J_ID := GetGlobalVariable('J_ID');
