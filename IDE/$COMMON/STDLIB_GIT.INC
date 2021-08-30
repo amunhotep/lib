@@ -221,7 +221,7 @@ var
     AmunhotepLocalStringsLoad(TStdLibGit_Local, AmunhotepLocalGet, 'PEAKTOP:IDE/$COMMON/STDLIB_GIT.JSON' );  
     lkCaption := AmunhotepLocalString(TStdLibGit_Local, 'MSG_CAPTION', 'Обновления') + ' ['+TStdLibGit_GetVersion+']';
     Result    := TCommonForm_Create(lkCaption, lkCaption, STDLIBGIT_ICON, STDLIBGIT_BITMAP, aModalForm, @TCommonForm_OnClose);
-    TCommonForm_SetTopBarColor( Result, $BFFF80 );
+    TCommonForm_SetTopBarColor( Result, clAqua );
     lkToolBar := CreateTxcGradientPanelVistaToolBar(Result, Result, 'ToolBar', '', alTop, 0,200,24,600, xbsRaized);  
     lkMemo := CreateTMemo(Result, Result, obj_name_common_memo, 0, 200, 200, 200, alClient);
     with lkMemo do
