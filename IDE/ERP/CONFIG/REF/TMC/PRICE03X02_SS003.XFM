@@ -1,8 +1,8 @@
-object Report012A16DE0E680171DBA85096DE23AB10: TxReport
+object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
   Left = 0
   Top = 0
-  Width = 794
-  Height = 1123
+  Width = 227
+  Height = 151
   Frame.Color = clBlack
   Frame.Top = False
   Frame.Bottom = False
@@ -41,14 +41,14 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
   Options = [FirstPageHeader, LastPageFooter]
   Page.Columns = 1
   Page.Orientation = poPortrait
-  Page.PaperSize = A4
+  Page.PaperSize = Custom
   Page.Values = (
-    50.000000000000000000
-    2970.000000000000000000
-    30.000000000000000000
-    2100.000000000000000000
-    220.000000000000000000
-    150.000000000000000000
+    0.000000000000000000
+    200.000000000000000000
+    0.000000000000000000
+    300.000000000000000000
+    0.000000000000000000
+    0.000000000000000000
     0.000000000000000000)
   PrinterSettings.Copies = 1
   PrinterSettings.OutputBin = Auto
@@ -65,14 +65,14 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
   PrintIfEmpty = True
   SnapToGrid = True
   Units = MM
-  Zoom = 100
+  Zoom = 200
   PrevFormStyle = fsMDIChild
   PreviewInitialState = wsNormal
   object bndDetail: TxrBand
-    Left = 83
-    Top = 11
-    Width = 654
-    Height = 84
+    Left = 0
+    Top = 0
+    Width = 227
+    Height = 150
     Frame.Color = clBlack
     Frame.Top = False
     Frame.Bottom = False
@@ -82,16 +82,16 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
     Color = clWhite
     AlignToBottom = False
     ForceNewColumn = False
-    ForceNewPage = False
+    ForceNewPage = True
     Size.Values = (
-      222.250000000000000000
-      1730.375000000000000000)
+      198.437500000000000000
+      300.302083333333300000)
     BandType = rbDetail
     object xrExpressionMemo1: TxrExpressionMemo
-      Left = 1
-      Top = 60
-      Width = 58
-      Height = 12
+      Left = 2
+      Top = 120
+      Width = 116
+      Height = 24
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
@@ -123,10 +123,10 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
       FontSize = 7
     end
     object xrExpression4: TxrExpression
-      Left = 16
-      Top = 56
-      Width = 82
-      Height = 18
+      Left = 32
+      Top = 112
+      Width = 164
+      Height = 36
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
@@ -157,10 +157,10 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
       FontSize = 10
     end
     object xrDBBarcode1: TxrDBBarcode
-      Left = 9
-      Top = 28
-      Width = 112
-      Height = 28
+      Left = 2
+      Top = 56
+      Width = 216
+      Height = 56
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
@@ -168,9 +168,9 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
       Frame.Right = False
       Size.Values = (
         74.083333333333330000
-        23.812500000000000000
+        2.645833333333333000
         74.083333333333330000
-        296.333333333333300000)
+        285.750000000000000000)
       Transparent = True
       BarType = xbcCodeEAN13
       BarCode = '2000000862019'
@@ -195,12 +195,12 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
       DataSetIndex = 0
     end
     object xrExpressionMemo2: TxrExpressionMemo
-      Left = 1
+      Left = 2
       Top = 0
-      Width = 122
-      Height = 28
+      Width = 220
+      Height = 56
       Frame.Color = clBlack
-      Frame.Top = True
+      Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
@@ -208,7 +208,7 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
         74.083333333333330000
         2.645833333333333000
         0.000000000000000000
-        322.791666666666700000)
+        291.041666666666700000)
       Transparent = True
       RemoveBlankLines = False
       Alignment = taCenter
@@ -230,20 +230,20 @@ object Report012A16DE0E680171DBA85096DE23AB10: TxReport
       FontSize = 6
     end
     object xrLabel1: TxrLabel
-      Left = 95
-      Top = 58
-      Width = 20
-      Height = 12
+      Left = 190
+      Top = 120
+      Width = 32
+      Height = 21
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        31.750000000000000000
+        27.781250000000000000
         251.354166666666700000
-        153.458333333333300000
-        52.916666666666670000)
+        158.750000000000000000
+        42.333333333333330000)
       Transparent = True
       Alignment = taLeftJustify
       AlignToBand = False
