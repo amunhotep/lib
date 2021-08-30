@@ -1,4 +1,4 @@
-object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
+object Report4E8C70C689C8814859CA4D8C8E69A9D9: TxReport
   Left = 0
   Top = 0
   Width = 227
@@ -88,8 +88,8 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       300.302083333333300000)
     BandType = rbDetail
     object xrExpressionMemo1: TxrExpressionMemo
-      Left = 2
-      Top = 120
+      Left = 10
+      Top = 124
       Width = 116
       Height = 24
       Frame.Color = clBlack
@@ -99,8 +99,8 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       Frame.Right = False
       Size.Values = (
         31.750000000000000000
-        2.645833333333333000
-        158.750000000000000000
+        13.229166666666670000
+        164.041666666666700000
         153.458333333333300000)
       Transparent = True
       RemoveBlankLines = False
@@ -157,9 +157,9 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       FontSize = 10
     end
     object xrDBBarcode1: TxrDBBarcode
-      Left = 2
+      Left = 18
       Top = 56
-      Width = 216
+      Width = 200
       Height = 56
       Frame.Color = clBlack
       Frame.Top = False
@@ -168,9 +168,9 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       Frame.Right = False
       Size.Values = (
         74.083333333333330000
-        2.645833333333333000
+        23.812500000000000000
         74.083333333333330000
-        285.750000000000000000)
+        264.583333333333300000)
       Transparent = True
       BarType = xbcCodeEAN13
       BarCode = '2000000862019'
@@ -195,9 +195,9 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       DataSetIndex = 0
     end
     object xrExpressionMemo2: TxrExpressionMemo
-      Left = 2
+      Left = 10
       Top = 0
-      Width = 220
+      Width = 208
       Height = 56
       Frame.Color = clBlack
       Frame.Top = False
@@ -206,12 +206,12 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       Frame.Right = False
       Size.Values = (
         74.083333333333330000
-        2.645833333333333000
+        13.229166666666670000
         0.000000000000000000
-        291.041666666666700000)
+        275.166666666666700000)
       Transparent = True
       RemoveBlankLines = False
-      Alignment = taCenter
+      Alignment = taLeftJustify
       AlignToBand = False
       AutoSize = False
       AutoStretch = False
@@ -220,7 +220,7 @@ object Report749C2CBA235E88AAE57302C9ACD3BED3: TxReport
       Font.Color = clWindowText
       Font.Height = -8
       Font.Name = 'Arial'
-      Font.Style = [fsBold]
+      Font.Style = []
       Indent = 0
       Layout = tlTop
       Lines.Strings = (
