@@ -26,7 +26,7 @@
       lkRpt.DataSets[2].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/4/RPT_DEFAULT02.SQL');
       lkRpt.DataSets[3].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/REF/CS/RPT0000.SQL'); 
       lkImg := TxrImage(lkRpt.FindComponent('ImgLogo'));
-      lkRes := StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName);
+      lkRes := StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName);
       if FileExists(lkRes)then
         try
           lkImg.Picture.LoadFromFile(lkRes);
@@ -69,26 +69,25 @@ var
   J_TYPE_ID :string;
   Indx      :Integer;
   Varnts    :string;
+  lkStr     :string;
+  lkSuffix  :string;
 begin
+  lkStr := '';
+  lkSuffix := '';
+  GetField(FBDataBase,'MON$DATABASE' ,'MON$DATABASE_NAME','', lkStr);
+  if(Pos('SS003.FDB', lkStr) > 0)then
+    lkSuffix := 'SS003';
+
   J_ID := GetGlobalVariable('J_ID');
   if( (StrCiphersOnlyInt(J_ID)='') or (UpperCase(J_ID)='NULL') )then exit;
   if not GetField(FBDataBase, 'TABL$J_4', 'TYPE_ID', 'ID = '+J_ID+' ', J_TYPE_ID)then exit;
   Varnts := 
     'Шаблон документа на украинском языке'+#13#10+
-    '  +--- маленький шрифт '+#13#10+
-//    'Шаблон документа на русском языке'+#13#10+
-    'Спецификация по счету-фактуре'+#13#10+
-    'Штрих-коды на ТМЦ   6,5 x 4,5см (3 в ряд на A4)'+#13#10+
-    'Штрих-коды на ТМЦ   5,0 x 3,0см (4 в ряд на A4)'+#13#10+
-    'Штрих-коды на ТМЦ   5,0 x 2,0см (4 в ряд на A4)';
+    'Спецификация по счету-фактуре';
   Indx := 0;
   if not Dialogs.CaseItem('Выберите шаблон печати', Varnts, Indx) then exit;
   case Indx of
-    0:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_DEFAULT0001.XFM');
-    1:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_DEFAULT0001S.XFM');
-    2:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_SPECIFICATION.XFM');
-    3:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC_CTGR/PRICE0001.XFM');
-    4:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC_CTGR/PRICE0002.XFM');
-    5:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC_CTGR/PRICE0003.XFM');
+    0:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_DEFAULT0001'+lkSuffix+'.XFM');
+    1:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_SPECIFICATION.XFM');
   end;   
 end.
