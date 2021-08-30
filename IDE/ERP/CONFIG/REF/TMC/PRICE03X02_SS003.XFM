@@ -1,4 +1,4 @@
-object Report4E8C70C689C8814859CA4D8C8E69A9D9: TxReport
+object Report18E678A1C74858DCBE9E9BCD9D6EDBAD: TxReport
   Left = 0
   Top = 0
   Width = 227
@@ -89,7 +89,7 @@ object Report4E8C70C689C8814859CA4D8C8E69A9D9: TxReport
     BandType = rbDetail
     object xrExpressionMemo1: TxrExpressionMemo
       Left = 10
-      Top = 124
+      Top = 120
       Width = 116
       Height = 24
       Frame.Color = clBlack
@@ -100,7 +100,7 @@ object Report4E8C70C689C8814859CA4D8C8E69A9D9: TxReport
       Size.Values = (
         31.750000000000000000
         13.229166666666670000
-        164.041666666666700000
+        158.750000000000000000
         153.458333333333300000)
       Transparent = True
       RemoveBlankLines = False
@@ -220,7 +220,7 @@ object Report4E8C70C689C8814859CA4D8C8E69A9D9: TxReport
       Font.Color = clWindowText
       Font.Height = -8
       Font.Name = 'Arial'
-      Font.Style = []
+      Font.Style = [fsBold]
       Indent = 0
       Layout = tlTop
       Lines.Strings = (
