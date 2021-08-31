@@ -1,4 +1,4 @@
-object ReportEC4B1B8277AD1483870D0AB1EAB74503: TxReport
+object Report3D085C61A35A8161805CC6B360AE87ED: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -120,8 +120,11 @@ object ReportEC4B1B8277AD1483870D0AB1EAB74503: TxReport
         #1050#1086#1076': {qrMain.ID} '
         #1054#1076': {qrMain.EDIZM_ID_} '
         
-          '{IF(DEV_TMC_BRAND_ID<>0, '#39#1052#1072#1088#1082#1072': '#39' + DEV_TMC_BRAND_ID_ +'#39' '#39', '#39#39')' +
-          '}')
+          '{IF(qrMain.DEV_TMC_BRAND_ID<>0, '#39#1052#1072#1088#1082#1072': '#39' + qrMain.DEV_TMC_BRAND' +
+          '_ID_ +'#39' '#39', '#39#39')}'
+        
+          '{IF(qrMain.MODELNAME<>'#39#39', '#39#1052#1086#1076#1077#1083#1100': '#39' + qrMain.MODELNAME +'#39' '#39', '#39#39 +
+          ')}')
       ParentFont = False
       WordWrap = True
       FontSize = 7
@@ -148,7 +151,7 @@ object ReportEC4B1B8277AD1483870D0AB1EAB74503: TxReport
       AutoStretch = False
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
-      Font.Height = -43
+      Font.Height = -37
       Font.Name = 'Arial'
       Font.Style = [fsBold]
       Color = clWhite
@@ -158,7 +161,7 @@ object ReportEC4B1B8277AD1483870D0AB1EAB74503: TxReport
       ResetAfterPrint = False
       WordWrap = True
       Expression = 'FORMATNUMERIC('#39'# ### ##0.00 '#39',qrMain.PRICE)'
-      FontSize = 32
+      FontSize = 28
     end
     object xrDBBarcode1: TxrDBBarcode
       Left = 8
@@ -229,7 +232,7 @@ object ReportEC4B1B8277AD1483870D0AB1EAB74503: TxReport
       Layout = tlTop
       Lines.Strings = (
         '{qrMain.NAME2}'
-        '{IF(ARTICLE<>'#39#39', '#39#1040#1088#1090#1110#1082#1091#1083': '#39' + ARTICLE, '#39#39')}')
+        '{IF(qrMain.ARTICLE<>'#39#39', '#39#1040#1088#1090#1110#1082#1091#1083': '#39' + qrMain.ARTICLE, '#39#39')}')
       ParentFont = False
       WordWrap = True
       FontSize = 10
