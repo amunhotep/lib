@@ -1,4 +1,4 @@
-object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
+object ReportEC4B1B8277AD1483870D0AB1EAB74503: TxReport
   Left = 0
   Top = 0
   Width = 794
@@ -13,7 +13,7 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
   Font.Charset = RUSSIAN_CHARSET
   Font.Color = clWindowText
   Font.Height = -9
-  Font.Name = 'Verdana'
+  Font.Name = 'Arial'
   Font.Style = []
   ParentFont = False
   AutoFree = True
@@ -89,54 +89,16 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
     BandType = rbDetail
     object xrExpressionMemo1: TxrExpressionMemo
       Left = 106
-      Top = 232
-      Width = 120
-      Height = 29
-      Frame.Color = clBlack
-      Frame.Top = False
-      Frame.Bottom = False
-      Frame.Left = False
-      Frame.Right = False
-      Size.Values = (
-        76.729166666666670000
-        280.458333333333300000
-        613.833333333333300000
-        317.500000000000000000)
-      Transparent = True
-      RemoveBlankLines = False
-      Alignment = taRightJustify
-      AlignToBand = False
-      AutoSize = False
-      AutoStretch = False
-      Color = clWhite
-      Font.Charset = RUSSIAN_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -9
-      Font.Name = 'Arial'
-      Font.Style = []
-      Indent = 0
-      Layout = tlTop
-      Lines.Strings = (
-        #1050#1086#1076': {qrMain.ID}'
-        
-          '{IF(DEV_TMC_BRAND_ID<>0, '#39#1052#1072#1088#1082#1072': '#39' + DEV_TMC_BRAND_ID_ +'#39'  '#39', '#39#39 +
-          ')}')
-      ParentFont = False
-      WordWrap = True
-      FontSize = 7
-    end
-    object xrExpressionMemo3: TxrExpressionMemo
-      Left = 106
       Top = 216
       Width = 120
-      Height = 13
+      Height = 45
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        34.395833333333330000
+        119.062500000000000000
         280.458333333333300000
         571.500000000000000000
         317.500000000000000000)
@@ -151,29 +113,33 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       Font.Color = clWindowText
       Font.Height = -9
       Font.Name = 'Arial'
-      Font.Style = []
+      Font.Style = [fsBold]
       Indent = 0
       Layout = tlTop
       Lines.Strings = (
-        #1054#1076': {qrMain.EDIZM_ID_}')
+        #1050#1086#1076': {qrMain.ID} '
+        #1054#1076': {qrMain.EDIZM_ID_} '
+        
+          '{IF(DEV_TMC_BRAND_ID<>0, '#39#1052#1072#1088#1082#1072': '#39' + DEV_TMC_BRAND_ID_ +'#39' '#39', '#39#39')' +
+          '}')
       ParentFont = False
       WordWrap = True
       FontSize = 7
     end
     object xrExpression4: TxrExpression
       Left = 0
-      Top = 154
+      Top = 162
       Width = 202
-      Height = 45
+      Height = 52
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        119.062500000000000000
+        137.583333333333300000
         0.000000000000000000
-        407.458333333333300000
+        428.625000000000000000
         534.458333333333300000)
       Transparent = True
       Alignment = taRightJustify
@@ -182,7 +148,7 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       AutoStretch = False
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
-      Font.Height = -37
+      Font.Height = -43
       Font.Name = 'Arial'
       Font.Style = [fsBold]
       Color = clWhite
@@ -192,7 +158,7 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       ResetAfterPrint = False
       WordWrap = True
       Expression = 'FORMATNUMERIC('#39'# ### ##0.00 '#39',qrMain.PRICE)'
-      FontSize = 28
+      FontSize = 32
     end
     object xrDBBarcode1: TxrDBBarcode
       Left = 8
@@ -227,26 +193,26 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'Verdana'
+      Font.Name = 'Arial'
       Font.Style = []
       DataField = 'BARCODE'
       DataSetIndex = 0
     end
     object xrExpressionMemo2: TxrExpressionMemo
-      Left = 4
-      Top = 64
-      Width = 218
-      Height = 88
+      Left = 1
+      Top = 66
+      Width = 224
+      Height = 96
       Frame.Color = clBlack
-      Frame.Top = False
+      Frame.Top = True
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        232.833333333333300000
-        10.583333333333330000
-        169.333333333333300000
-        576.791666666666700000)
+        254.000000000000000000
+        2.645833333333333000
+        174.625000000000000000
+        592.666666666666700000)
       Transparent = True
       RemoveBlankLines = False
       Alignment = taCenter
@@ -272,14 +238,14 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       Left = 66
       Top = 1
       Width = 160
-      Height = 37
+      Height = 16
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        97.895833333333330000
+        42.333333333333330000
         174.625000000000000000
         2.645833333333333000
         423.333333333333300000)
@@ -293,8 +259,8 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       Font.Charset = RUSSIAN_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
-      Font.Name = 'Verdana'
-      Font.Style = [fsBold, fsUnderline]
+      Font.Name = 'Arial'
+      Font.Style = [fsBold]
       Indent = 0
       Layout = tlTop
       Lines.Strings = (
@@ -305,18 +271,18 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
     end
     object xrLabel1: TxrLabel
       Left = 199
-      Top = 178
+      Top = 186
       Width = 28
-      Height = 17
+      Height = 20
       Frame.Color = clBlack
       Frame.Top = False
       Frame.Bottom = False
       Frame.Left = False
       Frame.Right = False
       Size.Values = (
-        44.979166666666670000
+        52.916666666666670000
         526.520833333333300000
-        470.958333333333300000
+        492.125000000000000000
         74.083333333333330000)
       Transparent = True
       Alignment = taLeftJustify
@@ -354,6 +320,41 @@ object Report416EE23607A9CCBEB36117D5161C5B47: TxReport
       Transparent = True
       Center = True
       Stretch = True
+    end
+    object xrExpressionMemo3: TxrExpressionMemo
+      Left = 66
+      Top = 18
+      Width = 160
+      Height = 45
+      Frame.Color = clBlack
+      Frame.Top = False
+      Frame.Bottom = False
+      Frame.Left = False
+      Frame.Right = False
+      Size.Values = (
+        119.062500000000000000
+        174.625000000000000000
+        47.625000000000000000
+        423.333333333333300000)
+      Transparent = True
+      RemoveBlankLines = False
+      Alignment = taLeftJustify
+      AlignToBand = False
+      AutoSize = False
+      AutoStretch = False
+      Color = clWhite
+      Font.Charset = RUSSIAN_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Arial'
+      Font.Style = []
+      Indent = 0
+      Layout = tlTop
+      Lines.Strings = (
+        ' '#1056#1053#1054#1050#1055#1055': {qrEnt.ENT_CS_INN}')
+      ParentFont = False
+      WordWrap = True
+      FontSize = 8
     end
   end
 end
