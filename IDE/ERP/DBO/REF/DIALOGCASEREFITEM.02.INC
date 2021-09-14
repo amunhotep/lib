@@ -74,7 +74,7 @@
       ShowHint                    := true;
       Images                      := lkIL32;
       ButtonHeight                := Images.Height + 2;
-      ButtonWidth                 := Images.Height * 8 + 4;
+      ButtonWidth                 := Images.Height * 10 + 4;
       OnButtonClicked             := @ERPDialogCaseReferenceItem02_CategoryButtons_OnButtonClicked;
       SelectedItem                := nil;
       end;
