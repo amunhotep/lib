@@ -1,0 +1,16 @@
+{$IFNDEF PEAKTOP:IDE/ERP/CONFIG/REF/FIRMS/DIALOGCASEITEM.INC}
+  {$I PEAKTOP:IDE/ERP/CONFIG/REF/FIRMS/DIALOGCASEITEM.INC}
+{$ENDIF}  
+var
+  lkSQL    :string;
+  lkDocIds :array of string;
+begin
+  lkSQL := '';
+  lkSQL := StringsLoadFromFile(StrAbsolutePath('./NEW_POS001.SQL', ScriptName));
+
+  SetLength(lkDocIds, 1)
+  if not TERPForm_SelectSQLParams([], lkSQL, [],[], ['J_ID'], lkDocIds)then exit;
+
+  SetGlobalVariable('J_ID', lkDocIds[0]);
+  call( StrAbsolutePath('./EDIT_POS.PS',ScriptName) );  
+end.
