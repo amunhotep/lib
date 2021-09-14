@@ -779,7 +779,7 @@ var
       end;
 
     
-    lkPnlLine := CreateTxcStdPanel(Result, lkPnlClient, '', '', alBottom, 1, lkPnlClient.Height - (DefaultButtonHeight * 1), DefaultButtonHeight+2, DefaultButtonWidth, xbsNone);
+    lkPnlLine := CreateTxcStdPanel(Result, lkPnlClient, '', '', alBottom, 1, lkPnlClient.Height - (DefaultButtonHeight * 1), Trunc(DefaultButtonHeight/2)+2, DefaultButtonWidth, xbsNone);
     lkPnlStd  := TERPFormDocEditor_ItemNew(Result, lkPnlLine, 
       'p_Commit', 'ПРОВЕСТИ', 'Провести документ', '', '', 
       alLeft, taCenter, tlCenter, 1, 1, DefaultButtonHeight, DefaultButtonWidth, xbsNone, 

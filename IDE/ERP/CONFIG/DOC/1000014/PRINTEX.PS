@@ -1,0 +1,32 @@
+{$DEFINE PEAKTOP:IDE/ERP/CONFIG/DOC/1000014/PRINTEX.PS}
+{$IFNDEF PEAKTOP:GLOBAL_VARIABLES.INC} {$I PEAKTOP:GLOBAL_VARIABLES.INC} {$ENDIF}
+    //==========================================================================
+    procedure PreviewBill(const ID:string);
+    var
+      lkRpt :TxReport;
+      lkRes :string;
+      i     :Integer;
+    begin
+      lkRes := StringsLoadFromFile( StrAbsolutePath('./RPT_THERMO_56_001.XFM', ScriptName) );
+      lkRpt := TxReport(StrToComponent(lkRes));
+      lkRpt.DataBase := FBDataBase;
+      lkRes := StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName);
+      if FileExists(lkRes)then
+        if(lkRpt.FindComponent('ImgLogo') <> nil)then
+          try TxrImage(lkRpt.FindComponent('ImgLogo')).Picture.LoadFromFile(lkRes); except end;
+      if(lkRpt.DataSets.Count < 2)then
+        while(lkRpt.DataSets.Count < 2)do
+          lkRpt.DataSets.Add;
+      lkRpt.DataSets[0].SQL.Text := StrReplaceStr(
+          StringsLoadFromFile( StrAbsolutePath('./RPT_THERMO.SQL', ScriptName) ), 
+        '?J_ID', ID );
+      lkRpt.DataSets[1].SQL.Text := 'SELECT * FROM PROC$D_1000014('''+ID+''') ';
+      lkRpt.Prepare;
+      lkRpt.Preview;
+      //lkRpt.Print;
+      //lkRpt.Free;
+    end;
+    
+begin
+  PreviewBill( GetGlobalVariable('J_ID') );
+end.
