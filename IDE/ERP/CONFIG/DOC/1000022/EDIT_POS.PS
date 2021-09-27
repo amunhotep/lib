@@ -597,6 +597,35 @@ var
     lkMT.FieldByName('TMC_ID').AsString := lkTMC;  
   end;
   //============================================================================
+  procedure TERPFormDocEditor_dbgData_TMC_NAME2_Update_OnClick(Sender :TObject; var Handled : Boolean);
+  var
+    lkSQL :string;
+    lkDTS :TDataSet;
+    lkMT  :TMemTableEh;
+    lkTMC :string;
+  begin
+    Handled := true;
+    lkDTS := TDataSet( TERPForm_DataSetMain( TERPForm_GetOwner(TComponent(Sender)) ).FindComponent(obj_name_erp_data_dtsdata) );
+    lkMT  := TMemTableEh( lkDTS.FindComponent('MemoryTable'+obj_name_erp_data_dtsdata) );
+    if(lkMT.RecordCount = 0)then
+      lkTMC := '0'
+     else 
+      lkTMC := lkMT.FieldByName('TMC_ID').AsString;
+    call('PEAKTOP:IDE/ERP/CONFIG/REF/TMC/DEFAULT_DLG.PS');
+    lkTMC := GetGlobalVariable('TMC_ID');
+    if( (lkTMC = '0') or (lkTMC='NULL') )then exit;
+    if(lkMT.RecordCount = 0)then
+      begin
+      lkMT.Append;
+      end
+     else
+      begin 
+      if(lkMT.State = dsBrowse)then
+        lkMT.Edit;
+      end;
+    lkMT.FieldByName('TMC_ID').AsString := lkTMC;  
+  end; 
+  //============================================================================
   procedure TERPFormDocEditor_actTMCNew_OnExecute(Sender :TObject);
   var
     lkTMC_GROUP_ID :string;
@@ -873,6 +902,15 @@ var
         ValueType     := fvtStaticText;
         Value         := 'ИТОГО';
         end;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Изменить ТМЦ';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbgData_TMC_NAME2_Update_OnClick;
+        end;
+      AlwaysShowEditButton := true;  
       end;
     lkCol := CreateTColumnEh(lkDBG,'TMC_ARTICLE',''                 ,'Товарно-материальные ценности|Артикул', 80,taLeftJustify );
     with lkCol do
@@ -1217,7 +1255,7 @@ var
 
     lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actins         ,'Добавить'            ,'Добавить ТМЦ из справочника',SHORTCUT_DATA_INSERT ,0,307,@TERPFormDocEditor_actTMCIns_OnExecute       ,nil                                    ,lkToolBarData, 80,lkMIMenuMain);
     lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actupd         ,'Редактировать'       ,'Редактировать карточку ТМЦ' ,SHORTCUT_DATA_EDIT   ,0,313,@TERPFormDocEditor_actTMCEdit_OnExecute      ,nil                                    ,lkToolBarData,120,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdel         ,'Удалить'             ,'Удалить Т.М.Ц из документа' ,SHORTCUT_DATA_DELETE ,0,177,@TERPFormDocEditor_actTMCDel_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarData, 80,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdel         ,'Удалить'             ,'Удалить Т.М.Ц из документа' ,SHORTCUT_DATA_DELETE ,0,309,@TERPFormDocEditor_actTMCDel_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarData, 80,lkMIMenuMain);
 
     Amunhotep.MainForm.xcMenu.AddMenu(lkMainMenu); lkMainMenu.OwnerDraw := true;
     Result.Menu := lkMainMenu;
