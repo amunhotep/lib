@@ -60,7 +60,7 @@ BEGIN
 
     PCPRICE = 0;
     IF(:PRICE <> 0)THEN
-      PCPRICE = (:PRICE_TMC * 100) / :PRICE;
+      PCPRICE = (:PRICE_TMC * 100) / :PRICE - 100;
 
     SUSPEND;
     END

@@ -88,40 +88,6 @@ var
       end;
   end;
   //============================================================================
-  procedure TERPFormDocEditor_TMCInsert(aOwner :TComponent);
-  var
-    lkDBG   :TDBGridEh;
-    lkQuant :Extended;
-    lkStr   :string;
-  begin
-    with TERPForm_DataSetMain(aOwner)do
-      begin
-      if(FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
-      end;
-    lkDBG := TDBGridEh(aOwner.FindComponent(obj_name_erp_data_dbgdata+'TMC'));
-    lkQuant := 1.000;
-    if not ERPDialogQuant_Execute('Добавить ТМЦ', 
-        'Введите количество '+SQLCRLF+
-         lkDBG.DataSource.DataSet.FieldByName('NAME').AsString, 
-         False, lkQuant)then exit;
-    lkStr := 
-      'EXECUTE BLOCK AS '+SQLCRLF+
-      '  DECLARE VARIABLE P_FLAGPOINTS TYPE OF COLUMN TABL$D_1000014.ID; '+SQLCRLF+
-      '  DECLARE VARIABLE P_D_ID       TYPE OF COLUMN TABL$D_1000014.ID; '+SQLCRLF+
-      'BEGIN '+SQLCRLF+
-      '  INSERT INTO TABL$D_1000014(J_ID, TMC_ID, PRICE_TMC, PRICE, QUANT)VALUES('+
-        TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+', '+
-        lkDBG.DataSource.DataSet.FieldByName('ID').AsString+', '+
-        StrReplaceStr(lkDBG.DataSource.DataSet.FieldByName('PRICE').AsString, ',','.')+', '+
-        StrReplaceStr(lkDBG.DataSource.DataSet.FieldByName('PRICE_IN').AsString, ',','.')+', '+
-        StrReplaceStr(FormatFloat('#0.000', lkQuant), ',','.')+
-        ') '+SQLCRLF+
-      '  RETURNING ID INTO :P_D_ID; '+SQLCRLF+
-      'END';
-    TERPForm_ExecSQL([], lkStr);
-    TERPFormDocEditor_RefreshView(aOwner);
-  end;
-  //============================================================================
   procedure TERPFormDocEditor_dtsMain_AfterOpen(DataSet :TDataSet);
   var
     i :Integer;
@@ -234,7 +200,7 @@ var
       DataSet.FieldByName('PRICE_TMC'  ).AsString := lkRefFields[6];
       DataSet.FieldByName('TOTAL'      ).AsFloat  := DataSet.FieldByName('PRICE').AsFloat * DataSet.FieldByName('QUANT').AsFloat;
       if(DataSet.FieldByName('PRICE').AsFloat <>  0)then
-        DataSet.FieldByName('PCPRICE').AsFloat := DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / DataSet.FieldByName('PRICE').AsFloat
+        DataSet.FieldByName('PCPRICE').AsFloat := DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / DataSet.FieldByName('PRICE').AsFloat - 100
        else
         DataSet.FieldByName('PCPRICE').AsFloat := 0; 
       end;
@@ -299,7 +265,7 @@ var
       begin
       Sender.DataSet.FieldByName('TOTAL'      ).AsFloat  := Sender.DataSet.FieldByName('PRICE').AsFloat * Sender.DataSet.FieldByName('QUANT').AsFloat;
       if(Sender.DataSet.FieldByName('PRICE').AsFloat <>  0)then
-        Sender.DataSet.FieldByName('PCPRICE').AsFloat := Sender.DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / Sender.DataSet.FieldByName('PRICE').AsFloat;
+        Sender.DataSet.FieldByName('PCPRICE').AsFloat := Sender.DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / Sender.DataSet.FieldByName('PRICE').AsFloat - 100;
       TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'QUANT');
       end;
     if(lkFld = 'QUANT')then
@@ -310,7 +276,7 @@ var
     if(lkFld = 'PRICE_TMC')then
       begin
       if(Sender.DataSet.FieldByName('PRICE').AsFloat <>  0)then
-        Sender.DataSet.FieldByName('PCPRICE').AsFloat := Sender.DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / Sender.DataSet.FieldByName('PRICE').AsFloat;
+        Sender.DataSet.FieldByName('PCPRICE').AsFloat := Sender.DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / Sender.DataSet.FieldByName('PRICE').AsFloat - 100;
       if(Sender.DataSet.State <> dsBrowse)then
         Sender.DataSet.Post;
       //TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'PRICE_TMC');
@@ -614,8 +580,21 @@ var
   end; 
   //============================================================================
   procedure TERPFormDocEditor_actTMCIns_OnExecute(Sender :TObject);
+  var
+    lkDTS :TDataSet;
+    lkMT  :TMemTableEh;
+    lkTMC :string;
   begin
-    TERPFormDocEditor_TMCInsert(TComponent(Sender).Owner);
+    lkTMC := '0';
+    call('PEAKTOP:IDE/ERP/CONFIG/REF/TMC/DEFAULT_DLG.PS');
+    lkTMC := GetGlobalVariable('TMC_ID');
+    if( (lkTMC = '0') or (lkTMC='NULL') )then exit;
+    lkDTS := TDataSet(TERPForm_DataSetMain(TComponent(Sender).Owner).FindComponent(obj_name_erp_data_dtsdata));
+    lkMT  := TMemTableEh( lkDTS.FindComponent('MemoryTable'+obj_name_erp_data_dtsdata) );
+    if(lkMT.State <> dsBrowse)then
+      lkMT.Post;
+    lkMT.Append;
+    lkMT.FieldByName('TMC_ID').AsString := lkTMC;  
   end;
   //============================================================================
   procedure TERPFormDocEditor_actTMCNew_OnExecute(Sender :TObject);
@@ -811,11 +790,7 @@ var
       RefreshSQL.Text := StringsLoadFromFile(StrAbsolutePath('../1000014/DOCSQLDATA001R.SQL', ScriptName));
       InsertSQL.Text  := 
         'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, PRICE, QUANT, PRICE_TMC)'+SQLCRLF+
-        '  VALUES(?J_ID, ?TMC_ID, ?PRICE, ?QUANT, ?PRICE_TMC); '+SQLCRLF+
-        ''+SQLCRLF+
-        ''+SQLCRLF+
-        ''+SQLCRLF+
-        '';
+        '  VALUES(?J_ID, ?TMC_ID, ?PRICE, ?QUANT, ?PRICE_TMC); ';
       ModifySQL.Text  := 
         'UPDATE TABL$D_1000014 D SET '+SQLCRLF+
         '   D.PRICE     = ?PRICE '+SQLCRLF+
@@ -1233,15 +1208,16 @@ var
     lkDBE.Visible := false; 
     lkPnlDocHeader.Height := lkDBE.Top + lkDBE.Height + 4; 
 
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actviewrefresh ,msg_erp_actviewrefresh,msg_erp_actviewrefresh_hint ,SHORTCUT_DATA_REFRESH,0,170,@TERPFormDocEditor_actRefresh_OnExecute       ,nil                                    ,lkToolBarDoc , 80,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit      ,msg_erp_actcommit     ,msg_erp_actcommit_hint      ,SHORTCUT_DOC_COMMIT  ,0,298,@TERPFormDocEditor_actCommit_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc , 72,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actuncommit    ,msg_erp_actuncommit   ,msg_erp_actuncommit_hint    ,SHORTCUT_DOC_UNCOMMIT,0,297,@TERPFormDocEditor_actUnCommit_OnExecute     ,@TERPFormDocEditor_actUnCommit_OnUpdate,lkToolBarDoc , 72,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actprintdefault,msg_erp_actprintitem  ,msg_erp_actprintitem_hint   ,SHORTCUT_PRINT       ,0,105,@TERPFormDocEditor_actPrint_OnExecute        ,nil                                    ,lkToolBarDoc , 60,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocgotojrnl ,msg_erp_actdocgotojrnl,msg_erp_actdocgotojrnl_hint ,SHORTCUT_DOC_GOTOJRNL,0,519,@TERPFormDocEditor_actJrnl_OnExecute         ,nil                                    ,lkToolBarDoc , 68,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccnd      ,msg_erp_actdoccnd     ,msg_erp_actdoccnd_hint      ,''                   ,0, 46,@TERPFormDocEditor_actCnd_OnExecute          ,nil                                    ,lkToolBarDoc , 72,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actviewrefresh ,msg_erp_actviewrefresh,msg_erp_actviewrefresh_hint  ,SHORTCUT_DATA_REFRESH,0,170,@TERPFormDocEditor_actRefresh_OnExecute       ,nil                                    ,lkToolBarDoc , 80,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit      ,msg_erp_actcommit     ,msg_erp_actcommit_hint       ,SHORTCUT_DOC_COMMIT  ,0,298,@TERPFormDocEditor_actCommit_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc , 72,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actuncommit    ,msg_erp_actuncommit   ,msg_erp_actuncommit_hint     ,SHORTCUT_DOC_UNCOMMIT,0,297,@TERPFormDocEditor_actUnCommit_OnExecute     ,@TERPFormDocEditor_actUnCommit_OnUpdate,lkToolBarDoc , 72,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actprintdefault,msg_erp_actprintitem  ,msg_erp_actprintitem_hint    ,SHORTCUT_PRINT       ,0,105,@TERPFormDocEditor_actPrint_OnExecute        ,nil                                    ,lkToolBarDoc , 60,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocgotojrnl ,msg_erp_actdocgotojrnl,msg_erp_actdocgotojrnl_hint  ,SHORTCUT_DOC_GOTOJRNL,0,519,@TERPFormDocEditor_actJrnl_OnExecute         ,nil                                    ,lkToolBarDoc , 68,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccnd      ,msg_erp_actdoccnd     ,msg_erp_actdoccnd_hint       ,''                   ,0, 46,@TERPFormDocEditor_actCnd_OnExecute          ,nil                                    ,lkToolBarDoc , 72,lkMIMenuMain);
 
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actupd         ,'Редактировать'       ,'Редактировать карточку ТМЦ','Ctrl+E'             ,0,313,@TERPFormDocEditor_actTMCEdit_OnExecute      ,nil                                    ,lkToolBarData,120,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdel         ,'Удалить'             ,'Удалить Т.М.Ц из документа','Ctrl+Del'           ,0,177,@TERPFormDocEditor_actTMCDel_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarData, 80,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actins         ,'Добавить'            ,'Добавить ТМЦ из справочника',SHORTCUT_DATA_INSERT ,0,307,@TERPFormDocEditor_actTMCIns_OnExecute       ,nil                                    ,lkToolBarData, 80,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actupd         ,'Редактировать'       ,'Редактировать карточку ТМЦ' ,SHORTCUT_DATA_EDIT   ,0,313,@TERPFormDocEditor_actTMCEdit_OnExecute      ,nil                                    ,lkToolBarData,120,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdel         ,'Удалить'             ,'Удалить Т.М.Ц из документа' ,SHORTCUT_DATA_DELETE ,0,177,@TERPFormDocEditor_actTMCDel_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarData, 80,lkMIMenuMain);
 
     Amunhotep.MainForm.xcMenu.AddMenu(lkMainMenu); lkMainMenu.OwnerDraw := true;
     Result.Menu := lkMainMenu;
