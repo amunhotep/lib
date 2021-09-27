@@ -37,7 +37,7 @@
         end;  
       if(lkRpt.FindComponent('ImgLogoDoc') <> nil)then
         begin 
-        lkImg := TxrImage(lkRpt.FindComponent('ImgLogo'));
+        lkImg := TxrImage(lkRpt.FindComponent('ImgLogoDoc'));
         lkRes := StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName);
         if FileExists(lkRes)then
           try
@@ -95,7 +95,7 @@
         end;  
       if(lkRpt.FindComponent('ImgLogoDoc') <> nil)then
         begin 
-        lkImg := TxrImage(lkRpt.FindComponent('ImgLogo'));
+        lkImg := TxrImage(lkRpt.FindComponent('ImgLogoDoc'));
         lkRes := StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName);
         if FileExists(lkRes)then
           try
