@@ -23,6 +23,7 @@
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/OPER/DIALOGQUANT.INC}         {$I PEAKTOP:IDE/ERP/DBO/OPER/DIALOGQUANT.INC}         {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/DOC/INTF_COMENTS.INC}         {$I PEAKTOP:IDE/ERP/DBO/DOC/INTF_COMENTS.INC}         {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/REF/DIALOGCASEREFITEM.02.INC} {$I PEAKTOP:IDE/ERP/DBO/REF/DIALOGCASEREFITEM.02.INC} {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/REF/FORMREF.INC}              {$I PEAKTOP:IDE/ERP/DBO/REF/FORMREF.INC}              {$ENDIF}  
 
 const
   DefaultButtonWidth  = 120;
@@ -41,28 +42,6 @@ var
     if(LIndex >= Length(MaterialColors) )then
       LIndex := anIndex mod Length(MaterialColors);
     Result := MaterialColors[LIndex];
-  end;
-  //============================================================================
-  procedure TERPFormGrid_CloseDataSets(aOwner :TComponent);
-  var
-    lkSettings :TStrings;
-  begin
-    lkSettings := TERPForm_Settings(aOwner);
-    if(TERPForm_TransactionMain(aOwner).InTransaction)then
-      begin
-      with TERPForm_DataSetMain(aOwner) do
-        if Active then
-          begin
-          if(State <> dsBrowse)then
-            try
-              Post;
-            except
-              Cancel;
-            end;
-          Close;   
-          end;
-      TERPForm_TransactionMain(aOwner).Commit;
-      end;
   end;
   //============================================================================
   procedure TERPFormDocEditor_RefreshView(aOwner :TComponent);
@@ -586,9 +565,10 @@ var
     lkTMC :string;
   begin
     lkTMC := '0';
+    SetGlobalVariable('TMC_ID', lkTMC);
     call('PEAKTOP:IDE/ERP/CONFIG/REF/TMC/DEFAULT_DLG.PS');
     lkTMC := GetGlobalVariable('TMC_ID');
-    if( (lkTMC = '0') or (lkTMC='NULL') )then exit;
+    if(UpperCase(lkTMC) = 'NULL')then exit;
     lkDTS := TDataSet(TERPForm_DataSetMain(TComponent(Sender).Owner).FindComponent(obj_name_erp_data_dtsdata));
     lkMT  := TMemTableEh( lkDTS.FindComponent('MemoryTable'+obj_name_erp_data_dtsdata) );
     if(lkMT.State <> dsBrowse)then
@@ -611,9 +591,12 @@ var
       lkTMC := '0'
      else 
       lkTMC := lkMT.FieldByName('TMC_ID').AsString;
+
+    SetGlobalVariable('TMC_ID', lkTMC);
     call('PEAKTOP:IDE/ERP/CONFIG/REF/TMC/DEFAULT_DLG.PS');
     lkTMC := GetGlobalVariable('TMC_ID');
-    if( (lkTMC = '0') or (lkTMC='NULL') )then exit;
+    if(UpperCase(lkTMC) = 'NULL')then exit;
+
     if(lkMT.RecordCount = 0)then
       begin
       lkMT.Append;

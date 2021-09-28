@@ -133,6 +133,11 @@ var
     CancelAlerts := false;
   end;
   //============================================================================
+  procedure TERPFormGrid_DBGrid_OnDblClick_Dialog(Sender: TObject);
+  begin
+    TERPForm_actOk_OnExecute(TComponent(Sender).Owner.FindComponent(obj_name_erp_actok));
+  end;
+  //============================================================================
   procedure TERPFormGrid_DBGrid_OnKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   begin
     if(Shift = [])then
@@ -309,6 +314,8 @@ var
         ShowHint     := true;
         VTitleMargin := 4;
         OnKeyDown    := @TERPFormGrid_DBGrid_OnKeyDown;
+        if aModalForm then
+          OnDblClick := @TERPFormGrid_DBGrid_OnDblClick_Dialog;
         Columns.Clear;
         end; 
       Result.ActiveControl := lkDBG;  

@@ -535,4 +535,38 @@ const
       TForm_Position_Save(Result, PrepareAbsoleteFileName(TERPForm_Settings(Result).Values[ERP_SETTINGS_TEMPFILENAME]) );
       Result.Free;
       end;  
-  end; 
+  end;
+  //============================================================================
+  function Reference_Execute_Global(const aObjId, aDialogName :string; var aRecId:string):Boolean;
+  var
+    lkDialogName :string;
+    lkDialogCmp  :TComponent;
+    lkDialog     :TForm;
+  begin
+    Result := false;
+    lkDialogName := ERP_GLOBALDIALOG + '_' + aDialogName;
+    lkDialogCmp  := Amunhotep.MainForm.FindComponent(lkDialogName);
+    if(lkDialogCmp = nil)then
+      begin
+      lkDialogCmp := TERPFormGridRef_Create(aObjId, true);
+      lkDialogCmp.Name := lkDialogName;
+      end;
+    lkDialog := TForm(lkDialogCmp);  
+    if( (aRecId <> '0') and (UpperCase(aRecId) <> 'NULL') )then
+      begin
+      SetGlobalVariable(TERPForm_Settings(lkDialog).Values[ERP_SETTINGS_BUFFERVAR], aRecId);
+      TERPFormGridRef_PositionOnRecord(lkDialog, true);
+      SetGlobalVariable(TERPForm_Settings(lkDialog).Values[ERP_SETTINGS_BUFFERVAR], 'NULL');
+      end;
+    Result := (lkDialog.ShowModal = mrOk);
+    if Result then
+      with TERPForm_DBGridMain(lkDialog).DataSource.DataSet do
+        begin
+        if(FindField(ERP_DATASET_DBKEY) <> nil)then
+          begin
+          SetGlobalVariable(TERPForm_Settings(lkDialog).Values[ERP_SETTINGS_BUFFERVAR], FindField(ERP_DATASET_DBKEY).AsString);
+          aRecId := FindField(ERP_DATASET_DBKEY).AsString;
+          end;
+        end;
+  end;
+ 
