@@ -379,6 +379,7 @@ const
   procedure TERPFormDocEditor_actCommit_OnExecute(Sender :TObject);
   begin
     if not (Dialogs.MessageDlg('Провести документ ?', mtConfirmation, [mbYes, mbNo]) = mrYes)then exit;
+    TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
     TERPForm_ExecSQL([], 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 1 WHERE (J.ID = '''+
       TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY]+''')');
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
@@ -400,6 +401,7 @@ const
   procedure TERPFormDocEditor_actUnCommit_OnExecute(Sender :TObject);
   begin
     if not (Dialogs.MessageDlg('Отменить проведение документа ?', mtConfirmation, [mbYes, mbNo]) = mrYes)then exit;
+    TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
     TERPForm_ExecSQL([], 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 0 WHERE (J.ID = '''+TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY]+''')');
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
   end;
