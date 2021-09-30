@@ -1,1 +1,127 @@
-begin call(StrAbsolutePath('../1000014/PRINT.PS', ScriptName)); end.
+{$DEFINE PEAKTOP:IDE/ERP/CONFIG/DOC/1000014/PRINT.PS}
+{$IFNDEF PEAKTOP:GLOBAL_VARIABLES.INC}                        {$I PEAKTOP:GLOBAL_VARIABLES.INC}                        {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/$COMMON/DIALOG_CASELISTTEM.INC}  {$I PEAKTOP:IDE/ERP/DBO/$COMMON/DIALOG_CASELISTTEM.INC}  {$ENDIF}
+    //==========================================================================
+    function PreviewReport(const ID, ResName:string):Boolean;
+    var
+      lkRpt :TxReport;
+      lkRes :string;
+      lkCmp :TComponent;
+    begin
+      Result := false;
+      lkRes := StringsLoadFromFile(ResName);
+      if(StrTrimAll(lkRes) = '')then
+        begin
+        Dialogs.MessageDlg('Неверный файл ресурсов '+#13#10+ResName, mtError, [mbOk]);
+        exit;
+        end;
+      lkRpt := TxReport(StrToComponent(lkRes));  
+      lkRpt.DataBase := FBDataBase;
+      if(lkRpt.DataSets.Count < 4)then
+        while(lkRpt.DataSets.Count < 4)do
+          lkRpt.DataSets.Add;
+      lkRpt.DataSets[0].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/1000014/RPT_DEFAULT00.SQL');
+      lkRpt.DataSets[0].Query.Prepare;
+      lkRpt.DataSets[0].Query.ParamByName('J_ID').AsString := ID;
+      lkRpt.DataSets[1].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/1000014/RPT_DEFAULT01.SQL');
+      lkRpt.DataSets[2].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/4/RPT_DEFAULT02.SQL');
+      lkRpt.DataSets[3].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/REF/CS/RPT0000.SQL');
+      lkCmp := lkRpt.FindComponent('ImgLogoDoc');
+      if(lkCmp <> nil)then
+        begin
+        if FileExists( StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName) )then
+          TxrImage(lkCmp).Picture.LoadFromFile( StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName) )
+        else  
+          if FileExists( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) )then
+            TxrImage(lkCmp).Picture.LoadFromFile( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) );
+        end;
+      lkCmp := lkRpt.FindComponent('ImgLogo');
+      if(lkCmp <> nil)then
+        begin
+        if FileExists( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) )then
+          TxrImage(lkCmp).Picture.LoadFromFile( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) );
+        end;
+      lkRpt.Prepare;
+      lkRpt.Preview;
+    end;
+    //==========================================================================
+    function PreviewReportPRICE(const ID, ResName, Flag:string):Boolean;
+    var
+      lkRpt :TxReport;
+      lkRes :string;
+      lkCmp :TComponent;
+    begin
+      Result := false;
+      lkRes := StringsLoadFromFile(ResName);
+      if(StrTrimAll(lkRes) = '')then
+        begin
+        Dialogs.MessageDlg('Неверный файл ресурсов '+#13#10+ResName, mtError, [mbOk]);
+        exit;
+        end;
+      lkRpt := TxReport(StrToComponent(lkRes));  
+      lkRpt.DataBase := FBDataBase;
+      if(lkRpt.DataSets.Count < 2)then
+        while(lkRpt.DataSets.Count < 2)do
+          lkRpt.DataSets.Add;
+      lkRpt.DataSets[0].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/1000014/RPT_DEFAULT06.SQL');
+      lkRpt.DataSets[0].Query.Prepare;
+      lkRpt.DataSets[0].Query.ParamByName('J_ID').AsString := ID;
+      lkRpt.DataSets[0].Query.ParamByName('FLAG').AsString := FLAG;
+      lkRpt.DataSets[1].SQL.Text := StringsLoadFromFile('PEAKTOP:IDE/ERP/CONFIG/DOC/4/RPT_DEFAULT02.SQL');
+      lkRpt.DataSets[1].Query.Prepare;
+      lkRpt.DataSets[1].Query.ParamByName('J_ID').AsString := ID;
+      lkCmp := lkRpt.FindComponent('ImgLogoDoc');
+      if(lkCmp <> nil)then
+        begin
+        if FileExists( StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName) )then
+          TxrImage(lkCmp).Picture.LoadFromFile( StrAbsolutePath('../conf/ent/logo_doc.bmp', Amunhotep.ExeName) )
+        else  
+          if FileExists( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) )then
+            TxrImage(lkCmp).Picture.LoadFromFile( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) );
+        end;
+      lkCmp := lkRpt.FindComponent('ImgLogo');
+      if(lkCmp <> nil)then
+        begin
+        if FileExists( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) )then
+          TxrImage(lkCmp).Picture.LoadFromFile( StrAbsolutePath('../conf/ent/logo.bmp', Amunhotep.ExeName) );
+        end;
+      lkRpt.Prepare;
+      lkRpt.Preview;
+    end;
+    
+var
+  J_ID      :string;
+  J_TYPE_ID :string;
+  lkIndx    :Integer;
+  lkSuffix  :string;
+  lkStr     :string;
+begin
+  lkSuffix := '';
+  GetField(FBDataBase,'MON$DATABASE' ,'MON$DATABASE_NAME','', lkStr);
+  if(Pos('SS001.FDB', lkStr) > 0)then
+    lkSuffix := 'SS001';
+  if(Pos('SS003.FDB', lkStr) > 0)then
+    lkSuffix := 'SS003';
+
+  J_ID := GetGlobalVariable('J_ID');
+  if( (StrCiphersOnlyInt(J_ID)='') or (UpperCase(J_ID)='NULL') )then exit;
+  if not GetField(FBDataBase, 'TABL$J_4', 'TYPE_ID', 'ID = '+J_ID+' ', J_TYPE_ID)then exit;
+
+  lkIndx := 0;
+  if not ERPDialogCaseListItemInteger_Execute('Выберите шаблон печати', 'Доступные шаблоны печати', ERP_FILENAME_BMP_RPTI,
+                    'По-умолчанию'
+            +#13#10+'Принтер чеков 80мм №001 (сетка)'
+            +#13#10+'Принтер чеков 80мм №002 (без сетки)'
+            +#13#10+'Ценник 6 x 7 см (три в ряд)'
+            +#13#10+'Ценник 3 x 2 см для стикеров'
+            +#13#10+'Ценник 3 x 2 см для стикеров (с учётом количества) '
+  , lkIndx ) then exit;
+  case lkIndx of
+    0:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/'+J_TYPE_ID+'/RPT_DEFAULT0001'+lkSuffix+'.XFM');
+    1:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/1000023/RPT_PRINTER080_0001.XFM');
+    2:PreviewReport(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/DOC/1000023/RPT_PRINTER080_0002.XFM');
+    3:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC/PRICE06X07_SS003.XFM', '0');
+    4:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC/PRICE03X02_SS003.XFM', '0');
+    5:PreviewReportPRICE(J_ID, 'PEAKTOP:IDE/ERP/CONFIG/REF/TMC/PRICE03X02_SS003.XFM', '1');
+  end;   
+end.
