@@ -1,3 +1,16 @@
+var
+  lkMr :TModalResult;
 begin
-  call(StrAbsolutePath('../1000014/EDIT.PS', ScriptName));
+  lkMr := Dialogs.MessageDlg(
+    'Открыть доукмент через модуль продаж?'+#13#10+
+    ' '+#13#10+
+    '[Да] - Открыть документ через модуль продаж'+#13#10+
+    '[Нет] - Открыть документ при помощи бухгалтерского модуля'+#13#10+
+    '[Отмена] - Отменить открытие документа '
+  ,mtConfirmation, [mbYes, mbNo, mbCancel]);
+  case lkMr of
+    mrYes    :call(StrAbsolutePath('../1000023/EDIT.PS', ScriptName));
+    mrNo     :call(StrAbsolutePath('../1000014/EDIT.PS', ScriptName));
+    mrCancel :exit;
+  end;
 end.

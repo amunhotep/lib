@@ -22,6 +22,7 @@
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/DBGRID/ACTIONS.INC}           {$I PEAKTOP:IDE/ERP/DBO/DBGRID/ACTIONS.INC}           {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/OPER/DIALOGQUANT.INC}         {$I PEAKTOP:IDE/ERP/DBO/OPER/DIALOGQUANT.INC}         {$ENDIF}
 {$IFNDEF PEAKTOP:IDE/ERP/DBO/REF/DIALOGCASEREFITEM.02.INC} {$I PEAKTOP:IDE/ERP/DBO/REF/DIALOGCASEREFITEM.02.INC} {$ENDIF}
+{$IFNDEF PEAKTOP:IDE/ERP/DBO/DOC/INTF_COMENTS.INC}         {$I PEAKTOP:IDE/ERP/DBO/DOC/INTF_COMENTS.INC}         {$ENDIF}
 
 const
   DefaultButtonWidth  = 120;
@@ -29,19 +30,6 @@ const
   DefaultItemWidth    = 200;
   DefaultItemHeight   = 64;
   DefaultClickHeight  = 24;
-  CorporateColor      = $02338C; // DaVinci
-var
-  MaterialColors :array[0..9]of Integer;
-  //============================================================================
-  function MaterialColor(const anIndex: Integer): Integer;
-  var
-    LIndex :Integer;
-  begin
-    LIndex := anIndex;
-    if(LIndex >= Length(MaterialColors) )then
-      LIndex := anIndex mod Length(MaterialColors);
-    Result := MaterialColors[LIndex];
-  end;
   //============================================================================
   procedure TERPFormGrid_CloseDataSets(aOwner :TComponent);
   var
@@ -99,8 +87,17 @@ var
     TERPFormGrid_CloseDataSets(aOwner);
     with TERPForm_DataSetMain(aOwner) do
       begin
-      SelectSQL.Text  := 'SELECT P.* FROM PROC$D_1000014('+TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+') P';
-      RefreshSQL.Text := 'SELECT P.* FROM PROC$D_1000014(?ID) P';
+      SelectSQL.Text  := StringsLoadFromFile(StrAbsolutePath('../1000014/DOCSQLHEADER001.SQL', ScriptName));
+      RefreshSQL.Text := StringsLoadFromFile(StrAbsolutePath('../1000014/DOCSQLHEADER001.SQL', ScriptName));
+      ModifySQL.Text  := 
+        'UPDATE TABL$J_4 J SET '+SQLCRLF+
+        '   J.DATE_COMMIT = ?DATE_COMMIT '+SQLCRLF+
+        '  ,J.DATE_IN     = ?DATE_IN '+SQLCRLF+
+        '  ,J.DOCNUMBERIN = ?DOCNUMBERIN '+SQLCRLF+
+        '  ,J.NAME        = ?NAME '+SQLCRLF+
+        'WHERE (J.ID = ?ID)';
+      Prepare;
+      ParamByName('J_ID').AsString := TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]; 
       try
         Open;
       except
@@ -128,149 +125,6 @@ var
       exit;
       end;
     Result := True;    
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_TMCInsert(aOwner :TComponent);
-  var
-    lkDBG   :TDBGridEh;
-    lkQuant :Extended;
-    lkStr   :string;
-  begin
-    with TERPForm_DataSetMain(aOwner)do
-      begin
-      if(FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
-      end;
-    lkDBG := TDBGridEh(aOwner.FindComponent(obj_name_erp_data_dbgdata+'TMC'));
-    lkQuant := 1.000;
-    if not ERPDialogQuant_Execute('Добавить ТМЦ', 
-        'Введите количество '+SQLCRLF+
-         lkDBG.DataSource.DataSet.FieldByName('NAME').AsString, 
-         False, lkQuant)then exit;
-    lkStr := 
-      'EXECUTE BLOCK AS '+SQLCRLF+
-      '  DECLARE VARIABLE P_FLAGPOINTS TYPE OF COLUMN TABL$D_1000014.ID; '+SQLCRLF+
-      '  DECLARE VARIABLE P_D_ID       TYPE OF COLUMN TABL$D_1000014.ID; '+SQLCRLF+
-      'BEGIN '+SQLCRLF+
-      '  INSERT INTO TABL$D_1000014(J_ID, TMC_ID, PRICE_TMC, PRICE, QUANT)VALUES('+
-        TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+', '+
-        lkDBG.DataSource.DataSet.FieldByName('ID').AsString+', '+
-        StrReplaceStr(lkDBG.DataSource.DataSet.FieldByName('PRICE').AsString, ',','.')+', '+
-        StrReplaceStr(lkDBG.DataSource.DataSet.FieldByName('PRICE').AsString, ',','.')+', '+
-        StrReplaceStr(FormatFloat('#0.000', lkQuant), ',','.')+
-        ') '+SQLCRLF+
-      '  RETURNING ID INTO :P_D_ID; '+SQLCRLF+
-      'END';
-    TERPForm_ExecSQL([], lkStr);
-    TERPFormDocEditor_RefreshView(aOwner);
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-  begin
-    TxcStdPanel(Sender).BorderStyle       := xbsRaized;
-    TxcStdPanel(Sender).Colors.Background := Amunhotep.MainForm.StyleManager.Colors.Border;
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmMouseLeave(Sender: TObject);
-  begin
-    TxcStdPanel(Sender).BorderStyle       := xbsNone;
-    TxcStdPanel(Sender).Colors.Background := Amunhotep.MainForm.StyleManager.Colors.Background;
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-  begin
-    TxcStdPanel(Sender).BorderStyle := xbsLowered;
-    TxcStdPanel(Sender).Color       := TxcStdPanel(Sender).Color xor $202020;
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-  begin
-    TxcStdPanel(Sender).BorderStyle := xbsNone;
-    TxcStdPanel(Sender).Color       := TxcStdPanel(Sender).Color xor $202020;
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmLblMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-  begin
-    TERPFormDocEditor_itmMouseDown(TComponent(Sender).Owner, Button, Shift, X, Y);
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmLblMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-  begin
-    TERPFormDocEditor_itmMouseUp(TComponent(Sender).Owner, Button, Shift, X, Y);
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmLblMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-  begin
-    TERPFormDocEditor_itmMouseMove(TComponent(Sender).Owner, Shift, X, Y);
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmLblMouseLeave(Sender: TObject);
-  begin
-    TERPFormDocEditor_itmMouseLeave( TComponent(Sender).Owner );
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_itmLblClick(Sender :TObject);
-  begin
-    if ObjectInheritsFrom(TComponent(Sender).Owner, 'TxcStdPanel')then
-      TxcStdPanel( TComponent(Sender).Owner ).OnClick(TComponent(Sender).Owner);
-  end;
-  //============================================================================
-  function TERPFormDocEditor_ItemNew(aOwner:TComponent; aParent:TWinControl; 
-             const aName, aCaption, aHint, aCaptionLeftTop, aCaptionLeftBottom:string; 
-             const aAlign :TAlign; const aAlignment:TAlignment; const aLayout :TTextLayout;
-             const aLeft, aTop, aHeight, aWidth :Integer; const aBorderStyle:TxcBorderStyle;
-             const aColor:TColor; aOnClick :TNotifyEvent;
-             const aCreateLabel:Boolean; const aFontSize:Integer
-             ):TxcStdPanel;
-  begin
-    Result := CreateTxcStdPanel(aOwner, aParent, aName, aCaption, aAlign, aLeft, aTop, aHeight, aWidth, aBorderStyle);
-    with Result do
-      begin
-      StyleManager:= nil;
-      Color       := aColor;
-      OnClick     := aOnClick;
-      OnMouseDown := @TERPFormDocEditor_itmMouseDown;
-      OnMouseUp   := @TERPFormDocEditor_itmMouseUp;
-      end;
-    if aCreateLabel then  
-      with CreateTLabel(Result, Result, aCaption, 1, 1, Result.Height, Result.Width, alClient, aAlignment) do
-        begin
-        Font.Color  := Amunhotep.MainForm.StyleManager.Colors.Window;
-        Font.Size   := aFontSize;
-        Font.Style  := [fsBold];
-        Hint        := aHint;
-        Layout      := aLayout;
-        ShowHint    := True;
-        Transparent := True;
-        WordWrap    := True;
-        OnClick     := @TERPFormDocEditor_itmLblClick;
-        OnMouseDown := @TERPFormDocEditor_itmLblMouseDown;
-        OnMouseUp   := @TERPFormDocEditor_itmLblMouseUp;
-        OnMouseMove := @TERPFormDocEditor_itmLblMouseMove;
-        OnMouseLeave:= @TERPFormDocEditor_itmLblMouseLeave;
-        end;
-    if(StrTrimAll(aCaptionLeftTop)<>'')then
-      with CreateTLabel(Result, Result, aCaptionLeftTop, 1, 1, 12, Result.Width, alNone, taLeftJustify) do
-        begin
-        Anchors     := [akLeft, akTop, akRight];
-        Font.Size   := 7;
-        Font.Color  := Amunhotep.MainForm.StyleManager.Colors.Window - $102020;
-        OnClick     := @TERPFormDocEditor_itmLblClick;
-        OnMouseDown := @TERPFormDocEditor_itmLblMouseDown;
-        OnMouseUp   := @TERPFormDocEditor_itmLblMouseUp;
-        end;
-    if(StrTrimAll(aCaptionLeftBottom)<>'')then
-      with CreateTLabel(Result, Result, aCaptionLeftBottom, 1, Result.Height-14, 12, Result.Width, alNone, taLeftJustify) do
-        begin
-        Anchors     := [akLeft, akBottom, akRight];
-        Font.Color  := Amunhotep.MainForm.StyleManager.Colors.Window - $102020;
-        Font.Size   := 7;
-        Font.Style  := [fsBold];
-        WordWrap    := True;
-        Transparent := True;
-        OnClick     := @TERPFormDocEditor_itmLblClick;
-        OnMouseDown := @TERPFormDocEditor_itmLblMouseDown;
-        OnMouseUp   := @TERPFormDocEditor_itmLblMouseUp;
-        end;
   end;
   //============================================================================
   procedure TERPFormDocEditor_RefreshViewTMC(aOwner :TComponent);
@@ -311,11 +165,16 @@ var
   procedure TERPFormDocEditor_dtsData_AfterOpen(DataSet :TDataSet);
   var
     i :Integer;
+    lkCapt :string;
   begin
     TERPFormGrid_OpenDataSetsChilds(DataSet);
-    TERPForm_SetCaption(DataSet.Owner.Owner, DataSet.FieldByName('DOCNUMBERSTR').AsString+
-      '  '+DataSet.FieldByName('FILIAL_NAME').AsString+'  '+DataSet.FieldByName('USER_ID').AsString+' ('+DataSet.FieldByName('USER_NAME').AsString+')'
-    );
+    lkCapt := DataSet.FieldByName('TYPE_ID_').AsString + ' ' + DataSet.FieldByName('DOCNUMBERSTR').AsString;
+    TERPForm_SetCaption(DataSet.Owner.Owner, lkCapt);
+    with TxcStdPanel(DataSet.Owner.Owner.FindComponent('pnlDocHeader')) do
+      begin
+      Color      := DataSet.FieldByName('COLOR_BGR').AsInteger;
+      Font.Color := DataSet.FieldByName('COLOR_FRG').AsInteger;
+      end;
     if(DataSet.FieldByName('FLAG_COMMIT').AsInteger = 1)then
       with DataSet.Owner.Owner do
         for i:=0 to ComponentCount-1 do
@@ -337,12 +196,179 @@ var
     TERPFormGrid_CloseDataSetsChilds(DataSet);
   end;
   //============================================================================
-  procedure TERPFormDocEditor_DoCommit(aOwner :TComponent);
+  procedure TERPFormDocEditor_mtData_OnFieldChange(Sender: TField); forward;
+  //============================================================================
+  procedure TERPFormDocEditor_dbgData_SelectColumn(Sender: TDBGridEh; aFieldName:string);
+  var
+    i :Integer;
   begin
-    TERPFormDocEditor_RefreshView(aOwner);
-    if not (Dialogs.MessageDlg('Провести документ ?', mtConfirmation, [mbYes, mbNo]) = mrYes)then exit;
-    TERPForm_ExecSQL([], 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 1 WHERE (J.ID = '''+TERPForm_Settings(aOwner).Values[ERP_DATASET_DBKEY]+''')');
-    TERPFormDocEditor_RefreshView(aOwner);
+    for i:=0 to Sender.Columns.Count-1 do
+      if(Sender.Columns[i].FieldName = aFieldName)then
+        break;
+    Sender.SelectedIndex := i;
+    Sender.SetFocus;
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_SetEvents(DataSet :TDataSet);
+  var
+    i:Integer;
+  begin
+    for i:=1 to DataSet.Fields.Count-1 do
+      if(  (DataSet.Fields[i].FieldName = 'TMC_ID')
+         or(DataSet.Fields[i].FieldName = 'TMC_ARTICLE')
+         or(DataSet.Fields[i].FieldName = 'TMC_BARCODE')
+         or(DataSet.Fields[i].FieldName = 'PRICE')
+         or(DataSet.Fields[i].FieldName = 'QUANT')
+         or(DataSet.Fields[i].FieldName = 'PRICE_TMC')
+      )then
+        DataSet.Fields[i].OnChange := @TERPFormDocEditor_mtData_OnFieldChange;
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_SetEventsClear(DataSet :TDataSet);
+  var
+    i:Integer;
+  begin
+    for i:=1 to DataSet.Fields.Count-1 do
+      DataSet.Fields[i].OnChange := nil;
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_OnNewRecord(DataSet :TDataSet);
+  begin
+    TERPFormDocEditor_mtData_SetEventsClear(DataSet);
+    DataSet.FieldByName('J_ID'       ).AsString := TERPForm_Settings( TERPForm_GetOwner(DataSet) ).Values[ERP_DATASET_DBKEY];
+    DataSet.FieldByName('TMC_ID'     ).AsString := '0';
+    DataSet.FieldByName('TMC_NAME'   ).AsString := '';
+    DataSet.FieldByName('TMC_NAME2'  ).AsString := '';
+    DataSet.FieldByName('TMC_ARTICLE').AsString := '';
+    DataSet.FieldByName('TMC_BARCODE').AsString := '';
+    DataSet.FieldByName('EDIZM_SHORT').AsString := '';
+    DataSet.FieldByName('PRICE'      ).AsString := '0';
+    DataSet.FieldByName('QUANT'      ).AsString := '1';
+    DataSet.FieldByName('TOTAL'      ).AsString := '0';
+    TERPFormDocEditor_mtData_SetEvents(DataSet);
+    TERPFormDocEditor_dbgData_SelectColumn(TDBGridEh(TERPForm_GetOwner(DataSet).FindComponent(obj_name_erp_data_dbgdata)), 'TMC_ID');
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_FillRecords(DataSet :TDataSet; aTMC_ID:string);
+  var
+    lkSQL        :string;
+    lkStr        :string;
+    lkRefFields  :array of string;
+  begin
+    SetLength(lkRefFields, 8);
+    lkSQL := 
+      'SELECT R.ID AS TMC_ID, R.NAME AS TMC_NAME, R.NAME2 AS TMC_NAME2, R.ARTICLE AS TMC_ARTICLE, R.BARCODE AS TMC_BARCODE '+SQLCRLF+
+      '      ,E.SHORT_NAME AS EDIZM_SHORT '+SQLCRLF+
+      '      ,P.PRICE AS TMC_PRICE, P.PRICE_IN AS TMC_PRICE_IN '+SQLCRLF+
+      'FROM  TABL$R_TMC R '+SQLCRLF+
+      '        LEFT OUTER JOIN TABL$R_EDIZM E ON (E.ID     = R.EDIZM_ID) '+SQLCRLF+
+      '        LEFT OUTER JOIN TABL$R_TMC_P P ON (P.TMC_ID = R.ID      ) AND (P.VALUE_DATE = R.VALUE_DATE) '+SQLCRLF+
+      'WHERE (R.ID = '''+aTMC_ID+''') ';
+    if TERPForm_SelectSQLParams([], lkSQL, [],[], ['TMC_ID', 'TMC_NAME', 'TMC_NAME2', 'TMC_ARTICLE', 'TMC_BARCODE', 'EDIZM_SHORT', 'TMC_PRICE', 'TMC_PRICE_IN'], lkRefFields)then
+      begin
+      DataSet.FieldByName('TMC_ID'     ).AsString := aTMC_ID;
+      DataSet.FieldByName('TMC_NAME'   ).AsString := lkRefFields[1];
+      DataSet.FieldByName('TMC_NAME2'  ).AsString := lkRefFields[2];
+      DataSet.FieldByName('TMC_ARTICLE').AsString := lkRefFields[3];
+      DataSet.FieldByName('TMC_BARCODE').AsString := lkRefFields[4];
+      DataSet.FieldByName('EDIZM_SHORT').AsString := lkRefFields[5];
+      DataSet.FieldByName('PRICE'      ).AsString := lkRefFields[6];
+      DataSet.FieldByName('PRICE_TMC'  ).AsString := lkRefFields[7];
+      DataSet.FieldByName('TOTAL'      ).AsFloat  := DataSet.FieldByName('PRICE').AsFloat * DataSet.FieldByName('QUANT').AsFloat;
+      end;
+    SetLength(lkRefFields, 0);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_OnFieldChange(Sender: TField);
+  var
+    i            :Integer;
+    lkFld        :string;
+    lkStr        :string;
+    lkTMC_ID     :string;
+    lkDBG        :TDBGridEh;
+  label
+    LabelContinue;  
+  begin
+    TERPFormDocEditor_mtData_SetEventsClear(Sender.DataSet);
+    lkDBG  := TDBGridEh(TERPForm_GetOwner(Sender).FindComponent(obj_name_erp_data_dbgdata));
+    lkFld  := UpperCase( StrTrimAll( Sender.FieldName ) );
+    if( (lkFld = 'TMC_ID') or (lkFld = 'TMC_ARTICLE') or (lkFld = 'TMC_BARCODE') )then
+      begin
+      lkTMC_ID := '0';
+           if(lkFld = 'TMC_ID')then
+             begin
+             lkTMC_ID := Sender.AsString;
+             GetField(FBDataBase, 'TABL$R_TMC', 'COALESCE( COUNT(ID), 0)', 'ID = '''+lkTMC_ID+''' ', lkStr);
+             if(not(StrToInt(lkStr) > 0))then
+               begin
+               Dialogs.MessageDlg('ТМЦ с кодом "'+lkTMC_ID+'" не найдено! ', mtWarning, [mbOK]);
+               TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'TMC_ID');
+               goto LabelContinue;
+               end
+             end
+      else if(lkFld = 'TMC_ARTICLE')then
+             begin
+             lkTMC_ID := '0';
+             GetField(FBDataBase, 'TABL$R_TMC', 'COALESCE( COUNT(ID), 0)', 'TRIM(UPPER(ARTICLE)) = '''+StrReplaceStr(AnsiUpperCase(Sender.AsString), '''', '''''')+''' ', lkStr);
+             if(not(StrToInt(lkStr) > 0))then
+               begin
+               Dialogs.MessageDlg('ТМЦ с артикулом "'+Sender.AsString+'" не найдено! ', mtWarning, [mbOK]);
+               TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'TMC_ARTICLE');
+               goto LabelContinue;
+               end
+             GetField(FBDataBase, 'TABL$R_TMC', 'ID', 'TRIM(UPPER(ARTICLE)) = '''+StrReplaceStr(AnsiUpperCase(Sender.AsString), '''', '''''')+''' ', lkTMC_ID);
+             end  
+      else if(lkFld = 'TMC_BARCODE')then
+             begin
+             lkTMC_ID := '0';
+             GetField(FBDataBase, 'TABL$R_TMC', 'COALESCE( COUNT(ID), 0)', 'TRIM(BARCODE) = '''+StrReplaceStr(AnsiUpperCase(Sender.AsString), '''', '''''')+''' ', lkStr);
+             if(not(StrToInt(lkStr) > 0))then
+               begin
+               Dialogs.MessageDlg('ТМЦ со штрихкодом "'+Sender.AsString+'" не найдено! ', mtWarning, [mbOK]);
+               TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'TMC_BARCODE');
+               goto LabelContinue;
+               end
+             GetField(FBDataBase, 'TABL$R_TMC', 'ID', 'TRIM(BARCODE) = '''+StrReplaceStr(AnsiUpperCase(Sender.AsString), '''', '''''')+''' ', lkTMC_ID);
+             end  
+      TERPFormDocEditor_mtData_FillRecords(Sender.DataSet, lkTMC_ID);
+      TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'PRICE');
+      end;
+    if(lkFld = 'PRICE')then
+      begin
+      Sender.DataSet.FieldByName('TOTAL'      ).AsFloat  := Sender.DataSet.FieldByName('PRICE').AsFloat * Sender.DataSet.FieldByName('QUANT').AsFloat;
+      if(Sender.DataSet.FieldByName('PRICE').AsFloat <>  0)then
+        Sender.DataSet.FieldByName('PCPRICE').AsFloat := Sender.DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / Sender.DataSet.FieldByName('PRICE').AsFloat - 100;
+      TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'QUANT');
+      end;
+    if(lkFld = 'QUANT')then
+      begin
+      Sender.DataSet.FieldByName('TOTAL'      ).AsFloat  := Sender.DataSet.FieldByName('PRICE').AsFloat * Sender.DataSet.FieldByName('QUANT').AsFloat;
+      TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'PRICE_TMC');
+      end;
+    if(lkFld = 'PRICE_TMC')then
+      begin
+      if(Sender.DataSet.FieldByName('PRICE').AsFloat <>  0)then
+        Sender.DataSet.FieldByName('PCPRICE').AsFloat := Sender.DataSet.FieldByName('PRICE_TMC').AsFloat * 100 / Sender.DataSet.FieldByName('PRICE').AsFloat - 100;
+      if(Sender.DataSet.State <> dsBrowse)then
+        Sender.DataSet.Post;
+      //TERPFormDocEditor_dbgData_SelectColumn(lkDBG, 'PRICE_TMC');
+      end;
+  LabelContinue:  
+    TERPFormDocEditor_mtData_SetEvents(Sender.DataSet);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_AfterOpen(DataSet :TDataSet);
+  begin
+    TERPFormDocEditor_mtData_SetEvents(DataSet);
+    if(DataSet.Tag <> 0)then
+      DataSet.RecNo := DataSet.Tag;    
+    TERPForm_OpenDataSetsChilds(DataSet);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_mtData_BeforeClose(DataSet :TDataSet);
+  begin
+    DataSet.Tag := DataSet.RecNo;    
+    TERPForm_CloseDataSetsChilds(DataSet);
   end;
   //============================================================================
   procedure TERPFormDocEditor_actRefresh_OnExecute(Sender :TObject);
@@ -350,9 +376,12 @@ var
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
   end;
   //============================================================================
-  procedure TERPFormDocEditor_act_Commit_OnExecute(Sender :TObject);
+  procedure TERPFormDocEditor_actCommit_OnExecute(Sender :TObject);
   begin
-    TERPFormDocEditor_DoCommit(TComponent(Sender).Owner);
+    if not (Dialogs.MessageDlg('Провести документ ?', mtConfirmation, [mbYes, mbNo]) = mrYes)then exit;
+    TERPForm_ExecSQL([], 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 1 WHERE (J.ID = '''+
+      TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY]+''')');
+    TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
   end;
   //============================================================================
   procedure TERPFormDocEditor_actCommit_OnUpdate(Sender :TObject);
@@ -368,7 +397,42 @@ var
       end;
   end;
   //============================================================================
-  procedure TERPFormDocEditor_act_TMCDel_OnExecute(Sender :TObject);
+  procedure TERPFormDocEditor_actUnCommit_OnExecute(Sender :TObject);
+  begin
+    if not (Dialogs.MessageDlg('Отменить проведение документа ?', mtConfirmation, [mbYes, mbNo]) = mrYes)then exit;
+    TERPForm_ExecSQL([], 'UPDATE TABL$J_4 J SET J.FLAG_COMMIT = 0 WHERE (J.ID = '''+TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY]+''')');
+    TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_actUnCommit_OnUpdate(Sender :TObject);
+  var
+    lkEnabled :Boolean;
+  begin
+    with TERPForm_DataSetMain(TComponent(Sender).Owner) do
+      begin
+      lkEnabled := Active;
+      if lkEnabled then lkEnabled   := (RecordCount > 0);
+      if lkEnabled then lkEnabled   := (FieldByName('FLAG_COMMIT').AsInteger <> 0);
+      TCustomAction(Sender).Enabled := lkEnabled;
+      end;
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_actTMCEdit_OnExecute(Sender :TObject);
+  var
+    lkDBG   :TDBGridEh;
+  begin
+    lkDBG := TDBGridEh(TComponent(Sender).Owner.FindComponent(obj_name_erp_data_dbgdata));
+    with lkDBG.DataSource.DataSet do
+      begin
+      if(RecordCount = 0)then exit;
+      if(FieldByName('TMC_ID').AsInteger = 0)then exit;
+      SetGlobalVariable('TMC_ID', FieldByName('TMC_ID').AsString);
+      end;
+    call('PEAKTOP:IDE/ERP/CONFIG/REF/TMC/DEFAULT_ITEM_DLG.PS');
+    TERPFormDocEditor_RefreshView( TComponent(Sender).Owner );
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_actTMCDel_OnExecute(Sender :TObject);
   var
     lkSQL  :string;
     i      :Integer;
@@ -382,6 +446,7 @@ var
       if not(RecordCount>0)then exit;  
       if(Dialogs.MessageDlg('Удалить выбранные позиции из документа ?',mtConfirmation, [mbYes, mbNo]) <> mrYes)then exit;
       end;
+    TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
     if(lkDBG.SelectedRows.Count > 0)then
       begin
       lkDBG.DataSource.DataSet.DisableControls;
@@ -399,41 +464,315 @@ var
      else 
       lkSQL := 'DELETE FROM TABL$D_1000014 D WHERE (D.ID = '''+lkDBG.DataSource.DataSet.FieldByName('ID').AsString+''')';
     TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
+//    Dialogs.MessageDlg(lkSQL, mtInformation, [mbOK]);
     TERPForm_ExecSQL([], lkSQL);
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
   end;
   //============================================================================
-  procedure TERPFormDocEditor_act_CS_OnExecute(Sender :TObject);
+  procedure TERPFormDocEditor_actTMCIns_OnExecute(Sender :TObject);
   var
-    lkID, lkName, lkJ_ID :string;
+    lkDBG     :TDBGridEh;
+    lkQuant   :Extended;
+    lkTMC_ID  :string;
+    lkTMC_NAME:string;
   begin
-    if not TERPFormDocEditor_CommitCheck(Sender) then exit;
-    lkJ_ID := TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY];    
-    lkID   := TERPForm_DataSetMain(TComponent(Sender).Owner).FieldByName('CS_ID').AsString;
-    if not ERPDialogCaseReferenceItem03_Execute('TABL$R_CS', 'R.CS_GROUP_ID = 1000005', 'Выберите поставщика', lkID) then exit;
-    TERPFormGrid_CloseDataSets(TComponent(Sender).Owner);
-    TERPForm_ExecSQL([], 'UPDATE TABL$J_1000014 J SET J.CS_ID = '+lkID+' WHERE (J.J_ID = '''+lkJ_ID+''')');
-    TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
+    with TERPForm_DataSetMain(TComponent(Sender).Owner)do
+      begin
+      if(FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+      end;
+    lkDBG := TDBGridEh(TComponent(Sender).Owner.FindComponent(obj_name_erp_data_dbgdata+'TMC'));
+    lkTMC_ID   := lkDBG.DataSource.DataSet.FieldByName('ID').AsString;
+    lkTMC_NAME := lkDBG.DataSource.DataSet.FieldByName('NAME').AsString;
+{
+    lkQuant := 1.000;
+    if not ERPDialogQuant_Execute('Добавить ТМЦ', 
+        'Введите количество '+SQLCRLF+
+         lkDBG.DataSource.DataSet.FieldByName('NAME').AsString, 
+         False, lkQuant)then exit;
+}
+    lkDBG := TDBGridEh(TComponent(Sender).Owner.FindComponent(obj_name_erp_data_dbgdata));
+    with lkDBG.DataSource.DataSet do
+      begin
+      if(State <> dsBrowse)then
+        Post;
+      Append;
+      FieldByName('TMC_ID').AsString := lkTMC_ID;  
+      end;
   end;
   //============================================================================
-  procedure TERPFormDocEditor_act_TMCIns_OnExecute(Sender :TObject);
-  begin
-    TERPFormDocEditor_TMCInsert(TComponent(Sender).Owner);
-  end;
-  //============================================================================
-  procedure TERPFormDocEditor_act_Print_OnExecute(Sender :TObject);
+  procedure TERPFormDocEditor_actPrint_OnExecute(Sender :TObject);
   var
-    lkJ_ID :string;
+    lkJ_ID       :string;
+    lkPrintScript:string;
   begin
-    lkJ_ID := TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY];    
+    lkJ_ID := TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY];
+    lkPrintScript := '../'+ TERPForm_DataSetMain(TComponent(Sender).Owner).FieldByName('TYPE_ID').AsString + '/PRINT.PS';    
     TERPFormDocEditor_RefreshView(TComponent(Sender).Owner);
     SetGlobalVariable('J_ID', lkJ_ID);
-    call(StrAbsolutePath('./PRINTEX.PS', ScriptName));
+    call(StrAbsolutePath(lkPrintScript, ScriptName));
   end;
   //============================================================================
   procedure TERPFormDocEditor_actPrint_OnUpdate(Sender :TObject);
   begin
   end;
+  //============================================================================
+  procedure TERPFormDocEditor_actCnd_OnExecute(Sender :TObject);
+  begin
+    SetGlobalVariable('J_ID', TERPForm_Settings(TComponent(Sender).Owner).Values[ERP_DATASET_DBKEY]);
+    call('PEAKTOP:IDE/ERP/CONFIG/REG/CND/DEFAULT_DOC.PS');
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_actJrnl_OnExecute(Sender :TObject);
+  var
+    lkVarName:string;
+    lkScript :string;
+  begin
+    lkVarName := 'J_ID'+ERP_SQL_GOTO_SUFFIX;
+    if(lkVarName = '')then exit;
+    with TERPForm_DataSetMain(TComponent(Sender).Owner) do
+      begin
+      if(not Active)then exit;
+      if(not(RecordCount > 0))then exit;
+      if(FindField('TYPE_ID') <> nil)then
+        begin
+        SetGlobalVariable(lkVarName, FieldByName(ERP_DATASET_DBKEY).AsString);
+        lkScript := '{$IFNDEF PEAKTOP:IDE/ERP/DBO/DOC/FORMJRNL.INC}{$I PEAKTOP:IDE/ERP/DBO/DOC/FORMJRNL.INC}{$ENDIF} '+SQLCRLF+
+                    'begin '+SQLCRLF+'  Journal_Create('''+FieldByName('TYPE_ID').AsString+'''); '+SQLCRLF+'end.';        
+        run(lkScript, 'DB:CONFIG/DOC/'+FieldByName('TYPE_ID').AsString+'/DEFAULT.PS');
+        end;
+      end;
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_U_TYPE_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('TYPE_ID').AsString;
+    if not  ERPDialogCaseItem02_Execute(
+      'SELECT R.ID, R.NAME2 AS NAME FROM TABL$_TB_TYPES R WHERE R.ID IN (1000023, 1000075, 1000028, 1000029) ', 
+      'Доступные типы документов', 'Выберите тип документа:', ERP_ObjectIcon(ERP_OBJECTTYPE_DOC), ERP_ObjectBitmap(ERP_OBJECTTYPE_DOC), lkID) then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 
+      'EXECUTE BLOCK AS '+SQLCRLF+
+      '  DECLARE VARIABLE P_FIRM_ID   TYPE OF COLUMN TABL$J_4.FIRM_ID; '+SQLCRLF+
+      '  DECLARE VARIABLE P_DOCNUMBER TYPE OF COLUMN TABL$J_4.DOCNUMBER; '+SQLCRLF+
+      'BEGIN '+SQLCRLF+
+      '  SELECT FIRST 1 J.FIRM_ID FROM TABL$J_4 J WHERE (J.ID = '''+lkJ_ID+''') INTO :P_FIRM_ID; '+SQLCRLF+
+      '  SELECT FIRST 1 P.NEW_NUMBER FROM PROC$J_GEN_4('''+lkID+''', :P_FIRM_ID) P INTO :P_DOCNUMBER; '+SQLCRLF+
+      '  UPDATE TABL$J_4 J SET '+SQLCRLF+
+      '    J.TYPE_ID   = '''+lkID+''' '+SQLCRLF+
+      '   ,J.DOCNUMBER = :P_DOCNUMBER '+SQLCRLF+
+      '  WHERE (J.ID = '''+lkJ_ID+'''); '+SQLCRLF+
+      'END'+SQLCRLF
+    );
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbeTYPE_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_TYPE_ID(TDBEditEh(TComponent(Sender).Owner));
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbeTYPE_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_TYPE_ID( TDBEditEh(Sender) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_U_FIRM_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('FIRM_ID').AsString;
+    if not  ERPDialogCaseItem02_Execute(
+      'SELECT R.ID, R.NAME FROM TABL$R_FIRMS R WHERE (R.FLAG_DELETE <> 1) ', 
+      'Доступные фирмы учёта', 'Выберите фирму учёта:', ERP_ObjectIcon(ERP_OBJECTTYPE_REF), ERP_ObjectBitmap(ERP_OBJECTTYPE_REF), lkID) then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 
+      'EXECUTE BLOCK AS '+SQLCRLF+
+      '  DECLARE VARIABLE P_TYPE_ID   TYPE OF COLUMN TABL$J_4.TYPE_ID; '+SQLCRLF+
+      '  DECLARE VARIABLE P_DOCNUMBER TYPE OF COLUMN TABL$J_4.DOCNUMBER; '+SQLCRLF+
+      'BEGIN '+SQLCRLF+
+      '  SELECT FIRST 1 J.TYPE_ID FROM TABL$J_4 J WHERE(J.ID = '''+lkJ_ID+''') INTO :P_TYPE_ID; '+SQLCRLF+
+      '  SELECT FIRST 1 P.NEW_NUMBER FROM PROC$J_GEN_4(:P_TYPE_ID, '''+lkID+''') P INTO :P_DOCNUMBER; '+SQLCRLF+
+      '  UPDATE TABL$J_4 J SET '+SQLCRLF+
+      '    J.FIRM_ID   = '''+lkID+''' '+SQLCRLF+
+      '   ,J.DOCNUMBER = :P_DOCNUMBER '+SQLCRLF+
+      '  WHERE (J.ID = '''+lkJ_ID+'''); '+SQLCRLF+
+      'END'+SQLCRLF
+    );
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbeFIRM_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_FIRM_ID( TDBEditEh(TComponent(Sender).Owner) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbeFIRM_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_FIRM_ID( TDBEditEh(Sender) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_U_FILIAL_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('FILIAL_ID').AsString;
+    if not  ERPDialogCaseItem02_Execute(
+      'SELECT R.ID, R.NAME FROM TABL$R_FILIALS R WHERE (R.FLAG_DELETE <> 1) ', 
+      'Доступные филиалы', 'Выберите филиал:', ERP_ObjectIcon(ERP_OBJECTTYPE_REF), ERP_ObjectBitmap(ERP_OBJECTTYPE_REF), lkID) then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 'UPDATE TABL$J_4 J SET J.FILIAL_ID = '''+lkID+''' WHERE (J.ID = '''+lkJ_ID+''') ');
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbeFILIAL_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_FILIAL_ID( TDBEditEh(TComponent(Sender).Owner) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbeFILIAL_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_FILIAL_ID( TDBEditEh(Sender) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_U_CS_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('CS_ID').AsString;
+    SetGlobalVariable('CS_ID', lkID);
+    call(StrAbsolutePath('../../REF/CS/DEFAULT_DLG.PS', ScriptName));
+    lkID := GetGlobalVariable('CS_ID');
+    if( (lkID = 'NULL') or (StrTrimAll(lkID) = '') )then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 
+      '  UPDATE TABL$J_1000014 J SET '+SQLCRLF+
+      '    J.CS_ID   = '''+lkID+''' '+SQLCRLF+
+      '  WHERE (J.J_ID = '''+lkJ_ID+'''); '+SQLCRLF
+    );
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbeCS_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_CS_ID( TDBEditEh(TComponent(Sender).Owner) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbeCS_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_CS_ID( TDBEditEh(Sender) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_U_PLACE_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('PLACE_ID').AsString;
+    if not  ERPDialogCaseItem02_Execute(
+      'SELECT R.ID, R.NAME FROM TABL$R_PLACES R WHERE (R.FLAG_DELETE <> 1) ', 
+      'Доступные места хранения', 'Выберите место хранения:', ERP_ObjectIcon(ERP_OBJECTTYPE_REF), ERP_ObjectBitmap(ERP_OBJECTTYPE_REF), lkID) then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 
+      '  UPDATE TABL$J_1000014 J SET '+SQLCRLF+
+      '    J.PLACE_ID   = '''+lkID+''' '+SQLCRLF+
+      '  WHERE (J.J_ID = '''+lkJ_ID+'''); '+SQLCRLF
+    );
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbePLACE_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_PLACE_ID( TDBEditEh(TComponent(Sender).Owner) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbePLACE_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_PLACE_ID( TDBEditEh(Sender) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_U_TAX_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('TAX_ID').AsString;
+    if not  ERPDialogCaseItem02_Execute(
+      'SELECT R.ID, R.NAME FROM TABL$R_TAXES R WHERE (R.FLAG_DELETE <> 1) AND (R.ID IN (1000008,1000009,1000010)) ', 
+      'Доступные налоговые модели', 'Выберите налоговую модель:', ERP_ObjectIcon(ERP_OBJECTTYPE_REF), ERP_ObjectBitmap(ERP_OBJECTTYPE_REF), lkID) then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 
+      '  UPDATE TABL$J_1000014 J SET '+SQLCRLF+
+      '    J.TAX_ID   = '''+lkID+''' '+SQLCRLF+
+      '  WHERE (J.J_ID = '''+lkJ_ID+'''); '+SQLCRLF
+    );
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbeTAX_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_TAX_ID( TDBEditEh(TComponent(Sender).Owner) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbeTAX_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_TAX_ID( TDBEditEh(Sender) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_U_WRK_ID(aDBE:TDBEditEh);
+  var
+    lkID, lkJ_ID :string;
+  begin
+    if(not(aDBE.DataSource.DataSet.RecordCount > 0))then exit;
+    if(aDBE.DataSource.DataSet.FieldByName('FLAG_COMMIT').AsInteger <> 0)then exit;
+    lkJ_ID := aDBE.DataSource.DataSet.FieldByName('ID').AsString;
+    lkID   := aDBE.DataSource.DataSet.FieldByName('WRK_ID').AsString;
+    SetGlobalVariable('WRK_ID', lkID);
+    call(StrAbsolutePath('../../REF/WRK/DEFAULT_DLG.PS', ScriptName));
+    lkID := GetGlobalVariable('WRK_ID');
+    if( (lkID = 'NULL') or (StrTrimAll(lkID) = '') )then exit;
+    TERPFormGrid_CloseDataSets(aDBE.Owner);
+    ExecSQL(TERPForm_DataSetMain(aDBE.Owner).DataBase, 
+      '  UPDATE TABL$J_1000014 J SET '+SQLCRLF+
+      '    J.WRK_ID   = '''+lkID+''' '+SQLCRLF+
+      '  WHERE (J.J_ID = '''+lkJ_ID+'''); '+SQLCRLF
+    );
+    TERPFormDocEditor_RefreshView(aDBE.Owner);
+  end;
+  //============================================================================
+  procedure TERPFormDocEditor_dbeWRK_ID__OnButtonClick(Sender :TObject; var Handled : Boolean);
+  begin
+    Handled := true;
+    TERPFormDocEditor_U_WRK_ID( TDBEditEh(TComponent(Sender).Owner) );
+  end; 
+  //============================================================================
+  procedure TERPFormDocEditor_dbeWRK_ID__OnDblClick(Sender :TObject);
+  begin
+    TERPFormDocEditor_U_WRK_ID( TDBEditEh(Sender) );
+  end; 
   //============================================================================
   procedure TERPFormDocEditor_dbgData_OnGetCellParams(Sender:TObject; Column:TColumnEh; AFont: TFont; var Background:TColor; State:TGridDrawState);
   begin
@@ -446,7 +785,7 @@ var
   begin
     if(Shift = [ssCtrl])then
       begin
-      if(Key = $2E {VK_DELETE})then TERPFormDocEditor_act_TMCDel_OnExecute(Sender);
+      if(Key = $2E {VK_DELETE})then TERPFormDocEditor_actTMCDel_OnExecute(Sender);
       end; 
   end;
   //============================================================================
@@ -454,7 +793,7 @@ var
   begin
     if(Shift = [])then
       begin
-      if(Key = $0D {VK_RETURN})then TERPFormDocEditor_act_TMCIns_OnExecute(Sender);
+      if(Key = $0D {VK_RETURN})then TERPFormDocEditor_actTMCIns_OnExecute(Sender);
       end; 
   end;
   //============================================================================
@@ -463,7 +802,7 @@ var
     i          :Integer;
     lkColWidth :Integer;
   begin
-    TControl( TComponent(Sender).FindComponent(obj_name_erp_panelleft) ).Width := Trunc(TForm(Sender).ClientWidth * 3 / 5);
+    TControl( TComponent(Sender).FindComponent(obj_name_erp_panelleft) ).Width := 640;//Trunc(TForm(Sender).ClientWidth * 3 / 5);
     with TDBGridEh(TComponent(Sender).FindComponent(obj_name_erp_data_dbgdata)) do
       begin
       lkColWidth := 0;
@@ -492,12 +831,17 @@ var
     lkMainMenu    :TMainMenu;
     lkMIMenuMain  :TMenuItem;
     lkPnlLeft     :TxcGradientPanel;
-    lkPnlClient   :TxcGradientPanel;
     lkToolBarTMC  :TxcGradientPanelVista;
-    lkToolBarData :TxcGradientPanelVista;
 
-    lkPnlLine     :TxcStdPanel;
-    lkPnlStd      :TxcStdPanel;
+    lkPnlClient   :TxcGradientPanel;
+    lkPCDoc       :TxcPageControlEx;
+    lkTSDoc       :TxcTabSheet;
+    lkTSComents   :TxcTabSheet;
+    lkPnlDocHeader:TxcStdPanel;
+    lkToolBarDoc  :TxcGradientPanelVista;
+    lkLbl         :TLabel;
+    lkDBE         :TCustomDBEditEh;
+    lkToolBarData :TxcGradientPanelVista;
 
     lkTrTMC       :TxFBTransaction;
     lkDTSTMC      :TxFBDataSet;
@@ -528,8 +872,8 @@ var
       end;
     lkMainMenu  := TMainMenu(Result.FindComponent(obj_name_erp_mainmenu));
     lkMIMenuMain:= CreateTMenuItem(lkMainMenu.Items,obj_name_erp_mimainmenu,'Приход','','', -1, ERP_MENUITEM_FORM_INDEX_BEGIN);
-
-    lkPnlLeft    := CreateTxcGradientPanel(Result,Result,obj_name_erp_panelleft  ,'',alLeft  ,1,1,600,610,xbsNone,gdRightToLeft);
+    // left panel
+    lkPnlLeft    := CreateTxcGradientPanel(Result,Result,obj_name_erp_panelleft  ,'',alLeft  ,1,1,480,610,xbsNone,gdRightToLeft);
     lkToolBarTMC := CreateTxcGradientPanelVistaToolBar(lkPnlLeft, lkPnlLeft, '', '', alTop, 1, 1, 22, 200, xbsRaized);
 
     CreateTxFBTransDataSet(Result, obj_name_erp_data_trmain+'TMC', obj_name_erp_data_dtsmain+'TMC', 'DataSource'+obj_name_erp_data_dtsmain+'TMC', ['isc_tpb_read_committed', 'isc_tpb_read', 'isc_tpb_rec_version', 'isc_tpb_nowait'], lkTrTMC, lkDTSTMC, lkDSTMC);
@@ -577,25 +921,25 @@ var
       RowLines       := 2;
       RowPanel.Active:= true;
       SumList.Active := true;
-      OnDblClick     := @TERPFormDocEditor_act_TMCIns_OnExecute;
+      OnDblClick     := @TERPFormDocEditor_actTMCIns_OnExecute;
       OnKeyDown      := @TERPFormDocEditor_dbgTMC_OnKeyDown;
 //      OnGetCellParams:= @TERPFormDocEditor_dbgData_OnGetCellParams;
       Columns.Clear;
       end; 
-    lkCol := CreateTColumnEh(lkDBGTMC,'TMC_GROUP_PATH' ,''                 ,'Группа'              ,744,taLeftJustify );
+    lkCol := CreateTColumnEh(lkDBGTMC,'TMC_GROUP_PATH' ,''                 ,'Группа'              ,602,taLeftJustify );
     with lkCol do
       begin
-      Font.Color   := Amunhotep.MainForm.StyleManager.Colors.HotTrackBorder;
+      Font.Color   := Amunhotep.MainForm.StyleManager.Colors.Background;
       Font.Style   := [fsItalic];
       InRowLinePos := 0;
       end;
-    lkCol := CreateTColumnEh(lkDBGTMC,'ID'              ,'#0'               ,'Код'                , 48,taRightJustify );
+    lkCol := CreateTColumnEh(lkDBGTMC,'ID'              ,'#0'               ,'Код'                , 40,taRightJustify );
     with lkCol do
       begin
       Font.Style   := [fsBold];
       InRowLinePos := 1;
       end;
-    lkCol := CreateTColumnEh(lkDBGTMC,'NAME2'           ,''                 ,'Название для РРО'   ,400,taLeftJustify  );
+    lkCol := CreateTColumnEh(lkDBGTMC,'NAME2'           ,''                 ,'Название для РРО'   ,326,taLeftJustify  );
     with lkCol do
       begin
       InRowLinePos := 1;
@@ -605,16 +949,18 @@ var
       begin
       InRowLinePos := 1;
       end;
-    lkCol := CreateTColumnEh(lkDBGTMC,'BARCODE'        ,''                  ,'Штрихкод'          , 126,taLeftJustify ); 
+    lkCol := CreateTColumnEh(lkDBGTMC,'BARCODE'        ,''                  ,'Штрихкод'          , 88,taLeftJustify ); 
     with lkCol do
       begin
       Font.Style   := [fsBold];
       InRowLinePos := 1;
       end;
-    lkCol := CreateTColumnEh(lkDBGTMC,'EDIZM_SHORT_NAME',''                 ,'Ед.Изм.'            , 40,taRightJustify );
+    lkCol := CreateTColumnEh(lkDBGTMC,'EDIZM_SHORT_NAME',''                 ,'Ед'                , 16,taRightJustify );
     with lkCol do
       begin
       Color        := $C0FFC0;
+//      Font.Style   := [fsItalic];
+      Font.Size    := 6;
       InRowLinePos := 1;
       end;
     lkCol := CreateTColumnEh(lkDBGTMC,'PRICE'           ,'# ### ### ##0.00' ,'Цена'              , 56,taRightJustify ); 
@@ -627,9 +973,14 @@ var
     ERP_DBGridEh_StdActions_Create(lkDBGTMC, [erpGrid, erpGridNavigation, erpGridExport], lkToolBarTMC, nil);
 
     // client panel
-    lkPnlClient  := CreateTxcGradientPanel(Result,Result,obj_name_erp_panelClient,'',alClient,lkPnlLeft.Left+lkPnlLeft.Width+8,1,600,400,xbsNone,gdRightToLeft);
-    lkToolBarData:= CreateTxcGradientPanelVistaToolBar(lkPnlClient, lkPnlClient, '', '', alTop, 1, 10, 22, 200, xbsRaized);
-
+    lkPnlClient    := CreateTxcGradientPanel(Result,Result,obj_name_erp_panelclient,'',alClient,lkPnlLeft.Left+lkPnlLeft.Width+8,1,600,400,xbsNone,gdRightToLeft);
+    lkPnlDocHeader := CreateTxcStdPanel(Result, lkPnlClient, 'pnlDocHeader', '', alTop, 1, 1, 200, 1200, xbsNone);
+    lkToolBarDoc   := CreateTxcGradientPanelVistaToolBar(Result, lkPnlDocHeader, '', '', alTop, 1, 1, 22, 200, xbsRaized);
+    lkPCDoc        := CreateTxcPageControlEx(Result, lkPnlClient, obj_name_erp_pagecontrol, 0,36,600,600, alClient);
+    lkTSDoc        := CreateTxcTabSheet(lkPCDoc,'tsDocFields'  ,ERP_ObjectCaption(ERP_OBJECTTYPE_DOC), 31,Amunhotep.MainForm.StyleManager.Colors.Foreground);
+    lkTSComents    := CreateTxcTabSheet(lkPCDoc,'tsDocComents' ,msg_erp_tsdoccoments                 ,420,Amunhotep.MainForm.StyleManager.Colors.Background);  
+    TxcPageControlEx_ActivateDefaultPage(lkPCDoc);
+    lkToolBarData:= CreateTxcGradientPanelVistaToolBar(lkTSDoc, lkTSDoc, '', '', alTop, 1, 10, 22, 200, xbsRaized);
     CreateTxFBTransDataSet(Result, obj_name_erp_data_trmain, obj_name_erp_data_dtsmain, 'DataSource'+obj_name_erp_data_dtsmain, ['isc_tpb_read_committed', 'isc_tpb_write', 'isc_tpb_rec_version', 'isc_tpb_nowait'], lkTr, lkDTSMain, lkDSMain);
     with lkDTSMain do
       begin
@@ -642,13 +993,20 @@ var
       Name            := obj_name_erp_data_dtsdata;
       Transaction     := lkTr;
       DataSource      := lkDSMain;
-      SelectSQL.Text  := 'SELECT P.* FROM PROC$D_GET_1000014(?ID) P ORDER BY P.ID ';
-      RefreshSQL.Text := 'SELECT P.* FROM PROC$D_GET_1000014(?J_ID) P WHERE (P.ID = ?ID)';
+      SelectSQL.Text  := StringsLoadFromFile(StrAbsolutePath('../1000014/DOCSQLDATA001S.SQL', ScriptName));
+      RefreshSQL.Text := StringsLoadFromFile(StrAbsolutePath('../1000014/DOCSQLDATA001R.SQL', ScriptName));
+      InsertSQL.Text  := 
+        'INSERT INTO TABL$D_1000014(J_ID, TMC_ID, PRICE, QUANT, PRICE_TMC)'+SQLCRLF+
+        '  VALUES(?J_ID, ?TMC_ID, ?PRICE, ?QUANT, ?PRICE_TMC); ';
       ModifySQL.Text  := 
         'UPDATE TABL$D_1000014 D SET '+SQLCRLF+
-        '   D.PRICE = ?PRICE '+SQLCRLF+
-        '  ,D.QUANT = ?QUANT '+SQLCRLF+
-        '  ,D.NAME  = ?NAME '+SQLCRLF+
+        '   D.PRICE     = ?PRICE '+SQLCRLF+
+        '  ,D.QUANT     = ?QUANT '+SQLCRLF+
+        '  ,D.NAME      = ?NAME '+SQLCRLF+
+        '  ,D.PRICE_TMC = ?PRICE_TMC '+SQLCRLF+
+        'WHERE (D.ID = ?ID) ';
+      DeleteSQL.Text  := 
+        'DELETE FROM TABL$D_1000014 D '+SQLCRLF+
         'WHERE (D.ID = ?ID) ';
       AfterOpen       := @TERPFormGrid_OpenDataSetsChilds;
       BeforeClose     := @TERPForm_CloseDataSetsChilds;
@@ -675,8 +1033,9 @@ var
       Filtered         := true;
       FetchAllOnOpen   := true;
       MasterDetailSide := mdsOnSelfEh; 
-      AfterOpen        := @TERPForm_OpenDataSetsChilds;
-      BeforeClose      := @TERPForm_CloseDataSetsChilds;
+      AfterOpen        := @TERPFormDocEditor_mtData_AfterOpen;
+      BeforeClose      := @TERPFormDocEditor_mtData_BeforeClose;
+      OnNewRecord      := @TERPFormDocEditor_mtData_OnNewRecord;
       end;
     lkDSMTData := TDataSource.Create(lkMTData);
     with lkDSMTData do
@@ -684,13 +1043,13 @@ var
       Name    := 'DataSource'+lkMTData.Name;
       DataSet :=  lkMTData;
       end; 
-    lkDBG := CreateTDBGridEh(Result,lkPnlClient,lkDSMTData,obj_name_erp_data_dbgdata, 1,600,200,200,alClient);
+    lkDBG := CreateTDBGridEh(Result,lkTSDoc,lkDSMTData,obj_name_erp_data_dbgdata, 1,600,200,200,alClient);
     with lkDBG do
       begin
-      AllowedOperations := [alopUpdateEh, alopDeleteEh];
-      IndicatorOptions  := [gioShowRowIndicatorEh, gioShowRowselCheckboxesEh];  
+      AllowedOperations := [alopInsertEh, alopAppendEh,alopUpdateEh, alopDeleteEh];
+      IndicatorOptions  := [gioShowRowIndicatorEh{, gioShowRowselCheckboxesEh}];  
       Font.Style     := [];
-      Options        := Options   + [dgMultiSelect, dgAlwaysShowSelection];  
+      Options        := Options   + [{dgMultiSelect,} dgAlwaysShowSelection];  
       OptionsEh      := OptionsEh + [dghFixed3D, dghFrozen3D, dghFooter3D, dghAutoSortMarking, dghMultiSortMarking,  
         dghIncSearch, dghHighlightFocus, dghRowHighlight, dghColumnResize, dghColumnMove, dghExtendVertLines, dghHotTrack];
       SortLocal      := true;
@@ -701,8 +1060,12 @@ var
       OnGetCellParams:= @TERPFormDocEditor_dbgData_OnGetCellParams;
       Columns.Clear;
       end; 
-//    lkCol := CreateTColumnEh(lkDBG,'TMC_ID'     ,'#0'               ,'Код'         , 60,taRightJustify);
-    lkCol := CreateTColumnEh(lkDBG,'TMC_NAME'   ,''                 ,'Название',200,taLeftJustify );
+    lkCol := CreateTColumnEh(lkDBG,'TMC_ID'     ,'#0'               ,'Товарно-материальные ценности|Код'     , 60,taRightJustify);
+    with lkCol do
+      begin
+      Color         := lkDBG.Color;
+      end;
+    lkCol := CreateTColumnEh(lkDBG,'TMC_NAME2'  ,''                 ,'Товарно-материальные ценности|Название для РРО',200,taLeftJustify );
     with lkCol do
       begin
       Color         := lkDBG.FixedColor + $202020;
@@ -715,19 +1078,31 @@ var
         ValueType     := fvtStaticText;
         Value         := 'ИТОГО';
         end;
+      AlwaysShowEditButton := true;  
       end;
-    lkCol := CreateTColumnEh(lkDBG,'EDIZM_SHORT',''                 ,'Ед.'         , 40,taCenter );
+    lkCol := CreateTColumnEh(lkDBG,'TMC_ARTICLE',''                 ,'Товарно-материальные ценности|Артикул', 80,taLeftJustify );
+    with lkCol do
+      begin
+      Color         := lkDBG.Color;
+      end;
+    lkCol := CreateTColumnEh(lkDBG,'TMC_BARCODE',''                 ,'Товарно-материальные ценности|Штрихкод',120,taLeftJustify );
+    with lkCol do
+      begin
+      Color         := lkDBG.Color;
+      end;
+    lkCol := CreateTColumnEh(lkDBG,'EDIZM_SHORT',''                 ,'Товарно-материальные ценности|Ед.'         , 20,taCenter );
     with lkCol do
       begin
       Color         := lkDBG.FixedColor + $202020;
       ReadOnly      := True;
+      Font.Size     := 6;
       end;
-    lkCol := CreateTColumnEh(lkDBG,'PRICE'      ,'# ### ### ##0.00' ,'Цена'        , 60,taRightJustify);
+    lkCol := CreateTColumnEh(lkDBG,'PRICE'      ,'# ### ### ##0.00' ,'Документ|Цена'        , 60,taRightJustify);
     with lkCol do
       begin
       Font.Style := [fsBold];
       end;
-    lkCol := CreateTColumnEh(lkDBG,'QUANT'      ,'# ### ### ##0.000','кол'         , 60,taRightJustify);
+    lkCol := CreateTColumnEh(lkDBG,'QUANT'      ,'# ### ### ##0.000','Документ|Кол'         , 60,taRightJustify);
     with lkCol do
       begin
       Font.Style := [fsBold];
@@ -740,7 +1115,7 @@ var
         ValueType     := fvtSum;
         end;
       end;
-    lkCol := CreateTColumnEh(lkDBG,'TOTAL'      ,'# ### ### ##0.00' ,'Сумма'       ,72,taRightJustify);
+    lkCol := CreateTColumnEh(lkDBG,'TOTAL'      ,'# ### ### ##0.00' ,'Документ|Сумма'       ,72,taRightJustify);
     with lkCol do
       begin
       Color         := lkDBG.FixedColor + $202020;
@@ -754,79 +1129,287 @@ var
         ValueType     := fvtSum;
         end;
       end;
+
     ERP_DBGridEh_StdActions_Create(lkDBG, [erpGrid, erpGridNavigation, erpGridExport], lkToolBarData, nil);
 
-    lkPnlLine := CreateTxcStdPanel(Result, lkPnlClient, '', '', alTop, 1, 1, DefaultButtonHeight+2, DefaultButtonWidth, xbsNone);
-    lkPnlStd  := TERPFormDocEditor_ItemNew(Result, lkPnlLine, 
-      'p_CS', '', '', '', '', 
-      alClient, taLeftJustify, tlCenter, 1, 1, DefaultButtonHeight, DefaultButtonWidth, xbsNone, 
-      MaterialColor(4), @TERPFormDocEditor_act_CS_OnExecute, false, 14
-    );
-    lkDBlbl := CreateTxcDBLabel(lkPnlStd, lkPnlStd, lkDSMain, 'CS_NAME'    , 1, 1, lkPnlStd.Height, lkPnlStd.Width, alClient, taLeftJustify);
-    with lkDBlbl do
-      begin
-      Font.Color  := $FFFFFF;
-      Font.Size   := 12;
-      Font.Style  := [fsBold];
-      WordWrap    := True;
-      Transparent := True;
-      TextStyle   := tsRecessed;
-      OnClick     := @TERPFormDocEditor_itmLblClick;
-      OnMouseDown := @TERPFormDocEditor_itmLblMouseDown;
-      OnMouseUp   := @TERPFormDocEditor_itmLblMouseUp;
-      OnMouseMove := @TERPFormDocEditor_itmLblMouseMove;
-      OnMouseLeave:= @TERPFormDocEditor_itmLblMouseLeave;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Код',2,lkToolBarDoc.Top+lkToolBarDoc.Height+2,20,24,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 56; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Foreground;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'ID';
+      Alignment  := taLeftJustify;
+      end;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Фирма:',lkDBE.Left+lkDBE.Width+2,lkDBE.Top,20,36,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 160; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'FIRM_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbeFIRM_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbeFIRM_ID__OnButtonClick;
+        end;
+      end;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Филиал:',lkDBE.Left+lkDBE.Width+2,lkDBE.Top,20,72,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 160; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'FILIAL_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbeFILIAL_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbeFILIAL_ID__OnButtonClick;
+        end;
+      end;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Дата',lkDBE.Left+lkDBE.Width+2,lkDBE.Top,20,32,alNone,taLeftJustify);
+    lkDBE := TDBDateTimeEditEh.Create(Result);
+    with TDBDateTimeEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := 20;
+      Width      := 140; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      Kind       := dtkDateTimeEh;
+      DataSource := lkDSMain;
+      DataField  := 'DATE_COMMIT';
+      Alignment  := taLeftJustify;
       end;
 
-    
-    lkPnlLine := CreateTxcStdPanel(Result, lkPnlClient, '', '', alBottom, 1, lkPnlClient.Height - (DefaultButtonHeight * 1), DefaultButtonHeight+2, DefaultButtonWidth, xbsNone);
-    lkPnlStd  := TERPFormDocEditor_ItemNew(Result, lkPnlLine, 
-      'p_Commit', 'ПРОВЕСТИ', 'Провести документ', '', '', 
-      alLeft, taCenter, tlCenter, 1, 1, DefaultButtonHeight, DefaultButtonWidth, xbsNone, 
-      MaterialColor(1), @TERPFormDocEditor_act_Commit_OnExecute, true, 14
-    ); lkPnlStd.Tag := 0;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Тип документа',2, lkDBE.Top+lkDBE.Height+4,20,80,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 200; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'TYPE_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbeTYPE_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbeTYPE_ID__OnButtonClick;
+        end;
+      end;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Примечание:',lkDBE.Left+lkDBE.Width+2,lkDBE.Top,20,72,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 336; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'NAME';
+      Alignment  := taLeftJustify;
+      end;
 
-    lkPnlStd  := TERPFormDocEditor_ItemNew(Result, lkPnlLine, 
-      'Pnl_Print', 'ПЕЧАТЬ', 'Печать документ', '', '', 
-      alLeft, taCenter, tlCenter, 20, 1, DefaultButtonHeight, DefaultButtonWidth, xbsNone, 
-      MaterialColor(3), @TERPFormDocEditor_act_Print_OnExecute, true, 14
-    ); lkPnlStd.Tag := 0;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Контрагент:',2, lkDBE.Top+lkDBE.Height+4,20,80,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 200; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'CS_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbeCS_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbeCS_ID__OnButtonClick;
+        end;
+      end;
 
-    lkPnlStd  := TERPFormDocEditor_ItemNew(Result, lkPnlLine, 
-      'p_TMCDEL', 'Удалить', 'Удалить ТМЦ из счёта', '', '', 
-      alRight, taCenter, tlCenter, (DefaultButtonWidth * 5)+1, 1, DefaultButtonHeight, (DefaultButtonHeight*2), xbsNone, 
-      MaterialColor(1), @TERPFormDocEditor_act_TMCDel_OnExecute, true, 14
-    );
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Склад:',2, lkDBE.Top+lkDBE.Height+4,20,80,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 200; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'PLACE_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbePLACE_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbePLACE_ID__OnButtonClick;
+        end;
+      end;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Торговый',lkDBE.Left+lkDBE.Width+2,lkDBE.Top,20,72,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 160; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'WRK_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbeWRK_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbeWRK_ID__OnButtonClick;
+        end;
+      end;
+    lkLbl := CreateTLabel(lkPnlDocHeader,lkPnlDocHeader,'Н.Д.С.:',lkDBE.Left+lkDBE.Width+2,lkDBE.Top,20,32,alNone,taLeftJustify);
+    lkDBE := TDBEditEh.Create(Result);
+    with TDBEditEh(lkDBE)do
+      begin 
+      Parent     := lkPnlDocHeader;
+      AutoSize   := false;
+      Ctl3D      := false;
+      Flat       := true; 
+      Left       := lkLbl.Left + lkLbl.Width + 2;
+      Top        := lkLbl.Top;
+      Height     := lkLbl.Height;
+      Width      := 140; 
+      Color      := Amunhotep.MainForm.StyleManager.Colors.Window;
+      Font.Color := Amunhotep.MainForm.StyleManager.Colors.Border;
+      ReadOnly   := true;
+      DataSource := lkDSMain;
+      DataField  := 'TAX_ID_';
+      Alignment  := taLeftJustify;
+      OnDblClick := @TERPFormDocEditor_dbeTAX_ID__OnDblClick;
+      with EditButtons.Add do
+        begin
+        Glyph.LoadFromFile(PrepareAbsoleteFileName('PEAKTOP:IMG/CONFIG/DBGRID/BTN000.BMP'));
+        Style   := ebsGlyphEh;
+        Hint    := 'Выбрать';
+        Visible := true;
+        OnClick := @TERPFormDocEditor_dbeTAX_ID__OnButtonClick;
+        end;
+      end;
 
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actviewrefresh ,msg_erp_actviewrefresh,msg_erp_actviewrefresh_hint ,SHORTCUT_DATA_REFRESH,0,170,@TERPFormDocEditor_actRefresh_OnExecute       ,nil                                   ,nil,-1,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdel         ,'Удалить'             ,'Удалить Т.М.Ц из документа','Ctrl+Del'           ,0,177,@TERPFormDocEditor_act_TMCDel_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate ,nil,-1,lkMIMenuMain);
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit      ,msg_erp_actcommit     ,'Провести документ'         ,SHORTCUT_DOC_COMMIT  ,0,298,@TERPFormDocEditor_act_Commit_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate ,nil,-1,lkMIMenuMain);
-    lkAct.Tag := 0;
-    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actprintdefault,msg_erp_actprintitem  ,msg_erp_actprintitem_hint   ,SHORTCUT_PRINT       ,0,105,@TERPFormDocEditor_act_Print_OnExecute        ,nil                                   ,nil,-1,lkMIMenuMain);
+    lkPnlDocHeader.Height := lkDBE.Top + lkDBE.Height + 4; 
+
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actviewrefresh ,msg_erp_actviewrefresh,msg_erp_actviewrefresh_hint  ,SHORTCUT_DATA_REFRESH,0,170,@TERPFormDocEditor_actRefresh_OnExecute       ,nil                                    ,lkToolBarDoc, 80,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actcommit      ,msg_erp_actcommit     ,msg_erp_actcommit_hint       ,SHORTCUT_DOC_COMMIT  ,0,298,@TERPFormDocEditor_actCommit_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarDoc , 72,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actuncommit    ,msg_erp_actuncommit   ,msg_erp_actuncommit_hint     ,SHORTCUT_DOC_UNCOMMIT,0,297,@TERPFormDocEditor_actUnCommit_OnExecute     ,@TERPFormDocEditor_actUnCommit_OnUpdate,lkToolBarDoc , 72,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actprintdefault,msg_erp_actprintitem  ,msg_erp_actprintitem_hint    ,SHORTCUT_PRINT       ,0,105,@TERPFormDocEditor_actPrint_OnExecute        ,nil                                    ,lkToolBarDoc , 60,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdocgotojrnl ,msg_erp_actdocgotojrnl,msg_erp_actdocgotojrnl_hint  ,SHORTCUT_DOC_GOTOJRNL,0,519,@TERPFormDocEditor_actJrnl_OnExecute         ,nil                                    ,lkToolBarDoc , 68,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdoccnd      ,msg_erp_actdoccnd     ,msg_erp_actdoccnd_hint       ,''                   ,0, 46,@TERPFormDocEditor_actCnd_OnExecute          ,nil                                    ,lkToolBarDoc , 72,lkMIMenuMain);
+//    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actins         ,'Добавить'            ,'Добавить ТМЦ из справочника',SHORTCUT_DATA_INSERT ,0,307,@TERPFormDocEditor_actTMCIns_OnExecute       ,nil                                    ,lkToolBarData, 80,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actupd         ,'Редактировать'       ,'Редактировать карточку ТМЦ' ,SHORTCUT_DATA_EDIT   ,0,313,@TERPFormDocEditor_actTMCEdit_OnExecute      ,nil                                    ,lkToolBarData,120,lkMIMenuMain);
+    lkAct := TERPForm_CreateAction2(Result,obj_name_erp_actdel         ,'Удалить'             ,'Удалить Т.М.Ц из документа' ,SHORTCUT_DATA_DELETE ,0,309,@TERPFormDocEditor_actTMCDel_OnExecute       ,@TERPFormDocEditor_actCommit_OnUpdate  ,lkToolBarData, 80,lkMIMenuMain);
 
     Amunhotep.MainForm.xcMenu.AddMenu(lkMainMenu); lkMainMenu.OwnerDraw := true;
     Result.Menu := lkMainMenu;
     Result.OnResize := @TERPFormDocEditor_OnResize;
+    TERPFormDocEditor_OnResize(Result);       // refresh client area repaint
+    DocComentsIntf_Create(Result, lkTSComents, lkDSMain);
     TERPFormDocEditor_RefreshViewTMC(Result);
     TERPFormDocEditor_RefreshView(Result);    // refresh doc
-    TERPFormDocEditor_OnResize(Result);       // refresh client area repaint
   end;
   //============================================================================
-var
-  lkJ_ID :string;
 begin
-  MaterialColors[0] := $3643F4;  //$F44336;
-  MaterialColors[1] := $631EE9;  //$E91E63;
-  MaterialColors[2] := $B73A67;  //$673AB7;
-  MaterialColors[3] := $F39621;  //$2196F3;
-  MaterialColors[4] := $889600;  //$009688;
-  MaterialColors[5] := $2257FF;  //$FF5722;
-  MaterialColors[6] := $B0279C;  //$9C27B0;
-  MaterialColors[7] := $485579;  //$795548;
-  MaterialColors[8] := $B5513F;  //$3F51B5;
-  MaterialColors[9] := $8B7D60;  //$607D8B;
-  lkJ_ID := GetGlobalVariable('J_ID');
-  WriteLn(lkJ_ID); 
-
   TERPFormDocEditor_Create(GetGlobalVariable('J_ID'));
 end.

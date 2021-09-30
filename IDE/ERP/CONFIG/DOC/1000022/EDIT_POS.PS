@@ -31,18 +31,6 @@ const
   DefaultItemWidth    = 200;
   DefaultItemHeight   = 64;
   DefaultClickHeight  = 24;
-var
-  MaterialColors :array[0..9]of Integer;
-  //============================================================================
-  function MaterialColor(const anIndex: Integer): Integer;
-  var
-    LIndex :Integer;
-  begin
-    LIndex := anIndex;
-    if(LIndex >= Length(MaterialColors) )then
-      LIndex := anIndex mod Length(MaterialColors);
-    Result := MaterialColors[LIndex];
-  end;
   //============================================================================
   procedure TERPFormDocEditor_RefreshView(aOwner :TComponent);
   begin
@@ -870,7 +858,6 @@ var
     with lkCol do
       begin
       Color         := lkDBG.Color;
-
       end;
     lkCol := CreateTColumnEh(lkDBG,'TMC_NAME2'  ,''                 ,'Товарно-материальные ценности|Название для РРО',200,taLeftJustify );
     with lkCol do
@@ -1249,21 +1236,6 @@ var
     TERPFormDocEditor_OnResize(Result);       // refresh client area repaint
   end;
   //============================================================================
-var
-  lkJ_ID :string;
 begin
-  MaterialColors[0] := $3643F4;  //$F44336;
-  MaterialColors[1] := $631EE9;  //$E91E63;
-  MaterialColors[2] := $B73A67;  //$673AB7;
-  MaterialColors[3] := $F39621;  //$2196F3;
-  MaterialColors[4] := $889600;  //$009688;
-  MaterialColors[5] := $2257FF;  //$FF5722;
-  MaterialColors[6] := $B0279C;  //$9C27B0;
-  MaterialColors[7] := $485579;  //$795548;
-  MaterialColors[8] := $B5513F;  //$3F51B5;
-  MaterialColors[9] := $8B7D60;  //$607D8B;
-  lkJ_ID := GetGlobalVariable('J_ID');
-  WriteLn(lkJ_ID); 
-
   TERPFormDocEditor_Create(GetGlobalVariable('J_ID'));
 end.
